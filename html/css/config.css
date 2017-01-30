@@ -1,0 +1,30 @@
+/* witip config page */
+html {font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+      font-size: 11pt;
+      color: #272727; }
+body { margin: 0; }
+.main {clear: both; margin: 5px 20px 5px 30px; padding: 10px; }
+
+.config { margin: 0 20px; padding-bottom: 10px; width: 92%; background-color: #fbfbfb; }
+.conftable { background-color: #fbfbfb; padding: 15px 0;
+      border-collapse: collapse; width:100%; font-size: 90%; }
+.firstcol { width: 5%; }
+.secondcol {width: 95%; }
+.conftable .subt { background-color: #e4e4e4; font-size: 110%;}
+.conftable .subsubt { padding-top: 5px; font-weight: bold; }
+.conftable th { text-align:left; font-size: 110%; padding: 9px 3px 8px 5px; 
+                color: #175b6d;}
+.conftable td { padding: 2px 5px 2px 3px; }
+.inp { text-align: right; }
+
+#sampletext { max-width: 410px; overflow-x: hidden; display: inline-block;
+           vertical-align: middle; white-space: nowrap; }
+
+/* action input background color: $ffd8a0; hover: #efbf8f */
+.action { padding: 10px; margin: 0 10px; visibility: hidden; }
+.save {text-align: right; padding: 0px 3px; }
+.action input {font-size:11pt; background-color:#fefefe; font-weight: normal;
+      cursor:default;border:1px solid #999999; color: #272727; }
+.action input:hover{ background-color: #e8e8e8; }
+.cancel {padding: 0px 3px; }
+

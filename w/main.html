@@ -1,0 +1,109 @@
+##############################
+## main.html
+##
+## main html, main hub of witip
+##
+###########################################################################
+# This code is part of wITIP (a web based Information Theoretic Prover)
+#
+# Copyright (2017) Laszlo Csirmaz, Central European University, Budapest
+# This program is free, open-source software. You may redistribute it
+# and/or modify under the terms of the GNU General Public License (GPL).
+# There is ABSOLUTELY NO WARRANTY, use at your own risk.
+###########################################################################
+
+use wSession;
+use wAnApache;
+use wUtils;
+use strict;
+
+my $session= new wSession;
+exit (0) unless ( defined $session );
+
+sub internal_error {
+    use wLoginPage;
+    wLoginPage::Page($session,"There were some
+      inconsistencies. Please specify your session ID.");
+    exit wAnApache::OK;
+}
+
+my $SSID = $session->{SSID};
+my $err= wUtils::check_SSID($SSID);
+if($err){ ## wrong SSID
+    if($session->{action} eq "start"){ # login page, wrong SSID
+        $err = "The session ID you supplied is invalid: 
+        <span class=\"message\">$err</span>.
+        Please correct it.";
+    } elsif($SSID) { # internal error
+        return internal_error();
+    }
+    use wLoginPage;
+    wLoginPage::Page($session,$SSID ? $err : "");
+    return wAnApache::OK;
+}
+
+# SSID is fine, continue with the main page ...
+# check $session->{action} for what to do 
+#   start:   coming from login page {actionvalue}="CONTINUE"
+#   goingto: switching to page {actionvalue}
+if($session->{action} eq "goingto") {
+    my $from=$session->getpar("comingfrom");
+    # clean up
+    if ($from eq "config"){
+        use wConfigPage;
+        wConfigPage::Parse($session);
+    } elsif ($from eq "macros"){
+        use wMacrosPage;
+        wMacrosPage::Parse($session);
+    } elsif ($from eq "constraints"){
+        use wConstrPage;
+        wConstrPage::Parse($session);
+    } elsif ($from eq "check"){
+        use wMainPage;
+        wMainPage::Parse($session);
+    } elsif ($from eq "wITIP"){
+    } elsif ($from eq "session"){
+        use wLogoutPage;
+        wLogoutPage::Parse($session);
+    } else {
+        return internal_error();
+    }
+    # go to the page
+    my $goto=$session->{actionvalue};
+    if ($goto eq "config"){
+        use wConfigPage;
+        wConfigPage::Page($session);
+    } elsif ($goto eq "macros"){
+        use wMacrosPage;
+        wMacrosPage::Page($session);
+    } elsif ($goto eq "constraints"){
+        use wConstrPage;
+        wConstrPage::Page($session);
+    } elsif ($goto eq "check"){
+        use wMainPage;
+        wMainPage::Page($session);
+    } elsif ($goto eq "wITIP"){
+        use wAboutPage;
+        wAboutPage::Page($session);
+    } elsif ($goto eq "session"){
+        use wLogoutPage;
+        wLogoutPage::Page($session);
+    } elsif ($goto eq "login"){
+        use wLoginPage;
+        wLoginPage::Page($session,$session->{loginmessage});
+    } else {
+        return internal_error();
+    }
+    return wAnApache::OK;
+}
+
+use wMainPage;
+    wMainPage::Page($session);
+return wAnApache::OK;
+
+__END__
+
+=pod
+
+=cut
+

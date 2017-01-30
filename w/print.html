@@ -1,0 +1,48 @@
+##############################
+## print.html
+##
+## printing the content of the session
+##
+###########################################################################
+# This code is part of wITIP (a web based Information Theoretic Prover)
+#
+# Copyright (2017) Laszlo Csirmaz, Central European University, Budapest
+# This program is free, open-source software. You may redistribute it
+# and/or modify under the terms of the GNU General Public License (GPL).
+# There is ABSOLUTELY NO WARRANTY, use at your own risk.
+###########################################################################
+
+use wSession;
+use wAnApache;
+use wUtils;
+use strict;
+
+my $session= new wSession;
+exit (0) unless ( defined $session );
+
+my $SSID = $session->{SSID};
+my $err = wUtils::check_SSID($SSID);
+if($err){
+    use wLoginPage;
+    wLoginPage::Page($session,"We have encountered some
+      inconsistencies. Please specify your session ID.");
+    exit wAnApache::OK;
+}
+
+use wPrintPage;
+# create the page
+wPrintPage::Page($session);
+# end exit
+return wAnApache::OK;
+
+__END__
+
+=pod
+
+=head1 print.html
+
+Create a printable form of the current session.
+
+=cut
+
+

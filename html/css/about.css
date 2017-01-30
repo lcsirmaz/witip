@@ -1,0 +1,37 @@
+/* witip about page */
+html {font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+      font-size: 11pt;
+      color: #272727; }
+body { margin: 0; }
+.main {clear: both; margin: 5px 5px 0px 5px; padding: 10px; }
+
+.helptable { width: 100%; border-collapse: collapse; height: 100%; }
+.helptable td {vertical-align: top; }
+.legend { min-width: 6em; font-size: 10pt;  display: block; padding: 5px 0
+5px 1px;
+         background-color: #eaeaea; white-space: nowrap;}
+.ltitle {font-weight: bold; color:#175b6d; padding: 3px 0 2px 1px; }
+.legend ul { padding: 0; margin: 0; }
+.legend li {padding: 1px 2px 1px 5px; margin: 0; display: block; cursor: pointer; 
+         color: #175b6d; }
+.legend li:hover {background-color: #e8e8e8; }
+.legend a {text-decoration: none; color: #272727; }
+
+.content { width: 100%; padding-left: 5px; }
+.left { overflow-y: scroll; height: 250px; padding-right: 4px; }
+.left p {padding: 0; margin: 2px; }
+.left h2 {color: #175b6d; font-size: 12pt; }
+.left a {text-decoration: none; color: #074b6d; }
+.left a:hover {background-color: #e8e8e8; }
+.samplecode { font-family: monospace; font-size: 0.9em; color: #074612; padding: 0 3px; 
+       background-color: #f2fff2; }
+.indent { margin-left: 1.5em; padding: 3px; line-height: 1.5;}
+
+/* action input background color: $ffd8a0; hover: #efbf8f */
+.action { padding: 10px; margin: 0 10px; visibility: hidden; }
+.save {text-align: right; padding: 0px 3px; }
+.action input {font-size:11pt; background-color:#fefefe; font-weight: normal;
+      cursor:default;border:1px solid #999999; color: #272727; }
+.action input:hover{ background-color: #e8e8e8; }
+.cancel {padding: 0px 3px; }
+

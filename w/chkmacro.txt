@@ -1,0 +1,73 @@
+##############################
+## chkmacro.txt
+##
+## Ajax reponder: check macro text
+##
+###########################################################################
+# This code is part of wITIP (a web based Information Theoretic Prover)
+#
+# Copyright (2017) Laszlo Csirmaz, Central European University, Budapest
+# This program is free, open-source software. You may redistribute it
+# and/or modify under the terms of the GNU General Public License (GPL).
+# There is ABSOLUTELY NO WARRANTY, use at your own risk.
+###########################################################################
+
+use wSession;
+use wUtils;
+use strict;
+
+my $session = new wSession;
+exit(0) unless ( defined $session );
+my $SSID = $session->{SSID};
+
+exit 0 if(!$SSID || wUtils::check_SSID($SSID) );
+
+# return value:
+# if OK:     "0\n"; macro added, reload the page
+# if error:  "1,errpos,errmsg+++aux\n"
+
+use wMacros;
+my $err = wMacros::add_macro($session,$session->getpar("text"));
+if($err->{err}){ # there was an error {pos},{aux}
+    print "1,$err->{pos},$err->{err}";
+    print "+++",$err->{aux} if($err->{aux});
+    print "\n";
+} else { # OK
+    print "0\n";
+}
+
+exit 0;
+
+__END__
+
+
+#######################################################
+=pod
+
+=head1 chkmacro.txt
+
+Ajax responder to check user entered macro text.
+
+Arguments are:
+
+     SSID:   session ID
+     text:   the new macro text
+
+Session ID must have correct format, otherwise the responder
+aborts.  If there was no parsing error and the macro has been added,
+the response is a single line containing "0" (zero).
+The web page should reload the page as both the macro list and the macro
+history have changed.
+
+If there was an error, then the response is a single line as follows:
+
+    1,errpos,errmsg+++auxmessage
+
+Errpos is a non-negative number showing the character number where
+the error was found. Errmsg is the error message text. The 
++++auxmessage part might be missing. The web page should show
+the appropriate error message and continue.
+
+=cut
+#######################################################
+

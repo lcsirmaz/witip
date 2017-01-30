@@ -1,0 +1,85 @@
+##############################
+## chkexpr.txt
+##
+## Ajax reponder: check an expression
+##
+###########################################################################
+# This code is part of wITIP (a web based Information Theoretic Prover)
+#
+# Copyright (2017) Laszlo Csirmaz, Central European University, Budapest
+# This program is free, open-source software. You may redistribute it
+# and/or modify under the terms of the GNU General Public License (GPL).
+# There is ABSOLUTELY NO WARRANTY, use at your own risk.
+###########################################################################
+
+use wSession;
+use wUtils;
+use strict;
+
+my $session = new wSession;
+exit(0) unless ( defined $session );
+my $SSID = $session->{SSID};
+
+exit 0 if(!$SSID || wUtils::check_SSID($SSID) );
+
+# parameters:
+#   text: the text to be checked
+#   cstr: 0/1 without, or with constraints
+#
+# return value:
+#   error:  1,errpos,errmsg+++aux\n
+#   zap:    2,aux\n
+#   else:   3..9,label\n
+#             wait/timeout/failed/true/false/>=/<=/:  3..9
+
+
+use wExpr;
+
+my $standalone = $session->getpar("cstr") ? 0 : 1;
+my $result = wExpr::check_expr($session,$session->getpar("text"),$standalone);
+if($result->{res}==1){
+    print "1,$result->{pos},$result->{err}";
+    print "+++",$result->{aux} if($result->{aux});
+} else {
+    print "$result->{res},$result->{label}";
+    print ",$result->{aux}" if($result->{res}==2);
+}
+print "\n";
+
+exit 0;
+
+__END__
+
+
+#######################################################
+=pod
+
+=head1 chkexpr.txt
+
+Ajax responder to check user entered queries
+
+Arguments are:
+
+     SSID:   session ID
+     text:   the text to be checked
+     cstr:   "0" if without, "1" if check with constraints
+
+Session ID must have correct format, otherwise the responder aborts.  If
+label is filled, checks the pending request with the given label.  Otherwise
+parses text as a request.  In both cases the response is a single line
+ending with the new line caharcter giving the result.  It start with a
+number telling the reason, followed by some relevant data:
+
+    1,errpos,errmsg+++auxmessage      # error
+    2,label,auxmessage                # unroll request
+    3,label                           # result is pending
+    4,label                           # time out
+    5,label                           # LP solver failed
+    6,label                           # the relation is TRUE
+    7,label                           # the relation is FALSE
+    8,label                           # only >= is true
+    9,label                           # onyl <= is true
+
+=cut
+#######################################################
+

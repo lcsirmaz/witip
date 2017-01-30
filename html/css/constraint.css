@@ -1,0 +1,81 @@
+/* witik constraints */
+html {font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+      font-size: 11pt;
+      color: #272727; }
+body { margin: 0; }
+.main {clear: both; margin: 5px 20px 5px 30px; padding: 10px; }
+
+.conline-used { border-top: 1px solid #b9b9b9; width: 100%; border-right: 0;
+                border-left: 1px solid #b9b9b9; background-color: #fefece; }
+.conline-used:hover {background-color: #e8e8b8;}
+.conline-unused {border-top: 1px solid #b9b9b9; width: 100%; border-right: 0;
+                border-left: 1px solid #b9b9b9; color: #787878; }
+.conline-unused:hover {background-color: #e8e8e8;}
+
+.conno { display:none; padding: 3px 5px; text-align: right; }
+
+.conused { padding-left: 3px; }
+.coninnerused { border:none; margin-bottom:0; outline: 0; padding: 0; position: relative; }
+.coninnerused label {color: transparent; cursor: pointer; display: block;
+  position: relative; text-indent: 100%; margin-bottom: 0; width: 15px;
+  height: 15px; }
+.coninnerused input { left: 10px; opacity: 0; padding: 0; position: absolute; top: 9px; }
+.coninnerused input + label { margin-left: 0; margin-right: 0; }
+.coninnerused label:after { content:""; display: block; position: absolute; }
+.coninnerused label {background-size: cover; }
+.coninnerused input:checked + label { background-size: cover; }
+
+
+.coninnerdel { border:none; margin-bottom:0; outline: 0; padding: 0;  position: relative; }
+.coninnerdel label {color: transparent; cursor: pointer; display: block;
+  position: relative; text-indent: 100%; margin-bottom: 0; width: 15px;
+  height: 15px; }
+.coninnerdel input { left: 10px; opacity: 0; padding: 0; position: absolute; top: 9px; }
+.coninnerdel input + label { margin-left: 0; margin-right: 0; }
+.coninnerdel label:after { content:""; display: block; position: absolute; }
+.coninnerdel label {background-size: cover; }
+.coninnerdel input:checked + label { background-size: cover; }
+
+.context { width: 100%; }
+.innerctext { padding: 3px 0 3px 3px; word-break: break-all; width: 100%;
+              vertical-align: text-top; line-height: 1.4em; cursor: pointer; }
+   
+
+.action {padding: 10px; margin: 0 10px; visibility: visible; } /* will be hidden */   
+
+.action input {font-size:11pt; background-color: #fefefe; font-weight:
+   normal; cursor: default; border: 1px solid #999999; color: #272727; }
+.action input:hover { background-color: #e8e8e8;  }
+.delsubmit { text-align: right; padding: 0 3px; }
+.cancel    { padding: 0 3px; }
+.delall    { padding: 0 3px; }
+.delall input { visibility: hidden; }
+
+
+.concontainer { width: 100%; overflow: auto; overflow-y: scroll; overflow-x: hidden; 
+    padding: 5px 0; margin: 0;    }
+.constable { background-color: #fbfbfb; width: 100%; padding: 15px 0;
+             border-collapse: collapse; cursor: default; }
+
+.noconstryet { background-color: #fefece; }
+.noconstryet td { padding: 5px 5px 5px 3em; }
+
+.edit { width: 100%; margin: 15px 0; }
+.edit table { border: 0; margin: 0; border-collapse: collapse; }
+.edit td {vertical-align: top; }
+.edit .editline {width: 100%; }
+.edit .dblinput,.errmsg,.erraux { position: relative; width: 95%; margin: auto; }
+.edit .inputmain {position: absolute; top: 0; left: 0;
+   z-index: 1; background-color:transparent; }
+.edit .inputshadow {position: absolute; top: 2px; left: 0;
+   z-index: 0; background-color: #f4f4f4; color: #a31;}
+.edit textarea {
+    border: 0 solid white; word-break: break-all; margin: 0;
+    resize: none; overflow: hidden; width: 100%; padding: 2px 2px 0 2px; }
+
+.edit .errmsg,.erraux { cursor: default; }
+
+.editsubmit input {font-size: 11pt; background-color: #fefefe; font-weight:
+     normal; cursor: default; border: 1px solid #999999; color: #272727; }
+.editsubmit input:hover {background-color: #e8e8e8; }
+

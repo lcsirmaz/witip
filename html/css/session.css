@@ -1,0 +1,39 @@
+/* witip session */
+html {font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+      font-size: 11pt;
+      color: #272727; }
+body { margin: 0; }
+.main {clear: both; margin: 5px 20px 5px 30px; padding: 10px; }
+
+.errmsg {padding: 5px; font-size: 10pt; margin-top: 10px;
+  border: 3px solid #999999; background-color: #efefef; 
+  font-weight: bold; color: #662222;
+}
+
+.sesscontainer { margin: 20px; padding: 20px 0 10px 0; width: 92%;
+   background-color: #fbfbfb; }
+.sesstable {padding: 15px 0; border-collapse: collapse; width: 100%;}
+.sesstable td { padding: 4px 5px 5px 3px; vertical-align: top; }
+.sesstable th {text-align: left; padding: 9px 3px 8px 5px;
+               color: #175b6d; font-size: 110%; }
+.firstcol {width: 5%; }
+.secondcol {width: 95%; }
+
+.subt   {background-color: #e4e4e4; }
+
+.sbutton { text-align: right; }
+.abutton { text-decoration: none; border: 1px solid #999999;
+           padding: 0px 5px; color: #272727; background-color: #f0f0f0;
+           cursor: pointer;  }
+.abutton:hover {background-color: #b4b4b4; }
+
+.subutton { text-decoration: none; border: 1px solid #999999;
+    padding: 0px 5px; color: #272727; background-color: #f0f0f0;
+    cursor: pointer; }
+.subutton:hover {background-color: #b4b4b4; }
+
+.browse {}
+
+.line2 { padding: 3px 0; font-weight: bold; color: #441b1b; }
+
+    

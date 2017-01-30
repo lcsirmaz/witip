@@ -1,0 +1,58 @@
+##############################
+## history.txt
+##
+## Ajax reponder: return history
+##
+###########################################################################
+# This code is part of wITIP (a web based Information Theoretic Prover)
+#
+# Copyright (2017) Laszlo Csirmaz, Central European University, Budapest
+# This program is free, open-source software. You may redistribute it
+# and/or modify under the terms of the GNU General Public License (GPL).
+# There is ABSOLUTELY NO WARRANTY, use at your own risk.
+###########################################################################
+
+use wSession;
+use wUtils;
+use strict;
+my $session = new wSession;
+exit(0) unless ( defined $session );
+my $SSID = $session->{SSID};
+exit 0 if(!$SSID || wUtils::check_SSID($SSID) );
+
+# arguments: SSID, what=[macro,cons]
+# send history lines
+
+my $hist = wUtils::read_user_history($session,$session->getpar("what"));
+my ($n,$idx)=($hist->{n},$hist->{end});
+
+print "\n"; # history line zero
+while($n>0){
+    $n--;
+    $idx=$hist->{limit} if($idx<=0);
+    $idx--;
+    print "",$hist->{hist}->[$idx],"\n";
+}
+
+exit 0;
+
+__END__
+
+####################################################
+=pod
+
+=head1 history.txt
+
+Ajax responder, return macro and constraint history.
+
+Arguments are:
+
+    SSID:  session ID
+    what:  either "macro" or "history"
+
+Session ID must have correct format. The history start with an
+empty line (history entry zero), followed by the most recent
+item. Each item is a single line closed by a \n character.
+
+=cut
+#####################################################

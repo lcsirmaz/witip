@@ -1,0 +1,26 @@
+/* global css */
+
+.banner { width: 100%; font-size: 110%; font-weight: bold; color: #444;  }
+.banner table {border-collapse: collapse; display:inline;}
+
+.banner .brand { display: none; width: 50%; text-align: left; font-weight: normal;}
+.banner .linkb { padding: 3px 8px 5px 8px; border-left: 3px solid #fc6; 
+           cursor: pointer; }
+.banner .linkb:hover { background-color: #f1f1f1; }
+.banner .linka { padding: 3px 8px 5px 8px; border-right: 3px solid #fc6; 
+                cursor: pointer; }
+.banner .linka:hover { background-color: #f1f1f1; }
+.banner .spacer {border-left: 3px solid #fc6;}
+.banner .actual { padding: 3px 8px; text-decoration: none; cursor: default; border-left: 3px solid #fc6; 
+                  border-bottom: 3px solid #fc6; border-right: 3px solid #fc6;}
+
+.banner .ssid { float: right; text-align: right; }
+.banner .legend { padding: 3px; font-weight: normal; font-size: 90%; 
+                  color: #6f6f6f;}
+.banner .ssvalue { font-weight: bold; font-size: 110%; color: #444; }
+.banner .jobtitle {padding-left: 3px; color: #522; }
+.ad { font-size: 10pt; color: #989898; text-align: center;}
+.ad A {color: #175b6d; text-decoration: none; }
+.ad A:hover {text-decoration: underline;}
+
+           

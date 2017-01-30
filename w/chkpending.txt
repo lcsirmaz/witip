@@ -1,0 +1,60 @@
+##############################
+## chkpending.txt
+##
+## Ajax reponder: check pending requests
+##
+###########################################################################
+# This code is part of wITIP (a web based Information Theoretic Prover)
+#
+# Copyright (2017) Laszlo Csirmaz, Central European University, Budapest
+# This program is free, open-source software. You may redistribute it
+# and/or modify under the terms of the GNU General Public License (GPL).
+# There is ABSOLUTELY NO WARRANTY, use at your own risk.
+###########################################################################
+
+use wSession;
+use wUtils;
+use strict;
+
+my $session = new wSession;
+exit(0) unless ( defined $session );
+my $SSID = $session->{SSID};
+
+exit 0 if(!$SSID || wUtils::check_SSID($SSID) );
+
+# parameters:
+#   what: sequence of labels separated by commas
+#
+# return value:
+#   a sequence of lines, for each label which finished
+#     label,<result>
+#   where <result> is one of [timeout|failed|true|false|onlyge|onlyle]
+#   
+
+use wExpr;
+use wUtils;
+
+my @rescode=("","","","","timeout","failed",
+            "true","false","onlyge","onlyle");
+
+my @hist=(); my $result="";
+my @labels=split(',',$session->getpar("what"));
+foreach my $label(@labels){
+    next if ($label !~ /^\d+$/ );
+    my($r,$h)=wExpr::check_result($session,$label);
+    # r=3,4,5,6,7,8,9
+    if($rescode[$r]){
+        push @hist,$h;
+        $result .= "$label,".$rescode[$r]."\n";
+    }
+}
+print "",$result || "0,none\n";
+wUtils::write_user_history($session,"expr",\@hist);
+exit 0;
+
+__END__
+
+=pod
+
+=cut
+

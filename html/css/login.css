@@ -1,0 +1,39 @@
+/* witip login */
+html {font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+      font-size: 11pt;
+      color: #272727; }
+body { margin: 0; }
+.main {clear: both; margin: 5px 20px 5px 30px; padding: 10px; }
+.subtitle { font-size: 17pt; color: #175b6d; font-weight: bold; }
+.smallsize {font-size: 10pt; }
+.logincontainer {
+  margin-left: auto; margin-right: auto;
+  text-align: center; max-width: 18em;
+  font-weight: bold;
+  background-color: #478291;
+  border: 3px solid #a9a9a9; color: white; padding: 6px;
+}
+.logincontainer input {
+  border: 2px solid #a9a9a9;
+  color: #424242;
+}
+.logincontainer .logsubmit {
+  background-color: #ffcc66;
+  font-weight: bold;
+  border: 3px solid #999999;
+  cursor: pointer;
+}
+.section {font-size: 17pt; color: #175b6d; font-weight: bold; }
+.subsection {font-size: 14pt; color: #175b6d; font-weight: bold;  }
+
+.errmsg {padding: 5px; font-size: 10pt; margin-top: 10px;
+  border: 3px solid #999999; background-color: #efefef; 
+  font-weight: bold; color: #662222;
+}
+.errmsg .message { font-weight: bold; color: #fa4131; }
+
+.ad { font-size: 10pt; color: #989898; text-align: center;}
+.ad A {color: #175b6d; text-decoration: none; }
+.ad A:hover {text-decoration: underline;}
+
+

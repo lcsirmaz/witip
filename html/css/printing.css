@@ -1,0 +1,44 @@
+/* witip printed pages */
+html {font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+      font-size: 11pt;
+      color: #272727; }
+body { margin: 0; }
+.main {clear: both; margin: 5px 20px 5px 30px; padding: 10px; }
+
+.block {clear: both; margin: 5px 0px; }
+
+.spacer { clear: both; height: 5px; }
+
+@media print {
+ .hideit { display: none; }
+ .explanation { display: none; }
+}
+
+.explanation { padding: 10px; border: 1px solid #b9b9b9; 
+    background-color: #f8f8e8; }
+.explanation a { font-size: 12pt; text-decoration: none;
+                 padding: 2px 5px; border: 1px solid #b8b8b8;
+                 background-color: #f0f0a0; cursor: pointer; }
+.explanation a:hover { background-color: #e0e090;}
+
+.hideit { float: right; font-size: 10pt; }
+.hidebutton { color: #154237; padding: 2px 5px; margin: 5px;
+    background-color: #f8f8f8; border: 1px solid #b9b9b9; cursor: pointer; }
+
+.subtitle { margin: auto; font-size: 110%; color: #175b6d;
+   font-weight:bold; padding: 5px 0; clear: both;}
+.maintitle { margin: auto; font-size: 115%; color: #175b6d;
+   font-weight:bold; padding: 5px 0; clear: both;}
+.code {font-family: monospace; font-size: 1em; width: 99%; padding: 0 3px; }
+
+.enabled {}
+.not-enabled { font-weight: bold; color: #601413; padding: 3px; }
+
+
+.result { font-size: 80%; font-weight: bold; }
+.withc { font-size: 90%; font-weight: bold; color: #141455; padding: 1px; }
+
+.ad { font-size: 10pt; color: #989898; text-align: center;}
+.ad A {color: #175b6d; text-decoration: none; }
+.ad A:hover {text-decoration: underline;}
+
