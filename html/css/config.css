@@ -16,6 +16,8 @@ body { margin: 0; }
                 color: #175b6d;}
 .conftable td { padding: 2px 5px 2px 3px; }
 .inp { text-align: right; }
+.inp select {font-size: 9.5pt; font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+    }
 
 #sampletext { max-width: 410px; overflow-x: hidden; display: inline-block;
            vertical-align: middle; white-space: nowrap; }

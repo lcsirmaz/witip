@@ -24,12 +24,14 @@ body { margin: 0; }
 .sbutton { text-align: right; }
 .abutton { text-decoration: none; border: 1px solid #999999;
            padding: 0px 5px; color: #272727; background-color: #f0f0f0;
-           cursor: pointer;  }
+           cursor: pointer; font-size: 10pt;  
+           font-family: Trebuchet MS, Arial, Helvetica, sans-serif;}
 .abutton:hover {background-color: #b4b4b4; }
 
 .subutton { text-decoration: none; border: 1px solid #999999;
     padding: 0px 5px; color: #272727; background-color: #f0f0f0;
-    cursor: pointer; }
+    cursor: pointer; font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+    font-size: 10pt; }
 .subutton:hover {background-color: #b4b4b4; }
 
 .browse {}
