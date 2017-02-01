@@ -194,22 +194,23 @@ sub which_program {
 
 sub redefine_helpers {
     my %P=();
-    foreach my $prog (qw( mktemp zip unzip )){
+    foreach my $prog (qw( mktemp zip unzip file )){
        $P{$prog}=which_program($prog);
        if(!$P{$prog}){
-           print "Program $prog was not found. Please specify it with full path\n";
+           print "Program `$prog' was not found. Please specify it with full path\n";
            $P{$prog}=user_input("\\/[\\w\\/:\\+\\-,%]+",
-             "Program $prog with full path");
+             "Program `$prog' with full path");
        } else {
            $P{$prog}=user_input("\\/[\\w\\/:\\+\\-,%]+",
-             "Program $prog with full path",$P{$prog});
+             "Program `$prog' with full path",$P{$prog});
        }
     }
     print "Using helper programs
         $P{mktemp}
         $P{zip}
-        $P{unzip}\n\n";
-    return ($P{mktemp},$P{zip},$P{unzip});
+        $P{unzip}
+        $P{file}\n\n";
+    return ($P{mktemp},$P{zip},$P{unzip},$P{file});
 }
 
 sub virtual_host {
@@ -251,6 +252,7 @@ my $CONFIG={
   MKTEMP     => "",  # helper programs
   ZIP        => "",
   UNZIP      => "",
+  FILETYPE   => "",
   HOST       => "",  # vitual host
   PORT       => "",  # port
   BASEHTML   => "",  # prefix to the witip pages
@@ -261,7 +263,7 @@ $CONFIG->{INSTALLDIR} = get_installdir();
 $CONFIG->{BASEDIR}    = get_datadir($CONFIG->{INSTALLDIR});
 $CONFIG->{LPSOLVER}   = get_lpsolver($CONFIG->{INSTALLDIR});
 print "Helper programs: zip, unzip, and mktemp\n";
-($CONFIG->{MKTEMP},$CONFIG->{ZIP},$CONFIG->{UNZIP})
+($CONFIG->{MKTEMP},$CONFIG->{ZIP},$CONFIG->{UNZIP},$CONFIG->{FILETYPE})
                       = redefine_helpers();
 print "Web server configuration\n";
 $CONFIG->{HOST}       = virtual_host();
@@ -281,6 +283,7 @@ them carefully.\n\n",
 "Helper programs:         $CONFIG->{MKTEMP}\n",
 "                         $CONFIG->{ZIP}\n",
 "                         $CONFIG->{UNZIP}\n",
+"                         $CONFIG->{FILETYPE}\n",
 "virtual host:            $CONFIG->{HOST}\n",
 "port:                    $CONFIG->{PORT}\n",
 "URL prefix:              $CONFIG->{BASEHTML}\n";
