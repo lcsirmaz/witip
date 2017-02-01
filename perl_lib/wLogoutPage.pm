@@ -134,7 +134,8 @@ sub Parse {
         return;
     }
     my $fh=$upload->tempname();
-    my $filetype=`/usr/bin/file -b $fh`;
+    my $filetype=$session->getconf("filetype");
+    $filetype=`$filetype -b $fh`;
     if($filetype !~ /^zip/i ){
        $session->{errmsg}="The file you specified ($upload) is not a witip file.";
        return;

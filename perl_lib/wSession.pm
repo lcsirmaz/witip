@@ -182,7 +182,8 @@ sub replace_configure {
 sub mktemp {
     my($self)=@_;
     my $pattern=$self->{stub}.$self->{setting}->{exttemp}.".XXXXXXX";
-    my $tmpfile=`/bin/mktemp -q $pattern`;
+    my $mktemp=$self->getconf("mktemp");
+    my $tmpfile=`$mktemp -q $pattern`;
     chomp $tmpfile;
     return $tmpfile;
 }

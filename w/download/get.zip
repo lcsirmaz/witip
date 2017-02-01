@@ -47,7 +47,7 @@ exit (0) unless { defined $session };
 my $arg=$session->getpar("what");
 # $arg cannot contain %, maybe it's doubly encoded
 $arg =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C",hex($1))/eg;
-# <SSID>_Jan07_9876.zip
+# <SSID>_Jan07_AB98.zip
 if( $arg !~ m#^(.+)_[A-Z][a-z][a-z]\d\d_[A-Z0-9]{4}\.zip# ){
     notfound($session,$arg);
 }
@@ -55,24 +55,12 @@ my $SSID=$1;
 if($session->add_SSID($SSID)){ # not a correct SSID
     notfound($session,$arg);
 }
-#my $zipname=wUtils::purify($arg);
-#my $tmpstub=$session->getconf("tmpdir")."/".wUtils::purify($SSID);
 
 use wZip;
 my $filename=wZip::create($session);
-
-my $fh;
-open($fh,">","/tmp/tobezipped.txt");
-print $fh "SSID=$SSID\n";
-print $fh "arg=$arg\n";
-print $fh "lot of other stuff\n";
-for my $i(1..100){ print $fh "number $i\n"; }
-close($fh);
-## chdir to /tmp; the file name is saved in the zip file
-## make the name to be the date and the user name
-## (as specified by "arg")
-##
-## system("/usr/bin/zip","-q","-j","/tmp/x.zip","/tmp/tobezipped.txt");
+if(!$filename){ # some error, sorry
+    notfound($session,$arg);
+}
 
 print "Content-Type: application/zip\n";
 print "Pragma: no-cache\n";
@@ -80,7 +68,8 @@ print "Cache-Control: no-cache\n";
 print "Content-Disposition: attachement; filename=\"$arg\"\n";
 print "\n";
 
-open($fh,"-|","/usr/bin/zip -qq -j - $filename");
+my $fh;
+open($fh,"-|",$session->getconf("zip")." -qq -j - $filename");
 my ($rlen,$buff);
 do{
     $rlen=sysread($fh,$buff,4096);
@@ -88,15 +77,8 @@ do{
 } while(defined $rlen && $rlen>0);
 close($fh);
 
+unlink($filename);
+
 exit wAnApache::OK;
-
-wHtml::plain_header($session,"wITIP download",{});
-
-print "<p> This is the argument:",wUtils::htmlescape($arg),
-    "</p>\n";
-
-wHtml::html_tail();
-
-return wAnApache::OK;
 
 

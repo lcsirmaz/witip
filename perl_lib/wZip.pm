@@ -124,7 +124,7 @@ sub rerror {
 sub reload {
     my($session,$fname)=@_;
     my $io;
-    if(!$fname || !open($io,"-|","/usr/bin/unzip -qq -p $fname")){
+    if(!$fname || !open($io,"-|",$session->getconf("unzip")." -qq -p $fname")){
         return "Cannot unzip filename \"$fname\"";
     }
     use Digest::MD5;
