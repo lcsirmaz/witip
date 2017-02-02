@@ -117,7 +117,9 @@ sub create {
 #error, unlink temporary files
 sub rerror {
     my($msg,$files)=@_;
-    unlink @$files;
+    foreach my $f (@$files){
+        unlink $f if($f ne "");
+    }
     return $msg;
 }
 
@@ -138,18 +140,22 @@ sub reload {
        if($1 ne $session->{SSID});
     my @tmpfiles=();
     foreach my $tag (@saveitems){
-       my $fh2; my $file=$session->{stub}.$session->getconf("ext$tag");
-       my $tmpfile=$session->mktemp();
-       push @tmpfiles,$tmpfile;
-       if(!open($fh2,">",$tmpfile)){
-           return rerror("Cannot create tmpfile $tmpfile",\@tmpfiles);
-       }
        $line=<$io>; $mac->add($line); chomp $line;
        return rerror("wrong $tag line ($line)",\@tmpfiles)
           if($line !~ /^$tag=(\d+)$/ );
        my $cnt=$1;
        return rerror("counter out of range ($line)",\@tmpfiles)
           if($cnt>50000);
+       if($cnt==0){ # no file
+          push @tmpfiles, "";
+          next;
+       }
+       my $fh2; my $file=$session->{stub}.$session->getconf("ext$tag");
+       my $tmpfile=$session->mktemp();
+       push @tmpfiles,$tmpfile;
+       if(!open($fh2,">",$tmpfile)){
+           return rerror("Cannot create tmpfile $tmpfile",\@tmpfiles);
+       }
        while($cnt>0){
           $line=<$io>; $mac->add($line); print $fh2 $line;
           $cnt--;
@@ -168,7 +174,7 @@ sub reload {
     my $idx=0;
     foreach my $tag (@saveitems){
         my $file=$session->{stub}.$session->getconf("ext$tag");
-        if(!rename($tmpfiles[$idx],$file)){
+        if($tmpfiles[$idx] ne "" && !rename($tmpfiles[$idx],$file)){
            print STDERR "Load: cannot rename temp file to $file\n";
         }
         $idx++;

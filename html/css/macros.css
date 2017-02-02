@@ -20,9 +20,8 @@ body { margin: 0; }
 
 .macrono { display: none; padding: 3px 5px; text-align: right;}
 .macrodel { padding-left: 3px; }
-.innermdel{border: none; margin-bottom: 0; outline:0; padding:0; position: relative;
-   -webkit-user-select: none;  -moz-user-select: none;  
-   -ms-user-select: none;  user-select: none;}
+.innermdel{border: none; margin-bottom: 0; outline:0; padding:0; 
+       position: relative; }
 .innermdel label {color: transparent; cursor: pointer; display: block;
   position: relative; text-indent: 100%; margin-bottom: 0;
   width: 15px; height: 15px;}

@@ -18,7 +18,7 @@ body { margin: 0; }
 .legend a {text-decoration: none; color: #272727; }
 
 .content { width: 100%; padding-left: 5px; }
-.left { overflow-y: scroll; height: 250px; padding-right: 4px; }
+.left { overflow-y: scroll; height: 250px; padding-right: 4px; max-width: 40rem; }
 .left p {padding: 0; margin: 2px; }
 .left h2 {color: #175b6d; font-size: 12pt; }
 .left a {text-decoration: none; color: #074b6d; }
@@ -34,7 +34,10 @@ body { margin: 0; }
        bold; }
 .resother {font-size: 88%; padding-right: 5px; color: #242424; font-weight:
        bold; }
-
+.constraint { display: inline-block; width: 1em; text-align: center; font-weight: bold;
+   color: #175b6d; }
+.sample th {text-align: left; vertical-align: top; line-height: 1.2;}
+.sample td {line-height: 1.2; }
 
 
 .textblock ul {margin: 5px 0; }

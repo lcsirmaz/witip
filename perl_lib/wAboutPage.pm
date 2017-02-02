@@ -144,7 +144,7 @@ function wi_showHelp(topic){
 <li>$seeas2<a href="#wmacros">macros</a></li>
 <li>$seeas2<a href="#wconstr">constraints</a></li>
 </ul>
-<div class="ltitle">Checking</div>
+<div class="ltitle">Query</div>
 <ul>
 <li>$seeas2<a href="#wcheck">checking</a></li>
 <li>$seeas2<a href="#wunroll">unrolling</a></li>
@@ -443,38 +443,49 @@ CONSTR
 # CHECKING
     render_block($session,"check","Checking queries",<<CHECKING);
 Enter your query at the bottom box of the &quot;check&quot; tab. A 
-<i>query</i> is just two L%expr%entropy expressions% connected by one
-of S%=% (equality), S%&gt;=% (the left hand side is greater than or
-equal to the right hand side), or S%&lt;=% (the left hand side is
-less than or equal to the right hand side).
-<br>
-If the query was parsed succesfully, it is passed to the 
-L%method%LP solver%, and added to the list of queries. Depending on 
-the response time of the LP solver, either the result is shown 
-immediately, or it appears later when the solver finishes the work.
+<i>query</i> is just two L%expr%entropy expressions% connected by
+S%=% (equality), S%&gt;=% (greater than or equal to), or S%&lt;=% 
+(less than or equal to) such as
+<div class="indent">
+S%[A;B;C;D]+I(A;B|Z)+I(B;Z|A)+I(Z;A|B) >= -3*I(C,D;Z|A,B)#[a,b,c,d]+(a,b|z)+(b,z|a)+(z,a|b) >= -3*(cd,z|ab)%
+</div>
+If the query was parsed succesfully, it is added to the list just
+above the query box, and passed to the L%method%LP solver%. Depending on 
+the response time of the LP solver, either the result is shown
+immediately, or it appears later when the solver finishes its work.
 The result of the query can be
-<ul><li>
-<span class="restrue">true</span> &ndash;
+<div class="indent">
+<table class="sample"><tbody>
+<tr><th><span class="restrue">true</span></th><td>
    the query is a consequence of the non-negativity of the basic Shannon
    information measures (and the  L%constr%constraints% if checked with
-   constraints)</li>
-<li><span class="resfalse">false</span> &ndash;
-   the query is <b>not</b> a consequence of the above collection</li>
-<li><span class="resonly">only &ge;</span> &ndash;
-   when the query asked for equality, only &ge; holds (would get
+   constraints)</td></tr>
+<tr><th><span class="resfalse">false</span></th><td>
+   the query is <b>not</b> a consequence of the above collection</td></tr>
+<tr><th><span class="resonly">only &ge;</span></th><td>
+   the query asked for equality, but only &ge; holds (would get
    <span class="restrue">true</span> when asked for S%>=%, and 
-   <span class="resfalse">false</span> when asked for S%<=%).</li>
-<li><span class="resonly">only &le;</span> &ndash;
-   when the query asked for equality, only &le; holds (would get
-   <span class="restrue">true</span> when asked for S%>=%, and 
-   <span class="resfalse">false></span> when asked for S%<=%).</li>
-<li><span class="resother">timeout</span> &ndash; the LP solver failed
-   to solve the problem in the allowed time</li>
-<li><span class="resother">failed</span> &ndash; the LP solver failed,
-probably the problem is too large, or numerically untractactable.</li>
-</ul>
-The query can be checked with, or without the enabled set of 
-L%constr%constraints%.
+   <span class="resfalse">false</span> when asked for S%<=%).</td></tr>
+<tr><th><span class="resonly">only &le;</span></th><td>
+   the query asked for equality, but only &le; holds (would get
+   <span class="resfalse">false</span> when asked for S%>=%, and 
+   <span class="restrue">true</span> when asked for S%<=%).</td></tr>
+<tr><th><span class="resother">timeout</span></th><td>
+   the LP solver failed to solve the problem in the allocated time</td></tr>
+<tr><th><span class="resother">failed</span></th><td>
+   the LP solver failed, probably the problem is too large, or 
+   numerically unstable.</td></tr>
+</tbody></table>
+</div>
+
+The query can be checked with, or without the set of enabled 
+L%constr%constraints%. This means that enabled constraints are assumed
+to hold, and are be used along the basic Shannon inequalities when trying
+to derive the query. Constraints are enabled by default, and the
+query is marked by <span class="constraint">C</span> (even if there are
+no constraints at all). 
+
+<p></p>
 CHECKING
 #####################################################################
 # CHECKING
