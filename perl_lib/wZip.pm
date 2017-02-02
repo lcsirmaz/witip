@@ -174,6 +174,7 @@ sub reload {
     my $idx=0;
     foreach my $tag (@saveitems){
         my $file=$session->{stub}.$session->getconf("ext$tag");
+        unlink($file); 
         if($tmpfiles[$idx] ne "" && !rename($tmpfiles[$idx],$file)){
            print STDERR "Load: cannot rename temp file to $file\n";
         }
