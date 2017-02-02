@@ -179,38 +179,36 @@ syntax checker, macro facility, and &quot;unrolling&quot; possibility
 where complex entropy expressions are unrolled into a linear combination
 of simple entropies.
 <br>
-To check an L%expr%entropy expression% for L%method%validity%, type it to the box
+<b>Checking</b> &ndash; to check an L%expr%entropy expression% for L%method%validity%, type it to the box
 at the bottom of the &quot;check&quot; page:
 
 <div class="indent">
-  S%+1.234*H(X|Y)-12.234*I(A;B|H)&lt;=-2H(B,X,Y)#+1.234*(x|y)-12.234*(a,b|h)&lt;=-2bxy%
+  <span class="resfalse">false</span> S%+1.234*H(X|Y)-12.234*I(A;B|H) &lt;= -2H(B,X,Y)#+1.234*(x|y)-12.234*(a,b|h) &lt;= -2bxy%
 </div>
-
-You can add L%constr%constraints% so that expressions are checked assuming
-all constraints are true. In the list of constraints below the first one stipulates
-that the variables form a Markov chain; the second one that the variables are 
-completely independent; the third one is a conditional independence.
-
+<b>Constraints</b> &ndash;
+can be added and expressions are checked assuming all
+L%constr%constraints% are true. The constraint below stipulates that the
+variable sets form a Markov chain:
 <div class="indent">
-  S%Alpha -> Beta -> Gamma -> Delta# a -> b -> x -> y%
-   &nbsp; &ndash; Markov chain <br>
-  S%W1 || X || Y#u || v || w%
-   &nbsp; &ndash; total independence<br>
-  S%I(A;B|X,Y)=0#(a,b|xy)=0%
-   &nbsp; &ndash; conditional independence
+  S%Alpha,Beta -> Beta,Gamma -> Gamma,Delta -> Tau# ab -> bc -> cx -> y%
 </div>
-
-L%macros%Macros% are shorthands for (linear) entropy expressions; the macro 
+<b>Macros</b> &ndash;
+are shorthands for (linear) entropy expressions; the L%macros%macros% 
 below defines the conditional L%ingleton%Ingleton% expression:
-
 <div class="indent">
-  S%D(A;B;X;Y|E)=-I(A;B|E)+I(A;B|X,E)+(I(A;B|Y,E)+I(X,Y|E)#D(a,b,x,y|e)=-(a,b|e)+(a,b|xe)+(a,b|ye)+(x,y|e)%
+  S%D(A;B;X;Y|E) = -I(A;B|E)+I(A;B|X,E)+(I(A;B|Y,E)+I(X,Y|E)#D(a,b,x,y|e)=-(a,b|e)+(a,b|xe)+(a,b|ye)+(x,y|e)%
 </div>
-
-The macro can be used in expressions, a possible invocation is 
-S%D(A1,X;A2,Y;C;D|Z1,Z2)#D(ax,by,c,d|vw)%.
+After it has been defined, the macro can be used in expressions.
 <br>
-
+<b>Unrolling</b> &ndash;
+compute the difference of two L%expr%entropy expressions% as a linear 
+combination of entropies:
+<div class="indent">
+S%D(A1,X;A2,Y;C;D|Z1,Z2) =? [A1,X,Z1,Z2;A2,Y.Z1,Z2;C,Z1;D,Z1]#D(ax,by,c,d|vw) =? [axvw,byvw,cv,dv]%
+<br>
+S%H(C,D,Z1)-H(C,D,Z1,Z2)#cdv-cdvw%
+</div>
+<p></p>
 See also the description of the L%method%applied method%, the 
 L%history%history%, and the  L%copyright%copyright% information.
 <p></p>
@@ -219,20 +217,21 @@ BLOCK
 # STYLE
     render_block($session,"style","Syntax style",<<SYNTAX_STYLE);
 
-Entropy expressions can be entered using two different styles: either
+Entropy L%expr%expressions% can be entered using two different styles:
 <i>traditional</i> or <i>simplified</i>.  The traditional style follows the
-style of the L%history%original ITIP software% created by Raymond W.  Yeung
-and Ying-On Yan: random variables are identifiers, such as S%Winter% or
+style of the L%history%original% ITIP software:
+random variables are identifiers, such as S%Winter% or
 S%var_002%; variables in a list are separated by commas, and basic
-information measures are entered in textbook style, such as
-S%I(Winter,Spring;Fall|var_01)% denoting the conditional joint information
-of S%Winter,Spring% and S%Fall% conditioned on S%var_01%.
-
+information measures are entered in textbook style:
+<div class="indent">
+  S%I(Winter,Spring; Fall | var_01)%
+</div>
+denotes the conditional joint information of S%Winter,Spring% and 
+S%Fall% conditioned on S%var_01%.
 <br>
-
-Simplified style simplifies and speeds up entering queries.  Random
-variables are restricted to lower case letters only (but see the description
-of how L%var%random variables% are entered); variables are simply put next
+The <i>simplified</i> style simplifies and speeds up entering queries.
+Random variables are restricted to lower case letters only (but see the
+L%var%description%); the variables are simply put next
 to each other to denote their joint distribution; and basic information
 measures are recognized without the letters S%H% or S%I%.  Thus S%(ax,by)%
 is the joint information of the random variable pairs S%a,x% and S%b,y%.
@@ -241,53 +240,45 @@ is the joint information of the random variable pairs S%a,x% and S%b,y%.
 
 The following two examples ask the validity of identical entropy
 expressions; the first one is entered in traditional style, the second one
-using simplified style. The first term in both queries is the 
-L%ingleton%Ingleton expression%.
+using simplified style. The first term is the L%ingleton%Ingleton expression%.
 
 <div class="indent">
-S%[A;B;X;Y]+I(Z;B|X)+I(Z;X|B)+I(B;X|Z) >= -3*I(Z;A,Y|B,X)%<br>
-S%[a,b,c,d]+(e,b|c)+(e,c|b)+(b,c|e) >= -3*(e,ad|bc)%
+<span class="restrue">true</span> S%[A;B;X;Y]+I(Z;B|X)+I(Z;X|B)+I(B;X|Z) >= -3*I(Z;A,Y|B,X)%<br>
+<span class="restrue">true</span> S%[a,b,c,d]+(e,b|c)+(e,c|b)+(b,c|e) >= -3*(e,ad|bc)%
 </div>
 
-Simplified style can be chosen by ticking the &quot;use simplified
-syntax&quot; box in the L%configure%wITIP configuration%.  At the same place
-other options can be set which changes how entropy expressions are parsed. 
-Changing the style does not affect existing macros and constraints as their
-internal representation is independent of the style.  However random
-variables used in constraints might not be available anymore.
-
-<p></p>
-
+Style can be changed and fine-tuned in the L%configure%wITIP configuration%.
 See the description of L%var%random variables% and L%sequences%variable
 sequences% for more information.
 
 <p></p>
 
-<b>The examples are presented in the chosen style with the chosen
-list separating characters.</b> To see the examples with other style
-parameters, please change them in L%configure%wITIP configuration%.
+<b>The examples are shown in the chosen style with the chosen list
+separating character.</b> To see how the examples look like with other style
+parameters, please L%configure%change the style%.
 
 <p></p>
 SYNTAX_STYLE
 #####################################################################
 # VARIABLES
     render_block($session,"var","Random variables",<<RANDOM_VARS);
-Using <i>traditional</i> style, random variables are arbitrary identifiers, 
-that is 
-Random variables and sequences of variables can be entered using two
-different styles: either <i>traditional</i>, or <i>simplified</i>.<br>
-In <i>traditional</i> style arbitrary identifier consisting of letters
-and digits can denote a random variable, such as S%Winter% or
+Random variables and variable sequences can be entered using two
+different L%style%style%: <i>traditional</i>, or <i>simplified</i>.
+<br>
+In <i>traditional</i> style arbitrary identifier (consisting of letters,
+digits and underscore) can denote a random variable such as S%Winter% or
 S%var_002%. This notation is similar to the one used in textbooks
-where random variables are typically denoted by single capital letter
-optionally followed by an index: S%A% or S%X_32%.<br>
-The <i>simplified</i> style restricts how random variables can be
+where random variables are typically denoted by a single capital letter
+optionally followed by an index or a prime: S%A%, S%X_32% or S%X'%.
+<br>
+<i>Simplified</i> style restricts how random variables can be
 written &ndash; typically to a single lower case letter &ndash; 
 but it lets enter complex entropy expressions in a more succinct way.
+Depending the L%configure%configuration%, simple style variable names
+might end with a single digit, or a sequence of digits.
 <p></p>
-What sequences are allowed as random variables can be set in the 
-L%configure%wITIP configuration%. Random variables can end with a
-sequence primes such as in S%a'% or S%a''%.
+In both style wITIP allows primes appended to variable names such as
+S%a'% or S%a''%.
 <p></p>
 RANDOM_VARS
 #####################################################################
@@ -296,8 +287,9 @@ RANDOM_VARS
 The joint distribution of several random variables is denoted by
 listing all individual variables next to each other. In <i>
 traditional</i> style the variables are separated by commas as in
-S%Spring,Summer, Winter, Fall%. In <i>simplified</i> style simply
-write the variables next to each other, even without spaces; in this
+S%Spring,Summer, Winter, Fall% (spaces are optional). In <i>simplified</i>
+style simply write the variables next to each other wither with or 
+without spaces; in this
 style  both S%a b c% and S%abc% denotes the joint distribution of
 the three variables S%a%, S%b%, and S%c%.
 <p></p>
@@ -305,26 +297,25 @@ SEQUENCE
 #####################################################################
 # ENTROPY
     render_block($session,"entropy","Entropy terms",<<ENTROPY);
-The entropy of the joint distribution of variables is denoted the
-usual way as in S%H(Spring,Summer,Fall)#H(abx)%, the letter S%H% is
-followed by a L%sequences%list of random variables% enclosed in
-parentheses.
+The entropy of (the joint distribution of) a variable list is 
+written the usual way:
+<div class="indent">S%H(Spring,Summer,Fall)#H(abx)%,</div>
+the letter S%H% is followed by a L%sequences%variable sequence%
+enclosed in parentheses.
 <br>
-Other standard information measures, such as conditional entropy, mutual
-information and conditional mutual information can be written similarly:
-<ul><li>S%H(Spring | Summer)#H(a|x)% &ndash; conditional entropy,</li>
-<li>S%I(A;B)#I(a,b)% &ndash; mutual information,</li>
-<li>S%I(A;B|X)#I(a,b|x)% &ndash; conditional mutual information.</li>
+The other standard information measures can be written similarly:
+<ul><li>S%H(Spring;Winter | Summer)#H(ab|x)% &ndash; conditional entropy,</li>
+<li>S%I(A,B;X)#I(ab,x)% &ndash; mutual information,</li>
+<li>S%I(A,B;C|X,Y)#I(ab,c|xy)% &ndash; conditional mutual information.</li>
 </ul>
 In <i>simplified</i> style these information measures can be further
 simplified. A variable sequence stands for its own entropy; conditional
 entropy and mutual information can be written without the leading letters
 S%H% and S%I%.
 <ul><li>S%ab% &ndash; the entropy of the variable pair S%a% and S%b%,</li>
-<li>S%(ab|cd)% &ndash; conditional entropy, in standard style this is written as
-S%H(a,b|c,d)%.
-<li>S%(ab,cd)#(ab,cd)% mutual information, same as S%I(ab,cd)#I(ab,cd)%
-(observe that S%ab% is the joint distribution of variables S%a% and S%b%),</li>
+<li>S%(ab|cd)% &ndash; conditional entropy &ndash; in tranditional style 
+this should be written as S%H(a,b|c,d)%.
+<li>S%(ab,cd)#(ab,cd)% mutual information, same as S%I(ab,cd)#I(ab,cd)%,</li>
 <li>S%(ab,cd|xy)#(ab,cd|xy)% conditional mutual information, same as
 S%I(ab,cd|xy)#I(ab,cd|xy)%.
 </ul>
@@ -336,10 +327,10 @@ ENTROPY
 The <i>Ingleton expression</i> plays an important role in Information
 Theory. wITIP uses a special syntax for this expression:
 <div class="indent">
-S%[A;B;X;Y]#[a,b,x,y]% is an abbreviation for<br>
-&nbsp; &nbsp; S%-I(A;B)+I(A;B|X)+I(A;B|Y)+I(X;Y)#-I(a,b)+I(a,b|x)+I(a,b|y)+I(x,y)%;
+S%[A;B;X;Y]#[a,b,x,y]% is an abbreviation for the Ingleton expression<br>
+&nbsp; &nbsp; S%-I(A;B)+I(A;B|X)+I(A;B|Y)+I(X;Y)#-I(a,b)+I(a,b|x)+I(a,b|y)+I(x,y)%.
 </div>
-there should be four L%sequences%variable sequences% inside the square
+There should be four L%sequences%variable sequences% inside the square
 brackets.
 <p></p>
 INGLETON
@@ -347,44 +338,45 @@ INGLETON
 # EXPRESSIONS
     render_block($session,"expr","Entropy expression",<<EXPRESSION);
 An <i>entropy expression</i> is a linear combination of 
-L%entropy%entropy measures%, L%ingleton%Ingleton expression%,
+L%entropy%entropy terms%, L%ingleton%Ingleton expression%,
 and L%macros%macro invocations%. An example is
 <div class="indent">
 S%-1.234*H(X|Y) - 12.345I(A;B|H) + 3X(X;B|A,Y)#-1.234*(x|y) - 12.345(a,b|h) + 3X(x,b|ay)%
 </div>
 where S%X(;|)#X(,|)% is a L%macros%macro%. The S%*% sign between the
-constant and the entropy term is optional and can be omitted.
+constant and the following term is optional and can be omitted.
 <br>
 When L%configure%allowed%, entropy expressions can be grouped by parentheses S%()%
-(not recommended) or braces S%{}%, and multiplied by some constant:
+(not recommended) or by braces S%{}%; the whole group can be multiplied by 
+some constant:
 <div class="indent">
-S%-3*{H(A)+H(B)}-2{H(A|B)-H(B|A)}#-3*{a+b}-2{(a|b)-(b|a)}%
+S%-3*{H(A)+H(B)-2{H(A|B)-H(B|A)}}#-3*{a+b-2{(a|b)-(b|a)}}%
 </div>
-When using parentheses for grouping, omitting a single character might give
-another syntactically correct expression, thus is more prune to error.
+Using parentheses for grouping is more prune to error.
 <p></p>
 EXPRESSION
 #####################################################################
 # MACROS
     render_block($session,"macros","Macros",<<MACROS);
-Next to standard information measures and the L%ingleton%Ingleton expression%, 
-an L%expr%entropy expression% can also contain <i>macro invocations</i>.
-Actually, a macro is a shorthand for a linear combination of 
+Next to L%entropy%entropy terms% and the L%ingleton%Ingleton expression%, 
+an L%expr%expression% can also contain <i>macro invocations</i>.
+Actually, a macro is a shorthand for a linear combination of other
 L%expr%entropy terms%. Macros can be defined under the &quot;macros&quot; tab.
-Tha definition starts with a capital letter from S%A% to S%Z% followed by the
+The macro definition starts with a capital letter from S%A% to S%Z% followed by the
 argumnet list which is enclosed in parenteses. Arguments are separated by 
-either S%;#,% or S%|% (the <i>pipe</i> symbol). The same macro name can
+either S%;#,% or S%|% (the list separator character and the <i>pipe</i> symbol).
+The same macro name can
 identify several different macros depending on the number of arguments and
-the separator characters. The following lines define two different macros with
+the argument separators. The following lines define two different macros with
 four arguments each:
 <div class="indent">
 S%T(X;Y|Z1;Z2) = 3I(Z1,X;Y|Z2)+2I(X;Y,Z2|Z1)+H(X,Y|Z1,Z2)#T(x,y|t,z) = 3(tx,y|z)+2(x,ty|z)+(t,z|xy)%
 <br>
 S%T(a|b|c;d) = -H(a|b,c)+2I(a;c|b,d)-7*[a;b;c;d]#T(a|b|c,d) = -(a|bc)+2(a,c|bd)-7*[a,b,c,d]%
 </div>
-Only variables in the argument list can be used in the right hand side. Macros
-in the expression are expanded so should defined earlier. When invoking a
-macro, each argument can be either a L%var%variable% or a L%sequences%variable list%;
+Only variables in the argument list can be used on the right hand side. Macros
+in the definition are expanded so should be defined earlier. When invoking a
+macro, each argument can be a L%var%variable% or a L%sequences%variable list%;
 the separators much match those in the definition. Thus
 <div class="indent">
 S%3*T(A,C;A,D|B,C;B,D) - 4T(X1,Z2|X2,Z2|Y1;Y2,Z2)#3*T(ac,ad|bc,bd) - 4T(xu|yu|t,u)%
@@ -394,60 +386,95 @@ expands the first and second definition, respectively.
 Internally macros are stored
 in &quot;unrolled&quot; form using only entropies; this form is printed when
 clicking on a macro in the listing.
-<br>To delete a macro click on the trash bin at the front of the macro. No other
-action is possible apart from choosing which macros are to be deleted
-Until you click on one of the actions at the top of the listing:
-delete marked macros, delete all macros, or cancel.
+<br>To delete a macro click on the trash bin icon at the front of the macro. 
+After a trash bin is selected no other action is possible (apart from
+selecting / deselecting other macros) until you click on one of the buttons
+above the macros: delete, delete all, or cancel.
+
 <p></p>
 MACROS
 #####################################################################
 # CONSTRAINTS
     render_block($session,"constr","Constraints",<<CONSTR);
-Checking the L%method%validity% of an entropy expression is done
-relative to a set of <i>constraints</i>. Constraints are added,
-deleted, and enabled / disabled under the &quot;constraints&quot; tab.
-To add a constraint, simply type it to the input line at the bottom, and
-click on the &quot;add constraint&quot; button. Constraints can be
+Checking the L%method%validity% of an entropy query is done
+relative to a set of selected <i>constraints</i>. Constraints are added,
+deleted, enabled or disabled under the &quot;constraints&quot; tab.
+To add a constraint simply type it to the input line at the bottom, and
+click on the &quot;add constraint&quot; button. A constraint can be
 <ul><li>relation, that is two L%expr%entropy expressions% compared
 by one of S%=%, S%&lt;=% or S%&gt;=%. Example:
 <div class="indent">
-  S%H(A,B,X)=H(A,B)+H(X)#abx=ab+x%
+  S%H(A,B,X) = H(A,B)+H(X)#abx = ab+x%
 </div></li>
-<li>functional dependency: the first L%sequences%variable list% is
+<li>functional dependency: the first L%sequences%sequence% is
 determined by the second one. There should be exactly two lists in
-this constraint.
+this constraint Example:
 <div class="indent">
-    S%varlist1 : varlist2%
+    S%A : X,Y#a : xy%
 </div></li>
-<li>independence: the variable lists are totally independent. There
-must be two or more lists here.
+<li>independence: the sequences are totally independent. There
+must be at least two sequences.
 <div class="indent">
-   S%varlist1 . varlist2 . varlist3 . &middot;&middot;&middot;% <br>
+   S%A . B1,B2 . X,Y . &middot;&middot;&middot;#a . bc . xy . &middot;&middot;&middot;% <br>
    or<br>
-   S%varlist1 || varlist2 || varlist3 || &middot;&middot;&middot;%
+   S%A || B1,B2 || X,Y || &middot;&middot;&middot;#a || bc || xy || &middot;&middot;&middot;%
 </div></li>
-<li>Markov chain: the variable lists form a Markov chain. There must be at least
+<li>Markov chain: the lists form a Markov chain. There must be at least
 three terms here, and they should not form a trivial Markov chain.
 <div class="indent">
-  S%varlist1 / varlist2 / varlist 3 / &middot;&middot;&middot;% <br>
+  S%A / B1,B2 / X,Y / &middot;&middot;&middot;#a / bc / uv / &middot;&middot;&middot;% <br>
   or<br>
-  S%varlist -&gt; varlist2 -&gt; varlist3 -&gt; &middot;&middot;&middot;%
+  S%A -&gt; B1,B2 -&gt; X,Y -&gt; &middot;&middot;&middot;#a -&gt; bc -&gt; uv -&gt; &middot;&middot;&middot;%
 </div></li>
 </ul>
-Enabled constraints have their checkbox ticked. Use these checkboxes to
-change which constraints are actually used.
+Enabled constraints have their checkbox ticked. Use these boxes to
+change which constraints are enabled and which ones are disabled.
+
 <br>
-To delete any, or all, constraints, click on the trash bin. No further
-action is possible apart from choosing which connstraints are to be deleted
-until you click on one of the actions at the top of the listing: delete
-marked constraints, delete all constraints, or cancel.
+
+To delete any, or all, constraints, click on the trash bin in front of them. 
+When changing which constraints are enabled, or deleting them, no further
+action is possible until you click on one of the buttons above the
+constraints.
+
 <p></p>
 CONSTR
 #####################################################################
 # CHECKING
-    render_block($session,"check","Checking expressions",<<CHECKING);
-Checking the L%method%validity% of an entropy expression is done
-relative to a set of <i>constraints</i>.
+    render_block($session,"check","Checking queries",<<CHECKING);
+Enter your query at the bottom box of the &quot;check&quot; tab. A 
+<i>query</i> is just two L%expr%entropy expressions% connected by one
+of S%=% (equality), S%&gt;=% (the left hand side is greater than or
+equal to the right hand side), or S%&lt;=% (the left hand side is
+less than or equal to the right hand side).
+<br>
+If the query was parsed succesfully, it is passed to the 
+L%method%LP solver%, and added to the list of queries. Depending on 
+the response time of the LP solver, either the result is shown 
+immediately, or it appears later when the solver finishes the work.
+The result of the query can be
+<ul><li>
+<span class="restrue">true</span> &ndash;
+   the query is a consequence of the non-negativity of the basic Shannon
+   information measures (and the  L%constr%constraints% if checked with
+   constraints)</li>
+<li><span class="resfalse">false</span> &ndash;
+   the query is <b>not</b> a consequence of the above collection</li>
+<li><span class="resonly">only &ge;</span> &ndash;
+   when the query asked for equality, only &ge; holds (would get
+   <span class="restrue">true</span> when asked for S%>=%, and 
+   <span class="resfalse">false</span> when asked for S%<=%).</li>
+<li><span class="resonly">only &le;</span> &ndash;
+   when the query asked for equality, only &le; holds (would get
+   <span class="restrue">true</span> when asked for S%>=%, and 
+   <span class="resfalse">false></span> when asked for S%<=%).</li>
+<li><span class="resother">timeout</span> &ndash; the LP solver failed
+   to solve the problem in the allowed time</li>
+<li><span class="resother">failed</span> &ndash; the LP solver failed,
+probably the problem is too large, or numerically untractactable.</li>
+</ul>
+The query can be checked with, or without the enabled set of 
+L%constr%constraints%.
 CHECKING
 #####################################################################
 # CHECKING

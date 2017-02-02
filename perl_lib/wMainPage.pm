@@ -252,7 +252,7 @@ sub render_resultline {
     print "<td class=\"query1\">",
         _render_result_code($session,"code",$query,$history),"</td>\n";
     print "</tr>\n";
-    return if(!$aux);
+    return if($aux eq "");
     # aux line
     print "<tr class=\"auxline\"><td class=\"skip\"> </td><td class=\"skip\"> </td>\n",
         "  <td class=\"skip\"></td>\n<td class=\"query2\">",

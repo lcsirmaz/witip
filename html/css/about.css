@@ -26,6 +26,18 @@ body { margin: 0; }
 .samplecode { font-family: monospace; font-size: 0.9em; color: #074612; padding: 0 3px; 
        background-color: #f2fff2; }
 .indent { margin-left: 1.5em; padding: 3px; line-height: 1.5;}
+.resfalse {font-size: 88%; padding-right: 5px; color: #502610; font-weight:
+       bold; }
+.restrue {font-size: 88%; padding-right: 5px; color: #106610; font-weight:
+       bold; }
+.resonly {font-size: 88%; padding-right: 5px; color: #224610; font-weight:
+       bold; }
+.resother {font-size: 88%; padding-right: 5px; color: #242424; font-weight:
+       bold; }
+
+
+
+.textblock ul {margin: 5px 0; }
 
 /* action input background color: $ffd8a0; hover: #efbf8f */
 .action { padding: 10px; margin: 0 10px; visibility: hidden; }
