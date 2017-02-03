@@ -23,6 +23,7 @@ function wi_initPage(){
        wi_HistLast=i;
        while(wi_HistLast>1 && !document.getElementById('histID_'+wi_HistLast)) wi_HistLast--;
     }
+    if(!document.getElementById('id-chkwith')) DefaultAction=0;
     wi_TimeId=setTimeout(wi_checkPending,1000);
 }
 // onchange: delete checkbox value changed
@@ -129,7 +130,7 @@ function wi_historyDown(){
     } while(true);
 }
 // onclick a line in the listing
-function copyLineToEdit(item){
+function wi_copyLineToEdit(item){
     if(witipAllDisabled) return;
     var txt=item.getAttribute('data-expr');
     var target=document.getElementById('expr_input');
@@ -141,6 +142,11 @@ function copyLineToEdit(item){
     wi_setCaret(target,txt.length);
     wi_autoResize(target);
 }
+// check class if defined
+function wi_setClass(id,cname){
+    var item=document.getElementById(id);
+    if(item) item.className=cname;
+}
 // check entered expression
 // exprtype:    0   1   2      3          4        5        6      7       8        9
 var witipCDArr=['','','zap','waiting','timeout','failed','true','false','onlyge','onlyle'];
@@ -150,11 +156,15 @@ function wi_checkInput(how){ // 1: with, 0: without constraints
     if(how!=DefaultAction){
         DefaultAction=how;
         if(how==1){ // swap classes
-          document.getElementById('id-chkwith').className='defaultcheckbutton';
-          document.getElementById('id-chkwithout').className='auxcheckbutton';
+          wi_setClass('id-chkwith','defaultcheckbutton');
+          wi_setClass('id-chkwithout','auxcheckbutton');
+//          document.getElementById('id-chkwith').className='defaultcheckbutton';
+//          document.getElementById('id-chkwithout').className='auxcheckbutton';
         } else {
-          document.getElementById('id-chkwith').className='auxcheckbutton';
-          document.getElementById('id-chkwithout').className='defaultcheckbutton';
+          wi_setClass('id-chkwith','auxcheckbutton');
+          wi_setClass('id-chkwithout','defaultcheckbutton');
+//          document.getElementById('id-chkwith').className='auxcheckbutton';
+//          document.getElementById('id-chkwithout').className='defaultcheckbutton';
         }
     }
     witipAllDisabled |= 4;

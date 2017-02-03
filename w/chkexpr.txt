@@ -36,6 +36,7 @@ exit 0 if(!$SSID || wUtils::check_SSID($SSID) );
 use wExpr;
 
 my $standalone = $session->getpar("cstr") ? 0 : 1;
+
 my $result = wExpr::check_expr($session,$session->getpar("text"),$standalone);
 if($result->{res}==1){
     print "1,$result->{pos},$result->{err}";

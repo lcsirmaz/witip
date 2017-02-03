@@ -209,7 +209,7 @@ sub _render_result_code {
       " style=\"font-family: ". $session->getconf("font") .
       "; font-size: ". $session->getconf("fontsize") ."pt;\"" .
       ($id eq "code" ? 
-          " title=\"click to edit\" onclick=\"copyLineToEdit(this);\"".
+          " title=\"click to edit\" onclick=\"wi_copyLineToEdit(this);\"".
           " data-expr=\"$escapedtext\""
           : "").
       (defined($history) ?" id=\"histID_$history\"" : "" ).
@@ -258,6 +258,16 @@ sub render_resultline {
         "  <td class=\"skip\"></td>\n<td class=\"query2\">",
         _render_result_code($session,"auxcode",$aux),"</td>\n";
     print "</tr>\n";
+}
+
+# check if there are constraints at all
+sub are_constraints {
+    my($session)=@_;
+    my $constr=wUtils::read_user_constraints($session);
+    foreach my $c (@$constr){
+       return "yes" if($c->{skip}==0);
+    }
+    return "no";
 }
 
 sub Page {
@@ -348,8 +358,8 @@ sub Page {
 ## HTML CODE
 ## <div><table>tbody><tr>
 ##  <td>
-##     <div class=\"chkwith\"><input submit onclick="submit(1);"></div>
-##     <div class=\"chkwithout"><input submit onclick="submit(0);"></div>
+##     <div class=\"chkwith\"><input submit onclick="wi_checkInput(1);"></div>
+##     <div class=\"chkwithout"><input submit onclick="wi_checkInput(0);"></div>
 ##  </td>
 ##  <td>
 ##    <div><textarea expr_input oninput="wi_autoResize(this)"
@@ -361,14 +371,21 @@ sub Page {
 ## </tr></tbody></table></div>
     print "<div class=\"edit\">\n";
     print "<table><tbody><tr><td class=\"editsubmit\">";
-    print "<div class=\"chkwith\"><input type=\"submit\"",
+    if(are_constraints($session) eq "yes") {
+      print "<div class=\"chkwith\"><input type=\"submit\"",
        " name=\"checkinput-constraints\" class=\"defaultcheckbutton\"",
        " id=\"id-chkwith\" value=\"check\" onclick=\"return wi_checkInput(1);\"",
        " title=\"check expression with constraints\"></div>\n";
-    print "<div class=\"chkwithout\"><input type=\"submit\"",
+      print "<div class=\"chkwithout\"><input type=\"submit\"",
        " name=\"checkinput-noconstraints\" class=\"auxcheckbutton\"",
        " id=\"id-chkwithout\" value=\"no&nbsp;constraints\" onclick=\"return wi_checkInput(0);\"",
        " title=\"check expression without specified constraints\"></div>";
+    } else {
+      print "<div class=\"chkwithout\"><input type=\"submit\"",
+       " name=\"checkinput-noconstraints\" class=\"defaultcheckbutton\"",
+       " id=\"id-chkwithout\" value=\"check\" onclick=\"return wi_checkInput(0);\"",
+       " title=\"check expression\"></div>";
+    }
     print "</td>\n";
     print "<td class=\"editline\">";
     print "<div class=\"dblinput\" id=\"iddblinput\">";

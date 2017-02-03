@@ -105,7 +105,8 @@ sub Page {
       "<input class=\"browse\" type=\"file\" size=\"35\" name=\"witip\" value=\"\"> </div>\n";
     if($session->getconf("modified")){ # warning
       print "<div class=\"line2\"> Warning: if you choose this option,",
-      " all changes to this session will be lost.</div>\n";
+      " all changes to this session will be lost. Please consider saving
+      the session first.</div>\n";
     }
     print "</td></tr>\n";
 

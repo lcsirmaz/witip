@@ -14,7 +14,7 @@ body { margin: 0; }
 .legend ul { padding: 0; margin: 0; }
 .legend li {padding: 1px 2px 1px 5px; margin: 0; display: block; cursor: pointer; 
          color: #175b6d; }
-.legend li:hover {background-color: #e8e8e8; }
+.legend li:hover {background-color: #d8d8d8; }
 .legend a {text-decoration: none; color: #272727; }
 
 .content { width: 100%; padding-left: 5px; }

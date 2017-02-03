@@ -179,28 +179,27 @@ syntax checker, macro facility, and &quot;unrolling&quot; possibility
 where complex entropy expressions are unrolled into a linear combination
 of simple entropies.
 <br>
-<b>Checking</b> &ndash; to check an L%expr%entropy expression% for L%method%validity%, type it to the box
+<b>L%check%Checking%</b> &ndash; to check an L%expr%entropy expression% for L%method%validity%, type it to the box
 at the bottom of the &quot;check&quot; page:
 
 <div class="indent">
   <span class="resfalse">false</span> S%+1.234*H(X|Y)-12.234*I(A;B|H) &lt;= -2H(B,X,Y)#+1.234*(x|y)-12.234*(a,b|h) &lt;= -2bxy%
 </div>
-<b>Constraints</b> &ndash;
-can be added and expressions are checked assuming all
-L%constr%constraints% are true. The constraint below stipulates that the
-variable sets form a Markov chain:
+<b>L%constr%Constraints%</b> &ndash;
+can be added and queries are checked assuming all constraints are true. 
+The constraint below stipulates that the variable sets form a Markov chain:
 <div class="indent">
   S%Alpha,Beta -> Beta,Gamma -> Gamma,Delta -> Tau# ab -> bc -> cx -> y%
 </div>
-<b>Macros</b> &ndash;
-are shorthands for (linear) entropy expressions; the L%macros%macros% 
+<b>L%macros%Macros%</b> &ndash;
+are shorthands for (linear) entropy expressions; the macros
 below defines the conditional L%ingleton%Ingleton% expression:
 <div class="indent">
   S%D(A;B;X;Y|E) = -I(A;B|E)+I(A;B|X,E)+(I(A;B|Y,E)+I(X,Y|E)#D(a,b,x,y|e)=-(a,b|e)+(a,b|xe)+(a,b|ye)+(x,y|e)%
 </div>
 After it has been defined, the macro can be used in expressions.
 <br>
-<b>Unrolling</b> &ndash;
+<b>L%unroll%Unrolling%</b> &ndash;
 compute the difference of two L%expr%entropy expressions% as a linear 
 combination of entropies:
 <div class="indent">
@@ -449,19 +448,19 @@ S%=% (equality), S%&gt;=% (greater than or equal to), or S%&lt;=%
 <div class="indent">
 S%[A;B;C;D]+I(A;B|Z)+I(B;Z|A)+I(Z;A|B) >= -3*I(C,D;Z|A,B)#[a,b,c,d]+(a,b|z)+(b,z|a)+(z,a|b) >= -3*(cd,z|ab)%
 </div>
-If the query was parsed succesfully, it is added to the list just
-above the query box, and passed to the L%method%LP solver%. Depending on 
-the response time of the LP solver, either the result is shown
-immediately, or it appears later when the solver finishes its work.
-The result of the query can be
+If the query was parsed succesfully, it is added to the list just above the
+query box, and passed to the L%method%LP solver% for checking.  Depending on
+the response time of the LP solver, either the result is shown immediately,
+or it appears later when the solver finishes its work.  The result of the
+query can be
 <div class="indent">
 <table class="sample"><tbody>
 <tr><th><span class="restrue">true</span></th><td>
    the query is a consequence of the non-negativity of the basic Shannon
    information measures (and the  L%constr%constraints% if checked with
-   constraints)</td></tr>
+   constraints).</td></tr>
 <tr><th><span class="resfalse">false</span></th><td>
-   the query is <b>not</b> a consequence of the above collection</td></tr>
+   the query is <b>not</b> a consequence of the above collection.</td></tr>
 <tr><th><span class="resonly">only &ge;</span></th><td>
    the query asked for equality, but only &ge; holds (would get
    <span class="restrue">true</span> when asked for S%>=%, and 
@@ -471,52 +470,199 @@ The result of the query can be
    <span class="resfalse">false</span> when asked for S%>=%, and 
    <span class="restrue">true</span> when asked for S%<=%).</td></tr>
 <tr><th><span class="resother">timeout</span></th><td>
-   the LP solver failed to solve the problem in the allocated time</td></tr>
+   the LP solver failed to solve the problem in the allocated time.</td></tr>
 <tr><th><span class="resother">failed</span></th><td>
    the LP solver failed, probably the problem is too large, or 
    numerically unstable.</td></tr>
 </tbody></table>
 </div>
 
-The query can be checked with, or without the set of enabled 
-L%constr%constraints%. This means that enabled constraints are assumed
-to hold, and are be used along the basic Shannon inequalities when trying
-to derive the query. Constraints are enabled by default, and the
-query is marked by <span class="constraint">C</span> (even if there are
-no constraints at all). 
+By default the query is checked relative to the enabled
+L%constr%constraints%.  This means that these constraints are assumed to
+hold, and can be used along the basic Shannon inequalities in the derivation
+of the query.  In this case the query is marked by <span
+class="constraint">C</span>.  This mark does not mean that some (or all) 
+of the constraints are actually necessary to derive the result, only 
+that the checking was performed with constraints.
 
 <p></p>
 CHECKING
 #####################################################################
 # CHECKING
     render_block($session,"unroll","Unrolling",<<UNROLL);
-What &quot;unroll&quot; means?
-Checking the L%method%validity% of an entropy expression is done
-relative to a set of <i>constraints</i>.
+Unrolling computes the difference of two L%expr%entropy expressions% as
+a linear combination of entropies. The two sides are connected by S%=?%,
+and the result is printed below the query as in the following example:
+<div class="indent">
+  S%[A;B;C;D] =? I(A;B|C)+I(A;B|D)+I(A;B)#[a,b,c,d] =? (a,b|c)+(a,b|d)+(c,d)%
+  <br>
+  S%-H(A)-H(B)+H(A,B)#-a-b+ab%
+</div>
+When the two sides are equal, the result is S%0%. The mnemonic can be:
+what are the missing terms on the right hand side which makes the two
+expressions equal?
+<br>
+As unrolling does not involve any further computation, the result is
+printed immediately.
+<p></p>
 UNROLL
 #####################################################################
 # CONFIGURE
     render_block($session,"configure","Configuring wITIP",<<CONFIGURE);
-What can you configure? How can it be done?
-Be careful when changing any style option.
-Checking the L%method%validity% of an entropy expression is done
-relative to a set of <i>constraints</i>.
+You can configure many features of wITIP under the &quot;config&quot; tab.
+<p></p>
+<b>Appearence</b><br>
+Set the font family and size how macros, constraints, aexpressions are 
+presented. This choice does not affect the font used in printing.<br>
+Table height sets the maximal height of tables on the macros, constraints
+and check tabs.
+<p></p>
+<b>Macro definition</b><br>
+By default, all macro arguments must be used in the final (unrolled)
+macro text. Uncheck this option if you want to use macro definitions
+like this one in which the first argument cancels out:
+<div class="indent">
+S%A(U,V,W)=I(U;V|W)+H(V|U,W)#A(a,b,c)=(a,b|c)+(b|ac)%
+</div>
+<b>Syntax</b><br>
+Choose the main syntax features: use traditional or simplified 
+L%style%syle%; can parentheses S%()% or braces S%{}% be used to 
+enclose subexpressions; and finally whether variables ending in a
+sequence of primes are allowed or not.
+<p></p>
+<b>Simple style variables and list separator</b><br>
+By default, in simple style only single lower case letters (optionally
+followed by primes if allowed) can be used as variable names. You can
+extend the recognized variable names by any of the following 
+possibilities:
+<ul><li>a (lower case) letter and single digit: S%a1%</li>
+<li>a letter followed by any digit sequence: S%a123%</lI>
+<li>a letter, an underscore and a digit: S%a_2%</li>
+<li>a letter, an underscore, and a digit sequence: S%a_4321%</li>
+</ul>
+By default, none of those possibilities are enabled as it would be
+easier to enter unintended but syntactically correct queries.
+<br>
+The simple style list separator character can be chosen among a
+short list of possibilities. Use the one which fits best to your
+taste.
+<p></p>
+<b>LP response time</b><br>
+Each L%check%query% is passed to an L%method%LP solver% to answer the
+question. The default time limit is 5 seconds. You can 
+set this limit to be higher (up to 10 minutes), or lower (1 second).
+Typically, the more random variables are used in the query, the longer
+the LP solver works. The increase is very steep as the problem size
+grows exponentially. Up to six or seven variables the result is almost
+immediate; over thirteen variables the
+numerical instability kicks in and the LP solver either fails to solve
+the problem or returns a wrong solution.
+<br>
+The query is marked as <span class="resother">timeout</span> when the 
+time limit is exceeded. In this case you might try to increase the 
+response time.
+<p></p>
 CONFIGURE
 #####################################################################
 # PRINTING, SAVING
     render_block($session,"save","Printing and saving your work",<<PRINTING);
-The <i>session</i> determines your present working status.
-You can print, save, an load.
-What can you configure? How can it be done?
-Checking the L%method%validity% of an entropy expression is done
-relative to a set of <i>constraints</i>.
+You can print out, save, or reload previously saved session under the
+&quot;session&quot; tab.  The wITIP session ID identifies youre session. 
+When you return later, the session will be restored to the state you've
+left.  Next to the session ID at the top of the page an <b>*</b> indicates
+that the session content has changed since it was saved (or opened).
+
+<br>
+
+Click on the &quot;change&quot; button to change the session you are
+working on; you can return to continue your work any time.
+
+<p></p>
+<b>Printing</b><br>
+
+Clicking on &quot;print&quot; opens a new page showing all of your macros,
+constraints, and recent queries.  You can edit the main title (showing the
+session ID and the current date / time), and the section titles as well. 
+The buttons hide a whole section, or some part of it, which comes handy if
+you do not need, for example, the unrolled (internal) form of the
+constraints.  Entropy expressions are printed using the default font (and
+not the one you set), but the syntax style follows the one set in the
+L%configure%configuration%.
+
+<br>
+
+Clicking on the &quot;Print&quot; button prints the visible part of the page
+using your browser's printing method.
+
+<p></p>
+<b>Saving and opening</b><br>
+
+The current state of the session can be saved on your computer by clicking
+on the &quot;save&quot; button.  The saved wITIP file can be
+&quot;open&quot;ed later, which means that the saved session is restored. 
+The wITIP files are bound to both the session and the web server: you cannot
+open a saved file using different session ID, or a different wITIP web
+server.
+<b>Warning:</b>
+When opening a saved session, all changes to the current session are lost. 
+Please consider saving it first.
+
+<p></p>
 PRINTING
 #####################################################################
 # METHOD
     render_block($session,"method","Under the hood: how wITIP works?",<<METHOD);
 wITIP transforms the question of the validity of the entered query
 into a satisfiability of an LP problem.
-What can you configure? How can it be done?
+<br>
+First the query is transformed into the following form: is a linear
+combination of entropies equal to (or grater than) zero? When the question
+asks for equality, it is further split into whether it is &ge; 0, and
+its negation is also &ge; 0. Thus the enquiry is transformed to the
+question (or to two questions) of the form
+<div class="indent">
+  <b>e</b> &ge; 0,
+</div>
+where <b>e</b> is a linear combination of entropies.
+
+<br>
+
+At the next step all L%var%random variables% occurring in <b>e</b> are
+collected, denote this collection by S%V%.  Then the set of all <i>basic
+Shannon inequalities</i> is generated.  This set has all inequalities which
+say that the entropy increases and is submodular:
+
+<div class="indent">
+  S%H(B)-H(A) &ge; 0% &ndash;<br>
+  &nbsp; &nbsp; S%A% is a subset of S%B% which is a subset of
+                 S%V%; <br>
+  S%H(A,C)+H(B,C)-H(C)-H(A,B,C) &ge; 0% &ndash; <br>
+  &nbsp; &nbsp;  S%A%, S%B% and S%C% are different subsets of S%V%. 
+</div>
+
+Then the LP solver is presented the following solvability problem:
+
+<div class="indent" style="line-height: normal">
+<i>Is there any non-negative linear combination of the basic Shannon
+inequalities which gives</i> <b>e</b> &ge; 0 <i>?</i>
+</div>
+When there are enabled L%constr%constraints%, the basic Shannon
+inequalities are supplemented by the constraints: they can contribute
+to the combination which finally yields the required inequality.
+<p></p>
+If the LP solver returns <i>yes</i>, then the result of the query is <span
+class="restrue">true</span>; if the LP solver says <i>no</i>, then the
+result is <span class="resfalse">false</span>. Consequently, the result
+of the query is the answer to the following question:
+<div class="indent" style="line-height: normal">
+<i>Does the query follow from the (basic) Shannon inequalities and
+from the given constraints?</i>
+</div>
+and <b>not</b> whether the query is a valid entropy inequality (or
+equality) which holds for arbitrary collection of random variables
+satisfying the stipulated constraints.
+
+<p></p>
 METHOD
 #####################################################################
 # HISTORY
