@@ -151,7 +151,7 @@ function wi_showSample(){
   <table><tbody><tr>
     <td class="save"><input type="submit" name="save" value="save"></td>
     <td class="cancel"><input type="submit" name="reset" value="discard changes"></td>
-  </td></tbody></table>
+  </tr></tbody></table>
 </div>
 <div class="config"><table class="conftable"><tbody>
   <tr class="subt"><td class="firstcol"> </td><th class="secondcol">Appearence</th></tr>

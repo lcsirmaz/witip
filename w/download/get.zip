@@ -79,6 +79,13 @@ close($fh);
 
 unlink($filename);
 
+# clear modified flag
+$session->{config} = wUtils::read_user_config($session);
+if($session->getconf("modified")){ # clear changed flag
+    $session->setconf("modified","");
+    wUtils::write_user_config($session);
+}
+
 exit wAnApache::OK;
 
 

@@ -128,9 +128,9 @@ sub constr_table {
     $parser->load_id_table(); # loads id table
     foreach my $ctr (@$constrlist){
        # mask= 1: skip, 2: original, 4: unrolled
-       my $mask=0; my $class="enabled\">+";
+       my $mask=0; my $class="enabled\">&#x2713;"; # +
        if($ctr->{skip}){
-           $mask=1; $class="not-enabled\">-";
+           $mask=1; $class="not-enabled\">&#xd7;"; # &#2715;
        }
        # original
        $ccount++;
@@ -249,7 +249,7 @@ function wi_hideit(box,id,mask){
           qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)[$mon],
           $day,$hour,$min,$sec);
     print "<div class=\"maintitle\" contenteditable=\"true\">Content of wITIP session &raquo;",
-      wUtils::htmlescape($session->{SSID}),"&laquo; at $date </div>\n";
+      wUtils::htmlescape($session->{SSID}),"&laquo; as of $date </div>\n";
     print "<div class=\"spacer\"> </div>\n";
     # macros
     macros_table($session);

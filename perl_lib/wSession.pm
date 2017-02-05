@@ -61,10 +61,10 @@ Replaces the configure hash with the one given as the argument.
 Add (replace) the session ID with the given one. Returns 1 on error, and
 zero otherwise.
 
-=item $tempfile=$session->mktemp()
+=item $tempfile=$session->mktemp($extension)
 
-Creates a temporary file with the given session name space. Returns the
-file name.
+Creates a temporary file with the given session name space. If $extension
+is specified, it will end with that extension.  Returns the file name.
 
 =item $secret=$session->get_secret()
 
@@ -180,8 +180,13 @@ sub replace_configure {
 }
 
 sub mktemp {
-    my($self)=@_;
-    my $pattern=$self->{stub}.$self->{setting}->{exttemp}.".XXXXXXX";
+    my($self,$extension)=@_;
+    my $pattern;
+    if($extension){
+        $pattern=$self->{stub}."-XXXXXX.".$extension;
+    } else {
+        $pattern=$self->{stub}.$self->{setting}->{exttemp}.".XXXXXXX";
+    }
     my $mktemp=$self->getconf("mktemp");
     my $tmpfile=`$mktemp -q $pattern`;
     chomp $tmpfile;

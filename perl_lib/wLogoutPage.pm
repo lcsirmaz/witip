@@ -36,6 +36,17 @@ sub Page {
     wHtml::plain_header($session,"wITIP session", {
         banner => "session",
         lcss   => "session",
+        javascript => "
+var wi_saved=0;
+function wi_saveButton(){
+    if(wi_saved) return false;
+    wi_saved=1;
+    setTimeout(function(){
+        document.getElementById('form-main').submit();
+    },1000);
+    return true;
+}
+",
     });
     ## values used later
     my $SSID = $session->{SSID}; my $rnd=fourchar(time);
@@ -84,6 +95,7 @@ sub Page {
     # save
     print "<tr><td class=\"sbutton\"> ",
        "<a class=\"abutton\" href=\"$saveurl\"",
+       " onclick=\"return wi_saveButton();\"",
        " title=\"save current session\"> save </a></td>\n",
        "<td class=\"expl\"> save the current state of the session",
        " on your computer </td></tr>\n";
@@ -98,7 +110,7 @@ sub Page {
       " return later to continue </td></tr>\n";
     # open from saved
     print "<tr><td class=\"sbutton\"> ",
-      "<input class=\"subutton\" type=\"submit\" name=\"upload\"",
+      "<input class=\"subutton\" type=\"submit\" name=\"open\"",
       " value=\" open \" title=\"open saved session\"> </td>\n",
       "<td class=\"expl\"><div class=\"line1\">",
       " restore session content as was saved in ",
@@ -127,38 +139,40 @@ sub Parse {
        $session->{actionvalue}="login";
        return;
     }
-    # check the witip field
-    use Apache2::Upload;
-    my $upload=$session->{request}->upload("witip");
-    if(!$upload){
+    if($session->getpar("open")){
+      # check the witip field
+      use Apache2::Upload;
+      my $upload=$session->{request}->upload("witip");
+      if(!$upload){
         $session->{errmsg}="No saved witip file was selected."; 
         return;
+      }
+      my $fh=$upload->tempname();
+      my $filetype=$session->getconf("filetype");
+      $filetype=`$filetype -b $fh`;
+      if($filetype !~ /^zip/i ){
+         $session->{errmsg}="The file you specified ($upload) is not a witip file.";
+         return;
+      }
+      use wZip;
+      my $result=wZip::reload($session,$fh);
+      if( $result =~ m/^SSID mis/ ){ # SSID mismatch
+         $session->{errmsg}=
+           "The witip file you specified ($upload) belongs to a different
+              session. Only files with the same session ID can be opened.";
+         return;
+      }
+      if($result){# other error
+         print STDERR "$result\n"; # save message in Apache log as well
+         $session->{errmsg}=
+           "The file you specified ($upload) is either not a witip file,
+            or it is corrupted";
+         return;
+      }
+      # content has been restored; go to the check page
+      $session->{actionvalue}="check";
+      return;
     }
-    my $fh=$upload->tempname();
-    my $filetype=$session->getconf("filetype");
-    $filetype=`$filetype -b $fh`;
-    if($filetype !~ /^zip/i ){
-       $session->{errmsg}="The file you specified ($upload) is not a witip file.";
-       return;
-    }
-    use wZip;
-    my $result=wZip::reload($session,$fh);
-    if( $result =~ m/^SSID mis/ ){ # SSID mismatch
-       $session->{errmsg}=
-         "The witip file you specified ($upload) belongs to a different
-            session. Only files with the same session ID can be opened.";
-       return;
-    }
-    if($result){# other error
-       print STDERR "$result\n"; # save message in Apache log as well
-       $session->{errmsg}=
-         "The file you specified ($upload) is either not a witip file,
-          or it is corrupted";
-       return;
-    }
-    # content has been restored; go to the check page
-    $session->{actionvalue}="check";
-    return;
 }
 
 

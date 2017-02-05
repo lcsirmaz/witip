@@ -81,8 +81,7 @@ my @saveitems=qw(
 
 sub create {
     my($session)=@_;
-    my $file=$session->{stub}.".zip";
-    my $tmpfile = $session->mktemp();
+    my $tmpfile=$session->mktemp("txt");
     my $fh;
     if(!open($fh,">",$tmpfile)){
        print STDERR "Cannot create temporary file $tmpfile\n";

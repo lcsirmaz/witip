@@ -21,7 +21,7 @@ body { margin: 0; }
                  background-color: #f0f0a0; cursor: pointer; }
 .explanation a:hover { background-color: #e0e090;}
 
-.hideit { float: right; font-size: 10pt; }
+.hideit { float: right; font-size: 10pt; line-height: 1.65;}
 .hidebutton { color: #154237; padding: 2px 5px; margin: 5px;
     background-color: #f8f8f8; border: 1px solid #b9b9b9; cursor: pointer; }
 
@@ -29,14 +29,18 @@ body { margin: 0; }
    font-weight:bold; padding: 5px 0; clear: both;}
 .maintitle { margin: auto; font-size: 115%; color: #175b6d;
    font-weight:bold; padding: 5px 0; clear: both;}
-.code {font-family: monospace; font-size: 1em; width: 99%; padding: 0 3px; }
+.code {font-family: monospace; font-size: 1em; width: 99%; padding: 0 3px; 
+       word-break: break-all;}
 
-.enabled {}
-.not-enabled { font-weight: bold; color: #601413; padding: 3px; }
+.enabled { font-weight: normal; color: #147513; vertical-align: text-top;
+    text-align:center;}
+.not-enabled { font-weight: normal; color: #751413; vertical-align: text-top;
+    text-align:center;}
 
 
-.result { font-size: 80%; font-weight: bold; }
-.withc { font-size: 90%; font-weight: bold; color: #141455; padding: 1px; }
+.result { font-size: 80%; font-weight: bold; vertical-align: text-top; }
+.withc { font-size: 90%; font-weight: bold; color: #141455; padding: 1px; 
+         vertical-align: text-top; }
 
 .ad { font-size: 10pt; color: #989898; text-align: center;}
 .ad A {color: #175b6d; text-decoration: none; }

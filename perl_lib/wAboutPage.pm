@@ -87,6 +87,9 @@ sub render_sample {
           $sample=$s1;
        }
     }
+    $sample =~ s/&/&amp;/g;
+    $sample =~ s/</&lt;/g;
+    $sample =~ s/>/&gt;/g;
     return "<span class=\"samplecode\">$sample</span>";
 }
 
@@ -125,7 +128,7 @@ function wi_showHelp(topic){
     my $B="<span style=\"font-family: monospace; font-size: 1em;\">";
     my $E="</span>";
     print "<div style=\"height: 2px;\"> <!-- spacer --> </div>\n";
-    print "<div class=\"main\">\n",
+    print "<div class=\"hmain\">\n",
       "<table class=\"helptable\"><tbody><tr>\n";
     # legend
     print <<LEGEND;
@@ -183,7 +186,7 @@ of simple entropies.
 at the bottom of the &quot;check&quot; page:
 
 <div class="indent">
-  <span class="resfalse">false</span> S%+1.234*H(X|Y)-12.234*I(A;B|H) &lt;= -2H(B,X,Y)#+1.234*(x|y)-12.234*(a,b|h) &lt;= -2bxy%
+  <!--<span class="resfalse">false</span>--> S%+1.234*H(X|Y)-12.234*I(A;B|H) &lt;= -2H(B,X,Y)#+1.234*(x|y)-12.234*(a,b|h) &lt;= -2bxy%
 </div>
 <b>L%constr%Constraints%</b> &ndash;
 can be added and queries are checked assuming all constraints are true. 
@@ -242,8 +245,8 @@ expressions; the first one is entered in traditional style, the second one
 using simplified style. The first term is the L%ingleton%Ingleton expression%.
 
 <div class="indent">
-<span class="restrue">true</span> S%[A;B;X;Y]+I(Z;B|X)+I(Z;X|B)+I(B;X|Z) >= -3*I(Z;A,Y|B,X)%<br>
-<span class="restrue">true</span> S%[a,b,c,d]+(e,b|c)+(e,c|b)+(b,c|e) >= -3*(e,ad|bc)%
+<!-- <span class="restrue">true</span> --> S%[A;B;X;Y]+I(Z;B|X)+I(Z;X|B)+I(B;X|Z) >= -3*I(Z;A,Y|B,X)%<br>
+<!-- <span class="restrue">true</span> --> S%[a,b,c,d]+(e,b|c)+(e,c|b)+(b,c|e) >= -3*(e,ad|bc)%
 </div>
 
 Style can be changed and fine-tuned in the L%configure%wITIP configuration%.
@@ -511,30 +514,31 @@ UNROLL
     render_block($session,"configure","Configuring wITIP",<<CONFIGURE);
 You can configure many features of wITIP under the &quot;config&quot; tab.
 <p></p>
-<b>Appearence</b><br>
-Set the font family and size how macros, constraints, aexpressions are 
-presented. This choice does not affect the font used in printing.<br>
-Table height sets the maximal height of tables on the macros, constraints
-and check tabs.
+<strong>Appearence</strong><br>
+Set the font family and the font size for macros, constraints, and
+queries. This choice does not affect the font used in printing.
+<br>
+&quot;Table height&quot; sets the maximal height of the macro,
+constraint and query tables. 
 <p></p>
-<b>Macro definition</b><br>
+<strong>Macro definition</strong><br>
 By default, all macro arguments must be used in the final (unrolled)
 macro text. Uncheck this option if you want to use macro definitions
-like this one in which the first argument cancels out:
+like this one in which the first argument S%U#u% cancels out:
 <div class="indent">
-S%A(U,V,W)=I(U;V|W)+H(V|U,W)#A(a,b,c)=(a,b|c)+(b|ac)%
+S%A(U,V,W)=I(U;V|W)+H(V|U,W)#A(u,v,w)=(u,v|w)+(v|uw)%
 </div>
-<b>Syntax</b><br>
-Choose the main syntax features: use traditional or simplified 
-L%style%syle%; can parentheses S%()% or braces S%{}% be used to 
-enclose subexpressions; and finally whether variables ending in a
-sequence of primes are allowed or not.
+<strong>Syntax</strong><br>
+Determine how wITIP understands the entered text: use traditional
+or simplified L%style%syle%; can parentheses S%()% or braces S%{}% be used to 
+enclose subexpressions; and finally whether variables can or cannot
+end in a sequence of primes.
 <p></p>
-<b>Simple style variables and list separator</b><br>
-By default, in simple style only single lower case letters (optionally
-followed by primes if allowed) can be used as variable names. You can
-extend the recognized variable names by any of the following 
-possibilities:
+<strong>Simple style variables and list separator</strong><br>
+By default, simple style allows only single lower case letters (optionally
+followed by primes if configured) as variable names. You can
+extend the recognized variable names (before the primes) by allowing one
+or more of the following possibilities:
 <ul><li>a (lower case) letter and single digit: S%a1%</li>
 <li>a letter followed by any digit sequence: S%a123%</lI>
 <li>a letter, an underscore and a digit: S%a_2%</li>
@@ -544,23 +548,23 @@ By default, none of those possibilities are enabled as it would be
 easier to enter unintended but syntactically correct queries.
 <br>
 The simple style list separator character can be chosen among a
-short list of possibilities. Use the one which fits best to your
+short list of possibilities. Use the one which fits best your
 taste.
 <p></p>
-<b>LP response time</b><br>
-Each L%check%query% is passed to an L%method%LP solver% to answer the
-question. The default time limit is 5 seconds. You can 
-set this limit to be higher (up to 10 minutes), or lower (1 second).
-Typically, the more random variables are used in the query, the longer
+<strong>LP response time</strong><br>
+Each L%check%query% is passed to the L%method%LP solver% which answers
+the question. The default time limit is 5 seconds. You can 
+set this limit higher (up to 10 minutes), or lower (down to 1 second).
+Typically the more random variables are used in the query the longer
 the LP solver works. The increase is very steep as the problem size
 grows exponentially. Up to six or seven variables the result is almost
 immediate; over thirteen variables the
-numerical instability kicks in and the LP solver either fails to solve
-the problem or returns a wrong solution.
+numerical instability kicks in and the LP solver might fail to solve
+the problem or could return a wrong solution.
 <br>
 The query is marked as <span class="resother">timeout</span> when the 
-time limit is exceeded. In this case you might try to increase the 
-response time.
+time limit was exceeded. In this case you might try to increase the 
+LP response time.
 <p></p>
 CONFIGURE
 #####################################################################
@@ -578,7 +582,7 @@ Click on the &quot;change&quot; button to change the session you are
 working on; you can return to continue your work any time.
 
 <p></p>
-<b>Printing</b><br>
+<strong>Printing</strong><br>
 
 Clicking on &quot;print&quot; opens a new page showing all of your macros,
 constraints, and recent queries.  You can edit the main title (showing the
@@ -595,7 +599,7 @@ Clicking on the &quot;Print&quot; button prints the visible part of the page
 using your browser's printing method.
 
 <p></p>
-<b>Saving and opening</b><br>
+<strong>Saving and opening</strong><br>
 
 The current state of the session can be saved on your computer by clicking
 on the &quot;save&quot; button.  The saved wITIP file can be
@@ -614,12 +618,15 @@ PRINTING
     render_block($session,"method","Under the hood: how wITIP works?",<<METHOD);
 wITIP transforms the question of the validity of the entered query
 into a satisfiability of an LP problem.
+
 <br>
-First the query is transformed into the following form: is a linear
-combination of entropies equal to (or grater than) zero? When the question
-asks for equality, it is further split into whether it is &ge; 0, and
-its negation is also &ge; 0. Thus the enquiry is transformed to the
+
+First the query is transformed into the following question: is a certain
+linear combination of entropies equal to, or &ge; than zero?  When the
+question asks for equality, it is further split into whether it is &ge; 0,
+and its negation is also &ge; 0.  Thus the enquiry is transformed to the
 question (or to two questions) of the form
+
 <div class="indent">
   <b>e</b> &ge; 0,
 </div>
@@ -647,18 +654,18 @@ Then the LP solver is presented the following solvability problem:
 inequalities which gives</i> <b>e</b> &ge; 0 <i>?</i>
 </div>
 When there are enabled L%constr%constraints%, the basic Shannon
-inequalities are supplemented by the constraints: they can contribute
+inequalities are supplemented by them: they can contribute
 to the combination which finally yields the required inequality.
 <p></p>
 If the LP solver returns <i>yes</i>, then the result of the query is <span
 class="restrue">true</span>; if the LP solver says <i>no</i>, then the
 result is <span class="resfalse">false</span>. Consequently, the result
-of the query is the answer to the following question:
+of the query is the answer to the
 <div class="indent" style="line-height: normal">
 <i>Does the query follow from the (basic) Shannon inequalities and
 from the given constraints?</i>
 </div>
-and <b>not</b> whether the query is a valid entropy inequality (or
+question and <b>not</b> whether the query is a valid entropy inequality (or
 equality) which holds for arbitrary collection of random variables
 satisfying the stipulated constraints.
 
@@ -689,7 +696,7 @@ HISTORY
 wITIP is a free, open-source software available at
 E%https://github.com/lcsirmaz/witip%github%. You may redistribute it and/or
 modify under the terms of the 
-E%GNU General Public License (GPL)%http://www.gnu.org/licenses/gpl.html% 
+E%http://www.gnu.org/licenses/gpl.html%GNU General Public License (GPL)% 
 as published by the Free Software Foundation.
 <br>
 There is ABSOLUTELY NO WARRANTY, use at your own risk.

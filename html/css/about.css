@@ -3,8 +3,9 @@ html {font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
       font-size: 11pt;
       color: #272727; }
 body { margin: 0; }
-.main {clear: both; margin: 5px 5px 0px 5px; padding: 10px; }
+.main {clear: both; margin: 5px 20px 5px 30px; padding: 10px; }
 
+.hmain { margin: 10px 5px 0 0; }
 .helptable { width: 100%; border-collapse: collapse; height: 100%; }
 .helptable td {vertical-align: top; }
 .legend { min-width: 6em; font-size: 10pt;  display: block; padding: 5px 0
@@ -23,6 +24,7 @@ body { margin: 0; }
 .left h2 {color: #175b6d; font-size: 12pt; }
 .left a {text-decoration: none; color: #074b6d; }
 .left a:hover {background-color: #e8e8e8; }
+.left strong {color: #175b6d; }
 .samplecode { font-family: monospace; font-size: 0.9em; color: #074612; padding: 0 3px; 
        background-color: #f2fff2; }
 .indent { margin-left: 1.5em; padding: 3px; line-height: 1.5;}
