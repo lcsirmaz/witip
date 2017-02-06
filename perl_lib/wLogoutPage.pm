@@ -85,7 +85,7 @@ function wi_saveButton(){
     print "<tr class=\"subt\"><td class=\"firstcol\"> </td>\n",
       "<th class=\"stitle secondcol\"> Session ID: ",
       wUtils::htmlescape($SSID),
-      "$modified </td></tr>\n";
+      "$modified </th></tr>\n";
     # print
     print "<tr><td class=\"sbutton\"> ",
        "<a class=\"abutton\" href=\"$printurl\" target=\"_blank\"",
@@ -101,7 +101,7 @@ function wi_saveButton(){
        " on your computer </td></tr>\n";
     # new session
     print "<tr class=\"subt\"><td> </td>\n",
-      "<th class=\"stitle\"> New session </td></tr>\n";
+      "<th class=\"stitle\"> New session </th></tr>\n";
     # change session ID
     print "<tr><td class=\"sbutton\"> ",
       "<input class=\"subutton\" type=\"submit\" name=\"changesession\"",
@@ -114,7 +114,7 @@ function wi_saveButton(){
       " value=\" open \" title=\"open saved session\"> </td>\n",
       "<td class=\"expl\"><div class=\"line1\">",
       " restore session content as was saved in ",
-      "<input class=\"browse\" type=\"file\" size=\"35\" name=\"witip\" value=\"\"> </div>\n";
+      "<input class=\"browse\" type=\"file\" size=\"35\" name=\"witip\"> </div>\n";
     if($session->getconf("modified")){ # warning
       print "<div class=\"line2\"> Warning: if you choose this option,",
       " all changes to this session will be lost. Please consider saving
@@ -122,7 +122,7 @@ function wi_saveButton(){
     }
     print "</td></tr>\n";
 
-    print "</tbody></table></div><!-- sesscontainer --></div>\n";
+    print "</tbody></table></div><!-- sesscontainer -->\n";
 
     wHtml::html_tail();
 }

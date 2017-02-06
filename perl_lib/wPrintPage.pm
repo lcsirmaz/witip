@@ -73,7 +73,7 @@ sub macros_table {
     hideit([
        ["'mactable',1","all macros","hide/show all macros"],
        ["'macrolin',1","original","hide/show original text"],
-       ["'macrolin',2","raw","hide/show unrolled form"],
+       ["'macrolin',2","unrolled","hide/show unrolled form"],
     ]);
     print "<div id=\"mactable_1\" data-mask=\"1\" class=\"container\">\n";
     print "<div class=\"subtitle\" contenteditable=\"true\">Macros</div>\n";

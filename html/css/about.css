@@ -1,5 +1,5 @@
 /* witip about page */
-html {font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+html {font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
       font-size: 11pt;
       color: #272727; }
 body { margin: 0; }
@@ -25,7 +25,7 @@ body { margin: 0; }
 .left a {text-decoration: none; color: #074b6d; }
 .left a:hover {background-color: #e8e8e8; }
 .left strong {color: #175b6d; }
-.samplecode { font-family: monospace; font-size: 0.9em; color: #074612; padding: 0 3px; 
+.samplecode { font-family: monospace; font-size: 1em; color: #074612; padding: 0 3px; 
        background-color: #f2fff2; }
 .indent { margin-left: 1.5em; padding: 3px; line-height: 1.5;}
 .resfalse {font-size: 88%; padding-right: 5px; color: #502610; font-weight:

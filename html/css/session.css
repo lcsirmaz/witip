@@ -1,5 +1,5 @@
 /* witip session */
-html {font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+html {font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
       font-size: 11pt;
       color: #272727; }
 body { margin: 0; }
@@ -25,17 +25,17 @@ body { margin: 0; }
 .abutton { text-decoration: none; border: 1px solid #999999;
            padding: 0px 5px; color: #272727; background-color: #f0f0f0;
            cursor: pointer; font-size: 10pt;  
-           font-family: Trebuchet MS, Arial, Helvetica, sans-serif;}
+           font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;}
 .abutton:hover {background-color: #b4b4b4; }
 
 .subutton { text-decoration: none; border: 1px solid #999999;
     padding: 0px 5px; color: #272727; background-color: #f0f0f0;
-    cursor: pointer; font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+    cursor: pointer; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
     font-size: 10pt; }
 .subutton:hover {background-color: #b4b4b4; }
 
 .browse { color: #272727;
-    font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+    font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
     font-size: 10pt; }
 
 .line2 { padding: 3px 0; font-weight: bold; color: #441b1b; }

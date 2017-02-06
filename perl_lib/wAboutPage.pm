@@ -290,7 +290,7 @@ The joint distribution of several random variables is denoted by
 listing all individual variables next to each other. In <i>
 traditional</i> style the variables are separated by commas as in
 S%Spring,Summer, Winter, Fall% (spaces are optional). In <i>simplified</i>
-style simply write the variables next to each other wither with or 
+style simply write the variables next to each other either with or 
 without spaces; in this
 style  both S%a b c% and S%abc% denotes the joint distribution of
 the three variables S%a%, S%b%, and S%c%.

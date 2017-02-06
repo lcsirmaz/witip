@@ -1,5 +1,5 @@
 /* witip login */
-html {font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+html {font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
       font-size: 11pt;
       color: #272727; }
 body { margin: 0; }
@@ -12,7 +12,7 @@ body { margin: 0; }
 .nocontent { border-top: 1px dotted #c0c0c0;  padding-left: 3em; }
 .welcome { padding: 3px 0 3px 3px; }
 .resultline { border-top: 1px solid #b9b9b9; width: 100%; border-right: 0px solid #9f9f9f;
-             border-left: 0px solid #9f9f9f;}
+             border-left: 1px solid #9f9f9f;}
 .resultline:hover {background-color: #e8e8b8; }
 /* submit button */
 .action {padding: 10px; margin: 0 10px; visibility: hidden;}
@@ -36,7 +36,7 @@ body { margin: 0; }
 .coninnerdel input:checked + label { background-size: cover; }
 
 
-.auxline { border-top: 1px dotted #c0c0c0; }
+.auxline { border-top: 1px dotted #c0c0c0; border-left: 1px solid #9f9f9f;}
 .rescode { font-size: 88%; width: 3em; padding-left: 5px; text-align: left; white-space:nowrap; }
 .rescode .true { color: #106610; font-weight: bold; }
 .rescode .false{ color: #502610; font-weight: bold; }

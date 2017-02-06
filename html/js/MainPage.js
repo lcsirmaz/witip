@@ -114,7 +114,7 @@ function wi_historyUp(){
 function wi_historyDown(){
     if(wi_HistLast<2 || wi_HistPointer==0) return;
     var txt;
-    item=document.getElementById('expr_input');
+    var item=document.getElementById('expr_input');
     do {wi_HistPointer++; if(wi_HistPointer>wi_HistLast){
            wi_HistPointer=0; txt=wi_HistZeroLine;
         } else {
@@ -123,8 +123,8 @@ function wi_historyDown(){
         }
         if(wi_HistPointer==0 || item.value!= txt){
             item.value=txt;
-            wi_autoResize(item); item.focus();
             wi_setCaret(item,txt.length);
+            wi_autoResize(item); item.focus();
             return;
         }
     } while(true);
