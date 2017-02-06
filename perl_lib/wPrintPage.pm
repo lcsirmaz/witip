@@ -61,7 +61,10 @@ sub macros_table {
 ##  <div id="mactable_1" data-mask="1" class="container">
 ##  <div class="subtitle">TITLE</div>
 ##  <table><tbody>
-##  <tr id="macrolin_##" data-mask="1"><td class="code">macro text</td></tr>
+##   <tr id="macrolin_##" data-mask="1">
+##     <td class="origline/unrline">~</td>
+##     <td class="code">macro text</td>
+##  </tr>
 ## </tbody></table></div></div>
     my($session)=@_;
     use wParser;
@@ -70,7 +73,7 @@ sub macros_table {
     hideit([
        ["'mactable',1","all macros","hide/show all macros"],
        ["'macrolin',1","original","hide/show original text"],
-       ["'macrolin',2","unrolled","hide/show unrolled form"],
+       ["'macrolin',2","raw","hide/show unrolled form"],
     ]);
     print "<div id=\"mactable_1\" data-mask=\"1\" class=\"container\">\n";
     print "<div class=\"subtitle\" contenteditable=\"true\">Macros</div>\n";
@@ -80,19 +83,22 @@ sub macros_table {
     foreach my $macro ( sort {_cmpmacros($a,$b)} @$macrolist ){
         next if($macro->{std});
         $macrocnt++;
-        print "<tr id=\"macrolin_$macrocnt\" data-mask=\"1\"><td class=\"code\">",
-          $macro->{raw},"</td></tr>\n";
+        print "<tr id=\"macrolin_$macrocnt\" data-mask=\"1\">\n",
+          "<td class=\"origline\">",$session->{origText},"</td>\n",
+          "<td class=\"code\">",$macro->{raw},"</td></tr>\n";
         $macrocnt++;
-        print "<tr id=\"macrolin_$macrocnt\" data-mask=\"2\"><td class=\"code\">",
-          $parser->print_macro($macro),"</td></tr>\n";
+        print "<tr id=\"macrolin_$macrocnt\" data-mask=\"2\">\n",
+          "<td class=\"unrline\">",$session->{unrollText},"</td>\n",
+          "<td class=\"code\">",$parser->print_macro($macro),"</td></tr>\n";
     }
     print "</tbody></table></div></div>\n";
 }
 
 # render a constraint line
 sub constr_line {
-    my($count,$mask,$class,$text)=@_;
+    my($count,$orig,$mask,$class,$text)=@_;
     print "<tr id=\"conline_$count\" data-mask=\"$mask\">\n";
+    print "<td class=\"$orig</td>\n";
     print "<td class=\"$class</td>\n";
     print "<td class=\"code\">",$text,"</td></tr>\n";
 }
@@ -107,6 +113,7 @@ sub constr_table {
 ##  <table class="contable"><tbody>
 ##    <tr id="conline_##" data-mask="3">
 ##      <td class="not_/enabled"> -/+ </td>
+##      <td class="origline/unrline"> ~ </td>
 ##      <td class="code"> text </td>
 ##    </tr>
 ## </tbody></table></div></div>
@@ -132,19 +139,21 @@ sub constr_table {
        if($ctr->{skip}){
            $mask=1; $class="not-enabled\">&#xd7;"; # &#2715;
        }
+       my $oline="origline\">".$session->{origText};
+       my $uline="unrline\">".$session->{unrollText};
        # original
        $ccount++;
-       constr_line($ccount,$mask|2,$class,$ctr->{raw});
+       constr_line($ccount,$oline,$mask|2,$class,$ctr->{raw});
        # unrolled
        if($ctr->{rel} eq "markov"){
           foreach my $e(@{$ctr->{text}}){
              $ccount++;
-             constr_line($ccount,$mask|4,$class,
+             constr_line($ccount,$uline,$mask|4,$class,
                $parser->print_expression($e)."=0");
           }
        } else {
           $ccount++;
-          constr_line($ccount,$mask|4,$class,
+          constr_line($ccount,$uline,$mask|4,$class,
             $parser->print_expression($ctr->{text}).$ctr->{rel}."0");
        }
     }
@@ -251,6 +260,9 @@ function wi_hideit(box,id,mask){
     print "<div class=\"maintitle\" contenteditable=\"true\">Content of wITIP session &raquo;",
       wUtils::htmlescape($session->{SSID}),"&laquo; as of $date </div>\n";
     print "<div class=\"spacer\"> </div>\n";
+    # original / asis texts
+    $session->{origText}="";
+    $session->{unrollText}="~";
     # macros
     macros_table($session);
     print "<div class=\"spacer\"> </div>\n";

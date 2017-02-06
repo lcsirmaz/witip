@@ -87,7 +87,7 @@ sub render_sample {
           $sample=$s1;
        }
     }
-    $sample =~ s/&/&amp;/g;
+#    $sample =~ s/&/&amp;/g;
     $sample =~ s/</&lt;/g;
     $sample =~ s/>/&gt;/g;
     return "<span class=\"samplecode\">$sample</span>";
@@ -186,7 +186,7 @@ of simple entropies.
 at the bottom of the &quot;check&quot; page:
 
 <div class="indent">
-  <!--<span class="resfalse">false</span>--> S%+1.234*H(X|Y)-12.234*I(A;B|H) &lt;= -2H(B,X,Y)#+1.234*(x|y)-12.234*(a,b|h) &lt;= -2bxy%
+  <!--<span class="resfalse">false</span>--> S%+1.234*H(X|Y)-12.234*I(A;B|H) <= -2H(B,X,Y)#+1.234*(x|y)-12.234*(a,b|h) <= -2bxy%
 </div>
 <b>L%constr%Constraints%</b> &ndash;
 can be added and queries are checked assuming all constraints are true. 
@@ -404,7 +404,7 @@ deleted, enabled or disabled under the &quot;constraints&quot; tab.
 To add a constraint simply type it to the input line at the bottom, and
 click on the &quot;add constraint&quot; button. A constraint can be
 <ul><li>relation, that is two L%expr%entropy expressions% compared
-by one of S%=%, S%&lt;=% or S%&gt;=%. Example:
+by one of S%=%, S%<=% or S%>=%. Example:
 <div class="indent">
   S%H(A,B,X) = H(A,B)+H(X)#abx = ab+x%
 </div></li>
@@ -426,7 +426,7 @@ three terms here, and they should not form a trivial Markov chain.
 <div class="indent">
   S%A / B1,B2 / X,Y / &middot;&middot;&middot;#a / bc / uv / &middot;&middot;&middot;% <br>
   or<br>
-  S%A -&gt; B1,B2 -&gt; X,Y -&gt; &middot;&middot;&middot;#a -&gt; bc -&gt; uv -&gt; &middot;&middot;&middot;%
+  S%A -> B1,B2 -> X,Y -> &middot;&middot;&middot;#a -> bc -> uv -> &middot;&middot;&middot;%
 </div></li>
 </ul>
 Enabled constraints have their checkbox ticked. Use these boxes to
@@ -446,7 +446,7 @@ CONSTR
     render_block($session,"check","Checking queries",<<CHECKING);
 Enter your query at the bottom box of the &quot;check&quot; tab. A 
 <i>query</i> is just two L%expr%entropy expressions% connected by
-S%=% (equality), S%&gt;=% (greater than or equal to), or S%&lt;=% 
+S%=% (equality), S%>=% (greater than or equal to), or S%<=% 
 (less than or equal to) such as
 <div class="indent">
 S%[A;B;C;D]+I(A;B|Z)+I(B;Z|A)+I(Z;A|B) >= -3*I(C,D;Z|A,B)#[a,b,c,d]+(a,b|z)+(b,z|a)+(z,a|b) >= -3*(cd,z|ab)%

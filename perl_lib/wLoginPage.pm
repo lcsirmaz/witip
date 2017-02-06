@@ -57,8 +57,8 @@ ERRMSG
     } else {
         print <<SPECIFY;
 <p class="smallsize">
-Please specify your session ID to start working. The ID should start with a letter;
-your name or your e-mail address is a good choice.
+Please specify your session ID to start working. The ID should start with a letter
+or hash tag; your name or your e-mail address is a good choice.
 </p>
 SPECIFY
     }

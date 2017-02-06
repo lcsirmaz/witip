@@ -32,8 +32,7 @@ my $err= wUtils::check_SSID($SSID);
 if($err){ ## wrong SSID
     if($session->{action} eq "start"){ # login page, wrong SSID
         $err = "The session ID you supplied is invalid: 
-        <span class=\"message\">$err</span>.
-        Please correct it.";
+        <span class=\"message\">$err</span>.";
     } elsif($SSID) { # internal error
         return internal_error();
     }

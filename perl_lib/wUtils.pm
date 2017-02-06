@@ -66,7 +66,7 @@ so that they can appear in an URL.
 =item $errmsg = wUtils::check_SSID($SSID)
 
 Returns an error message when $SSID contains strange characters, too short,
-does not start with a letter, or is the magic word "default".
+does not start with a letter.
 
 =item $purified = wUtils::purify($string)
 
@@ -240,15 +240,16 @@ sub urlescape {
 ## allowed characters in SSID are @#$*-+=/.:~ and should start with # or letter
 sub check_SSID {
     my $SSID=shift;
-    return "you did not specify the session ID"
+    return "you did not specify anything"
         if(!defined($SSID) || $SSID eq "" );
-    return "the session ID should start with a letter or a hashtag \#"
+    return "it should ld start with a letter or a hashtag \#"
         if($SSID !~ /^[\#a-zA-Z]/);
-    return "the session ID contains an unsupported special character. Use only +, -, /, \@, and dot"
-        if($SSID =~ /[^a-zA-Z0-9_\@\#\-\+=\/.:~\s]/);
-    return "the session ID is too short, it should contain at least 4 characters"
+    return "it contains unsupported special character. Next to letters and
+        digits use only +, -, \@, and dot"
+        if($SSID =~ /[^a-zA-Z0-9_\@\#\-\+=.:~\s]/);
+    return "it is too short, it should contain at least 4 characters"
         if(length($SSID)<4);
-    return "the session ID is too long"
+    return "it is too long"
         if(length($SSID)>30);
     return ""; # OK
 }

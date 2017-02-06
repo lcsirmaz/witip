@@ -32,6 +32,8 @@ body { margin: 0; }
 .code {font-family: monospace; font-size: 1em; width: 99%; padding: 0 3px; 
        word-break: break-all;}
 
+.unrline { font-size: 90%; color: #282828; }
+
 .enabled { font-weight: normal; color: #147513; vertical-align: text-top;
     text-align:center;}
 .not-enabled { font-weight: normal; color: #751413; vertical-align: text-top;
