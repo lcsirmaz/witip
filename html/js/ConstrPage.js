@@ -42,8 +42,8 @@ function wi_setUsedClass(item){
        'conline-'+(item.checked?'':'un')+'used';
 }
 // onchange: use constr checkbox changed
-function wi_conUsedChanged(item){
-    wi_setUsedClass(item);
+function wi_conUsedChanged(item2){
+    wi_setUsedClass(item2);
     if((witipAllDisabled & 2)!=0) return;
     witipAllDisabled |= 2;
     // disable delete checkboxes
@@ -57,8 +57,8 @@ function wi_conUsedChanged(item){
     document.getElementById('delmarked').style.visibility='visible';
 }
 // onchange: delete checkbox value changed
-function wi_conDelete(item){
-    if(!item.checked) return;
+function wi_conDelete(item2){
+    if(!item2.checked) return;
     if((witipAllDisabled & 1)!=0) return;
     witipAllDisabled |= 1;
    // disable use checkboxes
