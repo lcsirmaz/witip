@@ -8,15 +8,15 @@ body { margin: 0; }
 .hmain { margin: 10px 5px 0 0; }
 .helptable { width: 100%; border-collapse: collapse; height: 100%; }
 .helptable td {vertical-align: top; }
-.legend { min-width: 6em; font-size: 10pt;  display: block; padding: 5px 0
+.menu { min-width: 6em; font-size: 10pt;  display: block; padding: 5px 0
 5px 1px;
          background-color: #eaeaea; white-space: nowrap;}
 .ltitle {font-weight: bold; color:#175b6d; padding: 3px 0 2px 1px; }
-.legend ul { padding: 0; margin: 0; }
-.legend li {padding: 1px 2px 1px 5px; margin: 0; display: block; cursor: pointer; 
+.menu ul { padding: 0; margin: 0; }
+.menu li {padding: 1px 2px 1px 5px; margin: 0; display: block; cursor: pointer; 
          color: #175b6d; }
-.legend li:hover {background-color: #d8d8d8; }
-.legend a {text-decoration: none; color: #272727; }
+.menu li:hover {background-color: #d8d8d8; }
+.menu a {text-decoration: none; color: #272727; }
 
 .content { width: 100%; padding-left: 5px; }
 .left { overflow-y: scroll; height: 250px; padding-right: 4px; max-width: 40rem; }
@@ -27,7 +27,9 @@ body { margin: 0; }
 .left strong {color: #175b6d; }
 .samplecode { font-family: monospace; font-size: 1em; color: #074612; padding: 0 3px; 
        background-color: #f2fff2; }
-.indent { margin-left: 1.5em; padding: 3px; line-height: 1.5;}
+.indent { margin-left: 1.5em; padding: 3px; line-height: 1.5; word-break:
+       break-all;}
+.textindent { margin-left: 1.5em; padding: 3px; line-height: 1.5;}
 .resfalse {font-size: 88%; padding-right: 5px; color: #502610; font-weight:
        bold; }
 .restrue {font-size: 88%; padding-right: 5px; color: #106610; font-weight:

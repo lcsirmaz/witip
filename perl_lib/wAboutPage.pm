@@ -130,9 +130,9 @@ function wi_showHelp(topic){
     print "<div style=\"height: 2px;\"> <!-- spacer --> </div>\n";
     print "<div class=\"hmain\">\n",
       "<table class=\"helptable\"><tbody><tr>\n";
-    # legend
+    # menu
     print <<LEGEND;
-<td class="legend">
+<td class="menu">
 <div class="ltitle">wITIP</div>
 <ul>
 <li>$seeas2<a href="#wabout">about</a></li></ul>
@@ -198,7 +198,7 @@ The constraint below stipulates that the variable sets form a Markov chain:
 are shorthands for (linear) entropy expressions; the macros
 below defines the conditional L%ingleton%Ingleton% expression:
 <div class="indent">
-  S%D(A;B;X;Y|E) = -I(A;B|E)+I(A;B|X,E)+(I(A;B|Y,E)+I(X,Y|E)#D(a,b,x,y|e)=-(a,b|e)+(a,b|xe)+(a,b|ye)+(x,y|e)%
+  S%D(A;B;X;Y|E) = -I(A;B|E)+I(A;B|X,E)+I(A;B|Y,E)+I(X,Y|E)#D(a,b,x,y|e)=-(a,b|e)+(a,b|xe)+(a,b|ye)+(x,y|e)%
 </div>
 After it has been defined, the macro can be used in expressions.
 <br>
@@ -206,7 +206,7 @@ After it has been defined, the macro can be used in expressions.
 compute the difference of two L%expr%entropy expressions% as a linear 
 combination of entropies:
 <div class="indent">
-S%D(A1,X;A2,Y;C;D|Z1,Z2) =? [A1,X,Z1,Z2;A2,Y.Z1,Z2;C,Z1;D,Z1]#D(ax,by,c,d|vw) =? [axvw,byvw,cv,dv]%
+S%D(A1,X;A2,Y;C;D|Z1,Z2) =? [A1,X,Z1,Z2;A2,Y,Z1,Z2;C,Z1;D,Z1]#D(ax,by,c,d|vw) =? [axvw,byvw,cv,dv]%
 <br>
 S%H(C,D,Z1)-H(C,D,Z1,Z2)#cdv-cdvw%
 </div>
@@ -235,7 +235,8 @@ The <i>simplified</i> style simplifies and speeds up entering queries.
 Random variables are restricted to lower case letters only (but see the
 L%var%description%); the variables are simply put next
 to each other to denote their joint distribution; and basic information
-measures are recognized without the letters S%H% or S%I%.  Thus S%(ax,by)%
+measures are recognized without the letters S%H% or S%I%.  Thus 
+S%(ax,by)#(ax,by)%
 is the joint information of the random variable pairs S%a,x% and S%b,y%.
 
 <br>
@@ -354,7 +355,8 @@ some constant:
 <div class="indent">
 S%-3*{H(A)+H(B)-2{H(A|B)-H(B|A)}}#-3*{a+b-2{(a|b)-(b|a)}}%
 </div>
-Using parentheses for grouping is more prune to error.
+Using parentheses for grouping is prone to enter unintended but 
+syntactically correct expressions.
 <p></p>
 EXPRESSION
 #####################################################################
@@ -456,7 +458,7 @@ query box, and passed to the L%method%LP solver% for checking.  Depending on
 the response time of the LP solver, either the result is shown immediately,
 or it appears later when the solver finishes its work.  The result of the
 query can be
-<div class="indent">
+<div class="textindent">
 <table class="sample"><tbody>
 <tr><th><span class="restrue">true</span></th><td>
    the query is a consequence of the non-negativity of the basic Shannon
@@ -589,9 +591,9 @@ constraints, and recent queries.  You can edit the main title (showing the
 session ID and the current date / time), and the section titles as well. 
 The buttons hide a whole section, or some part of it, which comes handy if
 you do not need, for example, the unrolled (internal) form of the
-constraints.  Entropy expressions are printed using the default font (and
-not the one you set), but the syntax style follows the one set in the
-L%configure%configuration%.
+constraints. Entropy expressions are printed using the default 
+font (and not the one you set). The unrolled forms use the syntax style
+set in the L%configure%configuration%.
 
 <br>
 
@@ -617,7 +619,7 @@ PRINTING
 # METHOD
     render_block($session,"method","Under the hood: how wITIP works?",<<METHOD);
 wITIP transforms the question of the validity of the entered query
-into a satisfiability of an LP problem.
+into a satisfiability question of an LP problem.
 
 <br>
 
@@ -640,16 +642,16 @@ Shannon inequalities</i> is generated.  This set has all inequalities which
 say that the entropy increases and is submodular:
 
 <div class="indent">
-  S%H(B)-H(A) &ge; 0% &ndash;<br>
-  &nbsp; &nbsp; S%A% is a subset of S%B% which is a subset of
+  S%H(B)-H(A) &ge; 0% <br>
+  &nbsp; &nbsp; where S%A% is a subset of S%B% which is a subset of
                  S%V%; <br>
-  S%H(A,C)+H(B,C)-H(C)-H(A,B,C) &ge; 0% &ndash; <br>
-  &nbsp; &nbsp;  S%A%, S%B% and S%C% are different subsets of S%V%. 
+  S%H(A,C)+H(B,C)-H(C)-H(A,B,C) &ge; 0% <br>
+  &nbsp; &nbsp; where S%A%, S%B% and S%C% are different subsets of S%V%. 
 </div>
 
 Then the LP solver is presented the following solvability problem:
 
-<div class="indent" style="line-height: normal">
+<div class="textindent" style="line-height: normal">
 <i>Is there any non-negative linear combination of the basic Shannon
 inequalities which gives</i> <b>e</b> &ge; 0 <i>?</i>
 </div>
@@ -661,7 +663,7 @@ If the LP solver returns <i>yes</i>, then the result of the query is <span
 class="restrue">true</span>; if the LP solver says <i>no</i>, then the
 result is <span class="resfalse">false</span>. Consequently, the result
 of the query is the answer to the
-<div class="indent" style="line-height: normal">
+<div class="textindent" style="line-height: normal">
 <i>Does the query follow from the (basic) Shannon inequalities and
 from the given constraints?</i>
 </div>
