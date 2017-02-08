@@ -150,12 +150,16 @@ sub Parse {
       my $fh=$upload->tempname();
       my $filetype=$session->getconf("filetype");
       $filetype=`$filetype -b $fh`;
-      if($filetype !~ /^zip/i ){
+      if($filetype =~ /^ascii/i ){
+          $filetype=1;
+      } elsif($filetype =~ /^zip/i ){
+          $filetype=0;
+      } else {
          $session->{errmsg}="The file you specified ($upload) is not a witip file.";
          return;
       }
       use wZip;
-      my $result=wZip::reload($session,$fh);
+      my $result=wZip::reload($session,$fh,$filetype);
       if( $result =~ m/^SSID mis/ ){ # SSID mismatch
          $session->{errmsg}=
            "The witip file you specified ($upload) belongs to a different

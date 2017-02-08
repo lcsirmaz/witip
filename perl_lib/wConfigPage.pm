@@ -53,13 +53,13 @@ monospace".
 ######################################################
 # selection items; value,   text
 sub _fontfamily { return [
-        "monospace, monospace",        "default",
-        "Andale Mono, monospace",      "Andale Mono",
-        "Courier New, monospace",      "Courier New",
-        "Courier, monospace",          "Courier",
-        "DejaVu Sans Mono, monospace", "DejaVu",
-        "FreeMono, monospace",         "FreeMono",
-        "Lucida Console, monospace",   "Lucida",
+        "monospace, monospace",          "default",
+        "'Andale Mono', monospace",      "Andale Mono",
+        "'Courier New', monospace",      "Courier New",
+        "Courier, monospace",            "Courier",
+        "'DejaVu Sans Mono', monospace", "DejaVu",
+        "FreeMono, monospace",           "FreeMono",
+        "'Lucida Console', monospace",   "Lucida",
 ]; }
 sub _fontsize { return  [
         8,            8,

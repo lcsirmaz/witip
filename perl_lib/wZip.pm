@@ -59,12 +59,12 @@ together with the secret value returned by $session->get_secret()
 Creates the file which will be zipped. Returns the file name,
 or empty string in case of error (the file cannot be created).
 
-=item $result=wZip::reload($session,$filename)
+=item $result=wZip::reload($session,$filename,$filetype)
 
-Reloads the configuration from the uploaded zipfile. Returns the
-empty string when successful, otherwise an error message.
-Resets the configuration, and clears the {modified} field which
-indicates that something has changed.
+Reloads the configuration from the uploaded file; it should be a zipfile if
+$filetype==0, or an ascii file if $filetype==1.  Returns the empty string
+when successful, otherwise an error message.  Resets the configuration, and
+clears the {modified} field which indicates that something has changed.
 
 =back
 
@@ -110,7 +110,7 @@ sub create {
 }
 
 ###############################################################
-# $errormessage=wZip::reload($session,$file)
+# $errormessage=wZip::reload($session,$file,$filetype)
 # reload content from the given zipped file
 
 #error, unlink temporary files
@@ -123,16 +123,22 @@ sub rerror {
 }
 
 sub reload {
-    my($session,$fname)=@_;
+    my($session,$fname,$ftype)=@_; # $ftype==1: ascii
     my $io;
-    if(!$fname || !open($io,"-|",$session->getconf("unzip")." -qq -p $fname")){
-        return "Cannot unzip filename \"$fname\"";
+    if(!$fname){
+        return "No filename was given";
+    }
+    if($ftype){
+        if(!open($io,"<",$fname)){ return "Cannot open file \"$fname\""; }
+    } elsif( !open($io,"-|",$session->getconf("unzip")." -qq -p $fname")){
+        return "Cannot unzip file \"$fname\"";
     }
     use Digest::MD5;
     my $mac = Digest::MD5->new;
     $mac->add($session->get_secret());
     # SSID=<SSID>
-    my $line=<$io>; $mac->add($line); chomp $line;
+    my $line=<$io>;
+    $mac->add($line); chomp $line;
     return "wrong first line ($line)"
        if($line !~ /^SSID=(.*)$/ ); # error
     return "SSID mismatch ($line)"

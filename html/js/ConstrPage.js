@@ -80,8 +80,17 @@ function wi_resetDel(){
     return false;
 }
 //button "deletemarked" pushed
+// if delete, check if there is any marked item to be deleted.
 function wi_conDeleteMarked(){
-    return true;
+    if((witipAllDisabled & 1)==0) return true;
+    var item;
+    var deleted=0;
+    for( var i=1,item=document.getElementById('condel_1'); item;
+       i++,item=document.getElementById('condel_'+i)){
+          if(item.checked) deleted=1;
+       }
+    if(deleted) return true;
+    return wi_resetDel();
 }
 // button "deleteall" pushed
 function wi_deleteAll(){
