@@ -56,5 +56,37 @@ __END__
 
 =pod
 
+=head1 wITIP Ajax responder
+
+=head2 chkpending.txt
+
+Ajax responder called periodically to check pending requests
+
+Arguments are:
+
+    SSID:  session ID
+    what:  comma separated list of request labels
+
+Session ID must have correct format otherwise the responder aborts. 
+The response is a sequence of lines, one line for each finished request,
+or a single line if all requests are pending. The lines have this format:
+
+I<label>,I<result>
+
+where I<label> is the label of the request, or zero when no request finished
+yet. I<result> is the result, which is one of
+
+     none        only when no result is returned
+     timeout     timeout
+     failed      LP solver failed
+     true        the query is true
+     false       the query is false
+     onlyge      only >= holds
+     onlyle      only <= holds
+
+Add the result to the query history so the next reload will show the correct
+results.
+
+
 =cut
 

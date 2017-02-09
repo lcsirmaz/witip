@@ -22,20 +22,22 @@ use strict;
 #######################################################
 =pod
 
+=head1 wITIP perl modules
+
 =head1 wMacros.pm
 
 Parse, add, delete macros
 
-=head2 Data structure
+=head2 Data structures
 
 =over 2
 
 =item Macros
 
-A macro is a hash of the following values:
+A macro is stored as a hash with the following fields:
 
-     std     => 0/1  (1 if standard macro, don't report, dont' delete)
-     argno   => number of arguments, at least one
+     std     => 0/1, 1 if standard macro, don't report, don't delete
+     argno   => number of arguments, at least 1
      septype => bitmask for separators (separator or pipe)
      name    => 'A' .. 'Z'
      text    => entropy expression; the $i-th argument is (1<<($i-1))
@@ -61,7 +63,7 @@ following fields:
 
 Parse the $string as a macro definition. If there were no errors, 
 insert it as a new macro, and add the raw macro text to macro history.
-Returns an error structure as detailed above.
+Return an error structure as detailed above.
 
 =back
 

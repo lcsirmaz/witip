@@ -20,15 +20,18 @@ use strict;
 ############################################################
 =pod
 
-=head1 wLoginPage.pm
+=head1 wITIP perl modules
 
-Render the very first page, add error messages if necessary
+=head2 wLoginPage.pm
+
+Render the wITIP opening page with error message
 
 =over 2
 
 =item wLoginPage::Page($session,$err)
 
-Render the login page; add the error message in $err if not empty.
+Render the opening page requesting the session ID. If $err is not empty, 
+format it as an error message.
 
 =back
 

@@ -21,20 +21,24 @@ use strict;
 ##############################################################
 =pod
 
-=head1 wConstrPage.pm
+=head1 wITIP perl modules
+
+=head2 wConstrPage.pm
+
+Render and parse the constraints page.
 
 =over 2
 
 =item wConstrPage::Page($session)
 
-Render the main constraints page: banner, hidden delete buttons; the list of
-constraints; add an are to add new constraints.
+Render the constraints page: banner, hidden delete buttons; the list of
+constraints; and add new button.
 
 Delete buttons: "delete marked", "cancel" "delete all" become visible when
-one of the delete icons is clicked on.  It also sets bit 1 in the js
-variable witipAllDisabled. The same buttons with different title ("save changes"
-and "cancel") are used to submit when the set of allowed (ticked) constraints
-changes.
+one of the delete icons is clicked on.  It also sets bit 1 or bit 2 in the
+javascript variable witipAllDisabled.  The same buttons with different title
+("save changes" and "cancel") are used to submit the page when the set of
+allowed (ticked) constraints changes.
 
 List of constraints: each constraint occupies a single line starting with
 two checkboxes: "delete" and "use" followed by the original (raw) text.  The
@@ -48,13 +52,13 @@ error position in case of syntactic error.  Keystrokes Up, Down, and Enter
 are captured.  Up and Down gives the previous and following history entry;
 Enter submits the edited string using an ajax request.  With no errors, the
 ajax responders reloads the page.  The ajax responder sets / clears bit
-three in is variable witipAllDisable.  Two additional lines in the editing
-box are reserved for error messages and auxiliary error text.
+three in javascript variable witipAllDisable.  Two additional lines in the 
+editing box are reserved for error messages and auxiliary error text.
 
 =item wConstrPage::Parse($session)
 
-Delete and adjust used constraints as instructed.  If not empty, save the
-editing line to history.
+Process the page when submitted: delete and adjust enabled constraints.  If 
+the edition line was not empty, save to the history.
 
 =back
 

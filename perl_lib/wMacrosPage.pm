@@ -22,7 +22,11 @@ use strict;
 #######################################################
 =pod
 
-=head1 wMacrosPage.pm
+=head1 wITIP perl modules
+
+=head2 wMacrosPage.pm
+
+Render and process the macro page.
 
 =over 2
 
@@ -33,7 +37,7 @@ and add a new macro.
 
 Delete buttons: "delete marked macros", "cancel", "delete all macros".  They
 are shown only when one of the "delete" icons in the macro list are clicked. 
-It sets bit 1 in the js variable witipAllDisabled to prevent any other
+It sets bit 1 in the javascript variable witipAllDisabled to prevent any other
 action.
 
 List of macros: each macro occupies a single line.  Macros are listed in
@@ -41,30 +45,31 @@ alphanumeric order, then by parameter number.  Lines in the macro list have
 a (hidden) label; "delete" checkbox; and the macro's raw (original) text and
 its unrolled internal form.  The macros are in a scrollable table which
 automatically scrolls to the bottom.  Clicking on a macro text copies the
-raw text to the editing part together with its internal form.
+raw text to the editing part, and presents the internal (unrolled) form in
+the aux line.
 
 Macro editing: The "add macro" button is on the left followed by the edit
-field.  This field is actually two identical textareas on top of each other. 
-The top one has transparent background, and the bottom one is slided down by
-two pixels and is used to show the error position.  The content of the
-bottom area is erased after any keystroke in the editing field.  Keystrokes
-Up, Down, and Enter are captured.  Up and Down gives the previous and
-following history entry; Enter submits the given string using an ajax
-request -- this is equivalent to pushing the "add macro" button.  With no
-errors, the ajax responder reloads the page with the new set of macros and
-history.  Until the response to the ajax request arrives, bit 2 of js
-variable witipAllDisabled is set to prevent firing further requests.  Two
-additional lines in the macro editing box are reserved for error messages
-and auxiliary error text.
+field.  This field is actually two text areas on top of each other.  The top
+one has transparent background, and the bottom one is slided down by two
+pixels and is used to show the error position.  The content of the bottom
+area is erased after any keystroke in the editing field.  Keystrokes Up,
+Down, and Enter are captured.  Up and Down gives the previous and following
+history entry; Enter submits the given string using an ajax request -- this
+is equivalent to pushing the "add macro" button.  With no errors, the ajax
+responder reloads the page with the new set of macros and history.  Until
+the response to the ajax request arrives, bit 2 of the javascript variable
+witipAllDisabled is set to prevent firing further requests.  Two additional
+lines in the macro editing box are reserved for error messages and auxiliary
+error text.
 
-The history (Up and Down keys) works as follows.  The History[] array is
-requested by an ajax request just after the page loaded; until it arrives,
-Up and Down arrows are disabled.  Pressing any key except for Up and Down
-sets the history pointer to zero.  When the Up key is pressed, the pointer
-is increased by one, and the content of History[pointer] is copied to the
-editing field.  When the pointer is initially zero, the content of the
-editing field is copied first to History[0].  The Down key does nothing if
-the pointer is zero, otherwise decreases the pointer and copies
+The history (Up and Down keys) works as follows.  The History[] javascript
+array is requested by an ajax request just after the page loaded; until it
+arrives, Up and Down arrows are disabled.  Pressing any key except for Up
+and Down sets the history pointer to zero.  When the Up key is pressed, the
+pointer is increased by one, and the content of History[pointer] is copied
+to the editing field.  When the pointer is initially zero, the content of
+the editing field is copied first to History[0].  The Down key does nothing
+if the pointer is zero, otherwise decreases the pointer and copies
 History[pointer] to the editing field.  When a macro text is copied to the
 editing field (by clicking on a macro text) and the history pointer is zero,
 the original content of the editing field is copied to History[0], and the
@@ -73,8 +78,9 @@ content).
 
 =item wMacrosPage::Parse($session)
 
-Delete macros as instructed.  Otherwise, if not empty, save the editing line
-to history.
+Process the request submitted by the macro page.  Either delete marked
+macros, as instructed.  Otherwise, if not empty, save the editing line to
+history.
 
 =back
 

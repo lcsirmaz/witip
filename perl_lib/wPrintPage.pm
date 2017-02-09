@@ -20,6 +20,44 @@ use wUtils;
 use strict; 
 
 ################################################################
+=pod
+
+=head1 wITIP perl modules
+
+=head2 wPrintPage.pm
+
+Render the print-out page of all macros, constraints, and queries
+
+=head2 Procedures
+
+=over 2
+
+=item wPrintPage::Page($session)
+
+Page content: explanation containing the "Print" button; main (editable)
+title with the current date and time; macros, constraints, and queries. 
+Each section has an editable subtitle, and buttons to hide / show lines
+with certain features. For macros and constraints the expanded (unrolled)
+form, for constraints disabled ones, and for queries unroll queries.
+
+The "print" button calls the browser's print method.
+
+=back
+
+=head2 Local routines
+
+=over 2
+
+=item macros_table($session), constr_table($session), query_table($session)
+
+Renders some part of the print page.
+
+
+
+=back
+
+=cut
+################################################################
 
 # hide block, this is not printed
 sub hideit {

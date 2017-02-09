@@ -41,7 +41,9 @@ __END__
 ####################################################
 =pod
 
-=head1 history.txt
+=head1 wITIP Ajax responder
+
+=head2 history.txt
 
 Ajax responder, return macro and constraint history.
 
@@ -50,7 +52,7 @@ Arguments are:
     SSID:  session ID
     what:  either "macro" or "history"
 
-Session ID must have correct format. The history start with an
+The session ID must have correct format. The history starts with an
 empty line (history entry zero), followed by the most recent
 item. Each item is a single line closed by a \n character.
 

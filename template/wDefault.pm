@@ -42,9 +42,23 @@ use constant {
 ########################################################
 =pod
 
-=head1 Default.pm
+=head1 wITIP perl template
 
-Provide default values, config and macros.
+=head2 Default.pm
+
+Provide default values, config and macros. This module is generated 
+automatically from the template where the following values are
+specified and inserted here:
+
+       BASEDIR     fully qualified path where user data is stored
+       BASEHTML    fully qualified HTML address of witip pages
+       LPSOLVER    the LP helper program
+       MKTEMP      program to create temporary files
+       ZIP         program to compress files
+       UNZIP       program to uncompress zip files
+       FILETYPE    determine uploaded file type
+
+=head2 Procedures
 
 =over 2
 
@@ -56,13 +70,13 @@ HTML and CGI base, limits, default extensions, etc.
 The maximal number of random variables is limited to 60 for 64-bit perl 
 systems (integers have 64 bits), and to 30 for 32-bit perl systems.
 
-=item wDefault::macros()
-
-Returns the array of default macro set: H(a), H(a|b), I(a;b) and I(a;b|c)
-
 =item wDefault::config()
 
-Returns the default user configuration for font, style, timeout, etc.
+Return the default user configuration for font, style, timeout, etc.
+
+=item wDefault::macros()
+
+Return the array of default macro set: H(a), H(a|b), I(a;b) and I(a;b|c)
 
 =back
 

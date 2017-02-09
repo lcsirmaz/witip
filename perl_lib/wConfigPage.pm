@@ -22,7 +22,9 @@ use strict;
 ######################################################
 =pod
 
-=head1 wConfigPage.pm
+=head1 wITIP perl modules
+
+=head2 wConfigPage.pm
 
 Render user configuration page
 
@@ -36,7 +38,8 @@ Render the user configuration page.
 
 Parse the result of Page() and return the hash with the newly defined
 values. All fields in $config are valid as the rendering uses checkbox,
-radiobox, and selection only.
+radiobox, and selection only. Save the new configuration, and replace
+the cached one.
 
 =back
 
@@ -44,7 +47,7 @@ radiobox, and selection only.
 
 Local routines _fontfamily(), _fontsize(), _tablesize(), _history(),
 _sepchars(), and _timeout() define the values which can be chosen from. 
-Only equal width (monospace) familes are used which allows an easy
+Only equal width (monospace) families are used which allows an easy
 indication of the error position.  The default font family is "monospace,
 monospace".
 

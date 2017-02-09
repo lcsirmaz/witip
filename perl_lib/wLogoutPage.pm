@@ -19,6 +19,34 @@ use wHtml;
 use wUtils;
 use strict; 
 ##############################################################
+=pod
+
+=head1 wITIP perl modules
+
+=head2 wLogoutPage.pm
+
+Render and process print / save / open page
+
+=over 2
+
+=item wLogoutPage::Page($session)
+
+Render the page under the "session" tab: print, save, change session,
+and open. Print opens a new window with all printable material. Save
+is a link to a dynamic address where the actual content is wrapped into
+a zip file and returned. Change session goes to the opening page, and
+open retrieves a saved content and restores the session.
+
+=item wLogoutPage::Parse($session)
+
+Handles the requests from the page. Redirects to the login page when
+clicked on "change session"; and checks the uploaded file when clicked
+on "open", reloads the content and redirects to the main page.
+
+=back
+
+=cut
+##############################################################
 # generate some random 4-character string
 sub fourchar {
     my $i=shift;

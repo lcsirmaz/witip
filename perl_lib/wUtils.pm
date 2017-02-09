@@ -24,11 +24,13 @@ use wDefault;
 ############################################################
 =pod
 
-=head1 wUtils.pm
+=head1 wITIP perl modules
 
-Utility functions
+=head2 wUtils.pm
 
-=head2 Auxiliary procedures and constants
+Assorted utility functions
+
+=head2 Procedures and constants
 
 =over 2
 
@@ -40,7 +42,7 @@ value is 1e-9.
 =item $hash = wUtils::simplehash($string)
 
 Computes 12 hexdigit hash of the given string. A fast, but
-not secure hash function.
+not too secure hash function.
 
 =item $dir = wUtils::getDataDir($base,$sessid);
 
@@ -51,7 +53,7 @@ path when necessary.
 =item $escaped = wUtils::utf8escape($string)
 
 Escapes all utf8 non-ascii characters in the string by their
-xml encoding as `&#1234;'
+xml encoding such as `&#1234;'
 
 =item $escaped = wUtils::htmlescape($string)
 
@@ -66,7 +68,8 @@ so that they can appear in an URL.
 =item $errmsg = wUtils::check_SSID($SSID)
 
 Returns an error message when $SSID contains strange characters, too short,
-does not start with a letter.
+does not start with a letter, etc. Returns the empty string when the SSID is
+OK.
 
 =item $purified = wUtils::purify($string)
 
@@ -96,70 +99,68 @@ none has been stored yet.
 =item wUtils::write_user_config($session,$config)
 
 Stores the content of the $config hash in a permanent file so that
-subsequent read_user_config() returns it. Selectors in $config must
-be alphanumeric. Error messages go to STDERR (apache log). If
-$config is missing, saves the system configuration.
+subsequent read_user_config() returns it.  Selectors in $config must be
+alphanumeric.  Error messages go to STDERR (apache log).  If $config is
+missing, saves the configuration as stored in $session.
 
 =item $macros = wUtils::read_user_macros($session)
 
-Reads user defined macros, or returns the default ones. The array
-of macros is cached in $session; the returned value is a pointer
-to the cached array. Make a local copy before modifying.
+Read user defined macros, or return the default ones if no saved macros were
+found.  The array of macros is cached in $session; the returned value is a
+pointer to the cached array.  Make a local copy before modifying.
 
 =item wUtils::write_user_macros($session,$macros,$replace)
 
-Saves the content of the $macros array as the set of new macros.  Replace
-the cached version of macros if $replace is true.  Error messages go to
-STDERR (apache log).
+Save the content of the $macros array as the set of new macros.  Replace the
+cached version of macros if $replace is true.  Error messages go to STDERR
+(apache log).
 
 =item $id_table = wUtils::read_user_id_table($session)
 
-Returns the table containing random variables names, or an empty
-table if no names have been saved. The table is used to match 
-variables in constraints and variables used in the formula to be
-checked. The table is cached in $session, make a local copy before
-modifying it.
+Return the table containing random variables names, or an empty table if no
+names have been saved.  The table is used to match variables in constraints
+and variables in the query.  The id table is cached in $session, make a
+local copy before modifying it.
 
 =item wUtils::write_user_id_table($session,$table)
 
-Saves the content of the variable name table $table. Does not replace
-the cached version. Error messages go STDERR (apacke log).
+Save the content of the variable name table in the argument. Does not 
+replace the cached version in $session. Error messages go STDERR (apacke log).
 
 =item $constraints = wUtils::read_user_constraints($session)
 
-Returns all constraints including disabled ones. The constraints use
-the actual id_table returned by read_user_id_table(). The array is
-cached in $session.
+Return the array of constraints including disabled ones.  The constraints
+use the actual id_table returned by read_user_id_table().  The constraints
+array is cached in $session.
 
 =item wUtils::write_user_constraints($session,$constraints,$replace)
 
-Saves the specified set of constraints. Replace the cached instance
+Save the specified set of constraints. Replace the cached instance
 when $replace is true. Error messages go to STDERR (apache log).
-
 
 =item wUtils::read_user_history($session,$type)
 
 Read the user history. Returns a hash with the fields
 
-    hist  array reference to history lines
-    limit maximal number of lines in the array
-    n     total number of lines filled, it is between zero (no line) and limit
-    end   first not filled line in circular order
+    hist  => array reference to history lines
+    limit => maximal number of lines in the array
+    n     => total number of lines filled, it is between zero (no line) and limit
+    end   => first not filled line in circular order
 
-Skips lines which are the same as the previous one.
+While reading the history, it skips lines which are the same as the previous one.
 
 =item wUtils::write_user_history($session,$type,$history)
 
-Appends $history to the history file of type $type. The argument $history can
-be a string or an array of strings.
+Append $history to the history file of type $type. The argument $history can
+be a string or an array of strings. Skips empty lines.
 
 =item wUtils::replace_expr_history($session,$history)
 
-Replaces present expr history with the lines described in the second argument.
+Replace present expr history with the lines described in the second argument.
 
 =item wUtils::set_modified($session)
 
-Sets the "modified" flag and saves the configuration
+Sets the "modified" flag and saves the configuration when it changed.
 
 =back
 

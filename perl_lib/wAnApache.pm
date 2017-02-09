@@ -32,9 +32,11 @@ __END__
 
 =pod
 
-=head1 wAnApache.pm
+=head1 wITIP perl modules
 
-Load modperl registry module and a few Apache2 constants.
+=head2 wAnApache.pm
+
+Load modperl registry module and Apache2 constants OK and NOT_FOUND.
 
 =cut
 

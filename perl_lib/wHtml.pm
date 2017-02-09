@@ -21,9 +21,11 @@ use wUtils;
 ######################################################
 =pod
 
-=head1 wHtml.pm
+=head1 wITIP perl modules
 
-Head and tail of the HTML pages
+=head2 wHtml.pm
+
+Create the head and tail code of the HTML pages
 
 =over 2
 
@@ -34,24 +36,25 @@ page title. These fields in the $options are recognized:
 
     lcss       => css files to be put into the header as links
     ljs        => javascript source files (header)
-    javascript => javascript text goes between <script> and </script>
-    style      => inline css style goes to the header
-    bodyattr   => attribute(s) to the body; typically an onload script
-    action     => the target in the (only) form of the page
+    javascript => inline javascript text which goes between <script> and </script>
+    style      => inline css style
+    bodyattr   => attribute to the <body> tag; typically an onload script
+    action     => the target in the (only) form of the page, or main.html
     banner     => if present, creates the banner on the top of the page
 
-When using a banner, the hidden variables SSID, comingfrom, action:goingto
-are filled.  comingfrom is this page (the value of the banner option);
-action:goingto is the page to go to; when it is the same as comingfrom, then
-some other submit button fired on the page.
+When using a banner, the hidden variables 'SSID', 'comingfrom', 'action_goingto'
+are filled.  'comingfrom' is this page (the value of the banner option);
+'action_goingto' is the page to go to; when it is the same as 'comingfrom' then
+some other submit button was fired and not one of these navigation ones.
 
 The javascript variable witipAllDisabled should be set to non-zero when the banner
-cannot be used to leave the page (when 'delete' is chosen).
+cannot be used to leave the page. This happens on macro and constraints pages when
+the 'delete' option is chosen.
 
 
 =item wHtml::html_tail()
 
-Closes the form on the HTML page and appends a copyright notice.
+Closes the form on the HTML page and appends the copyright notice.
 
 =back
 

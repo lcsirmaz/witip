@@ -14,9 +14,11 @@
 ###########################################################################
 =pod
 
-=head1 wAboutPage.pm
+=head1 wITIP perl modules
 
-Description and help of wITIP.
+=head2 wAboutPage.pm
+
+Render the "about" page of wITIP
 
 =head2 Procedures
 
@@ -28,16 +30,17 @@ Render the wITIP help page.
 
 =item render_block($session,$anchor,$title,$text)
 
-Internal procedure which renders a topic. $anchor is the internal link name
+Local procedure which renders a topic. $anchor is the internal link name
 (id) of the topic without the leading letter w. $title is the title of
 the section, finally $text is the text. In the text the following styling
 can be used:
 
     L%<anchor>%<anchor text>%
+    E%<anchor>%<anchor text>%
 
-to form and internal link; <anchor> is the internal link name without the
-leading w; <anchor text> is the text which is presented. Use the letter E with
-the same syntax for an extrnal link.
+to form and internal and external link, respectively; <anchor> is the line
+name, for internal links it is without the leading w; <anchor text> is the 
+text which is presented.
 
     S%<complete style>#<simple style>%
 
@@ -53,11 +56,12 @@ renders an indented  paragraph.
 
 =item render_link($anchor,$text)
 
-Internal procedure to render an internal link.
+Local procedure to render an internal link.
 
 =item render_sample($session,$code)
 
-Internal procedure which renders a sample code.
+Local procedure which renders a sample code. Replaces < and > symbols
+by &lt; and &ge;
 
 =back
 

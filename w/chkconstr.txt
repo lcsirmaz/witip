@@ -44,29 +44,30 @@ __END__
 #######################################################
 =pod
 
-=head1 chkmacro.txt
+=head1 wITIP Ajax responder
 
-Ajax responder to check user entered macro text.
+=head2 chkconstr.txt
+
+Ajax responder to check a new constraint
 
 Arguments are:
 
      SSID:   session ID
      text:   the constraint text
 
-Session ID must have correct format, otherwise the responder
-aborts.  If there was no parsing error and the constraint has been added,
-the response is a single line containing "0" (zero).
-The web page should reload the page as both the constraint list and the
-constraint history have changed.
+Session ID must have correct format, otherwise the responder aborts.  If
+there was no parsing error and the constraint has been added, the response
+is a single line containing "0" (zero).  The web page should reload the page
+as both the constraint list and the constraint history have changed.
 
-If there was an error, then the response is a single line as follows:
+In case of an error the response is a single line as follows:
 
-    1,errpos,errmsg+++auxmessage
+1,I<errpos>,I<errmsg>+++I<auxmessage>
 
-Errpos is a non-negative number showing the character number where
-the error was found. Errmsg is the error message text. The 
-+++auxmessage part might be missing. The web page should show
-the appropriate error message and continue.
+I<errpos> is a non-negative number showing the character number where the
+error was found.  I<Errmsg> is the error message text.  The +++i<auxmessage>
+part might be missing.  The web page should show the appropriate error
+message and continue.
 
 =cut
 #######################################################

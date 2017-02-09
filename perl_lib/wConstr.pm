@@ -20,7 +20,9 @@ use strict;
 ############################################################
 =pod
 
-=head1 wConstr.pm
+=head1 wITIP perl modules
+
+=head2 wConstr.pm
 
 Parse, add, and delete constraints
 
@@ -36,7 +38,7 @@ A constraint is a hash with the following fields:
      text  => entropy expression or an array of expressions for markov
      skip  => 0/1, 1 when the constraint is disabled
      raw   => the original textual form
-     label => unique integer to identify the macro
+     label => unique integer to identify the constraint
 
 When rel is "markov", the text field is an array of expressions, all =0; 
 otherwise it is the entropy expression which must be =0 or >=0,
@@ -46,7 +48,7 @@ otherwise it is the entropy expression which must be =0 or >=0,
 Errors (mainly from the parser) are returned as a hash with the
 following fields:
 
-    err     => empty string for no error, the error text
+    err     => empty string for no error, the error text otherwise
     pos     => the position where the error found, can be undef
     aux     => auxiliary error text, can be undef
 
@@ -62,13 +64,13 @@ Parse the constraint given in $text. If there were no errors,
 insert it as the last constraint; add the raw text to the constraint
 history. Returns an error structure as detailed above.
 
-=item wConstr::adjust_id_table($id_table,$constraints)
+=item $id_table = wConstr::adjust_id_table($id_table,$constraints)
 
 Deletes entries in the given id table which are not used by any of the
-constraints.  Used when adding or deleting a constraint.  The table
-constains random variable names which are in disabled constraints as well. 
-This is necessary as using the original (raw) and the internal (unrolled)
-forms the constraint cannot be re-parsed: some of the used macros could be
+constraints.  Used when adding or deleting a constraint.  The $id_table
+contains random variable names from the disabled constraints as well. 
+This is necessary as the original form of the constraint cannot be 
+re-parsed when enabling it again: some of the macros could have been
 redefined or deleted.
 
 =back

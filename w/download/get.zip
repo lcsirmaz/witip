@@ -1,7 +1,7 @@
 ##############################
 ## get.zip
 ##
-## compress and return the actual configuration
+## compress the content of the session
 ##
 ###########################################################################
 # This code is part of wITIP (a web basex Information Theoretic Prover)
@@ -88,4 +88,25 @@ if($session->getconf("modified")){ # clear changed flag
 
 exit wAnApache::OK;
 
+__END__
+
+=pod
+
+=head1 wITIP dynamic data page
+
+=head2 download/get.zip
+
+Create the save file containing the actual content of the session.
+Using Apache2 rewrite engine, the requested file name is converted
+to the argument of the form
+
+    what=I<SSID>_Jan07_AB98.zip
+
+The session ID is followed by month and date, and four random capital 
+letters and digits, and extension `.zip'. If it has incorrect form,
+we return 404 "Not found" error. Otherwise the wZip::create($session)
+calls creates a temporary text file; it is zipped and written out
+as a file to be saved on the local machine.
+
+=cut
 

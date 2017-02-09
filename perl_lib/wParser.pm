@@ -22,7 +22,11 @@ use constant { EPS => wUtils::EPS };
 #######################################################
 =pod
 
-=head1 wParser.pm
+=head1 wITIP perl modules
+
+=head2 wParser.pm
+
+General routines to parse macro definitions, constraints, queries.
 
 =head2 Data structures
 
@@ -30,19 +34,21 @@ use constant { EPS => wUtils::EPS };
 
 =item Random variable representation
 
-Random variables are represented as bits from 1..MAX_ID_NO; and a 
+Random variables are represented as bits from 1..MAX_ID_NO; and a
 variable list as bitmaps: bit $i is set if variable $i is in that 
 list.
 
 =item Entropy expression
 
-is a hash of {varlist => coeff} pairs; no varlist or coeff is zero.
+An entropy expression is a hash of { I<varlist> => I<coeff>} pairs; 
+I<varlist> is an integer representing the variable list, and I<coeff> is 
+the corresponding coefficient. Neither value is zero.
 
 =item Macro
 
-A macro is a hash of the following values:
+A macro is a hash of the following fields
 
-     std     => 0/1  (1 if standard macro, don't report, dont' delete)
+     std     => 0/1  (1 if standard macro, don't report, don't delete)
      argno   => number of arguments, at least one
      septype => bitmask for separators (separator or pipe character)
      name    => 'A' .. 'Z'
@@ -60,20 +66,21 @@ A constraint is a hash with the following fields:
      raw     => the original textual form
      label   => a unique number identifying the macro
 
-when rel is "markov" text is an array of expressions, all =0; 
-otherwise it is the entropy expression. 
+when I<rel> is "markov" I<text> is an array of expressions, all =0; 
+otherwise I<text> is the entropy expression. 
 
 =item Identifier table
 
 Random variable names used in constraints are stored in the identifier
-table.  This table can store at most 32 entries (variable lists are
-handled as bitmasks). The table is an array [0 ..  max_id_no-1] where the
-i-th entry contains the string of the i+1-st variable, or "" or undef if that
-slot is free.  The id table is loaded and used when parsing an inequality
-with constraints, or when a new constraint is added.  It can be empty when
-checking without constraints, or when adding a new macro.  The id table must
-be adjusted when a constrain is deleted, or when a new one constarain is
-added.
+table.  This table can store at most `max_id_no' entries (variable lists
+are handled as bitmasks, this number is either 30 or 60 depending on the
+machine architecture).  The table is an array [0 ..  max_id_no-1] where the
+i-th entry contains the string of the i+1-st variable, or "" or undef if
+that slot is free.  The id table is loaded and used when parsing a
+query with constraints, or when a new constraint is added.  It can start
+empty when checking without constraints, or when adding a new macro.  The id
+table must be adjusted when a constrain is deleted, or when a new
+constrain is added.
 
 =back
 
@@ -88,44 +95,47 @@ Loads the default values and user macro definitions
 =item $parser->parse_relation($result,$string,$standalone)
 
 Parses the given $string as a relation. When $standalone is set, the relation
-is to be checked without constraints, so the id table is not loaded. The
-following fields of the hash $result are filled when there were no errors.
+is to be checked without constraints, so the id table is not loaded. On success
+the following fields of the hash $result are filled:
 
-    $result->{rel} = the relation, one of "=" ">=" or "=?"
+    $result->{rel} = the relation of the query, one of "=" ">=" or "=?"
     $result->{text}= the expression
 
 When the relation is ">=" the expression should be checked
-for >=0; for the relation "=" it should be checked for ==0; for
+for >=0; if the relation is "=" then it should be checked for ==0; for
 relation "=?" $parser->print_expression($result->{text}) gives the
 unrolled result to be printed out.
 
+Call $parser->errmsg() to find whether there was any error.
+
 =item $parser->parse_constraint($result,$string)
 
-Parses the given $string as a constraint. The following fields of the
-hash $result are filled when there were no errors:
+Parses the given $string as a constraint. On success the following 
+fields of the hash $result are filled:
 
-    $result->{rel}  = "markov", "=", ">=",
-    $result->{text} = content, depending on {rel}
+    $result->{rel}  = one of "markov", "=", ">=",
+    $result->{text} = the unrolled constraint depending on "rel"
     $result->{raw}  = the original string
 
-When {rel} is "=" (check for ==0) or ">=" (check for >=0) then {text}
-is an expression.  When {rel} is "markov", then {text} is an array of
-expression all of which must be ==0. To recover the new id table, use
-$parser->get_id_table().
+When I<rel> is "=" (check for ==0) or ">=" (check for >=0) then I<text>
+is an expression.  When I<rel> is "markov", then I<text> is an array of
+expressions, all of which must be ==0. To recover the new id table, use
+$parser->get_id_table(); to find out whether there was an error call
+$parser->errmsg().
 
 =item $parser->parse_macro_definition($macro,$string)
 
-Parses the macro definition given in $string. Sets the following
-fields in the $macro hash:
+Parses the macro definition given in $string. On success sets the 
+following fields in the $macro hash:
 
     $macro->{name}    = the macro name
     $macro->{argno}   = number of arguments
     $macro->{septype} = argument separator bitmask
     $macro->{std}     = 0
-    $macro->{text}    = the macro text
+    $macro->{text}    = the expanded macro text
     $macro->{raw}     = the original string
 
-The fields are set properly only when there were no errors.
+These fields are set properly only when there were no errors.
 
 =back
 
@@ -137,7 +147,7 @@ The fields are set properly only when there were no errors.
 
 Without argument returns the error string, which is "" if there were no
 errors. When $aux is defined, the auxiliary error output is returned;
-valid when there was an error message. Typically the unrolled form of
+valid only when there was an error message. Typically the unrolled form of
 the relation when complaining about its triviality.
 
 =item $parser->errpos()
@@ -157,12 +167,13 @@ and septype, or -1 if no such a macro exists.
 
 =item $parser->print_macro($macro)
 
-Returns the text of the given macro using the recent style. Clobbers
-the variable table.
+The argument is a macro structure. Returns the text of the given macro
+using the recent style. Clobbers the variable table.
 
 =item $parser->load_id_table()
 
-Pupulates the local copy if the id table from the saved one.
+Populates the local copy if the id table from the saved one. Use before
+calling print_expression() for a showing the internal form of a constraint.
 
 =item $parser->get_id_table()
 

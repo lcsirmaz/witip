@@ -22,24 +22,30 @@ use strict;
 ############################################################
 =pod
 
-=head1 wMainPage.pm
+=head1 wITIP perl modules
+
+=head2 wMainPage.pm
+
+Render and parse entropy queries.
 
 =over 2
 
 =item wMainPage::Page($session)
 
-Render the main wITIP page: banner; hidden list of prototypes (used by the
-ajax responder to insert new lines to the request table); usually hidden
-buttons when lines are to be deleted; the list of recent requests (history);
-and where new queries can be entered.
+Render the query page: banner; hidden prototype fields (used by the ajax
+responder to insert new lines to the request table); hidden buttons to
+delete query lines; a table containing recent requests (history); and input
+field where new queries can be entered.
 
-In the result table  each query occupies one or two lines showing the trash
-box, the result indicator, whether constraints were used or not, and the
-query.  In case of "unroll" query the next line contains the result.
+In the result table each query occupies one or two lines.  The top one has a
+trash bin icon to delete the query, the result, whether constraints were
+used or not, and the query.  In case of "unroll" query the result is in the
+second line.
 
-There are two buttons in the query submission part: check with or without
-constraints.  Clicking on one of them makes it the default (the other
-is dimmed).
+When there are enabled constraints, there are two buttons in the query
+submission part: check with or without constraints.  Clicking on one of them
+makes it the default (the other is dimmed) until the page reloads. With
+no enabled constraints only one button is visible.
 
 The query editing field is actually two text areas on top of each other. 
 The bottom one is slided down by two pixels and is used to show the error
@@ -52,22 +58,25 @@ requests.
 
 =item $result=wMainPage::parse_expr_history($session,$update)
 
-Read and parse the history file. Each line in the history
+Read and parse the query history file. Each line in the history
 file has the following format:
 
-    <type>,<label>,<standalone>,<text>
+    I<type>,I<label>,I<standalone>,I<text>
 
-where type, label, standalone are integers (or empty), and text is the query
-(and the urolled result if applicable).  If $update is set, then the
-procedure checks pending requires and modifies the entries accordingly.
+where I<type>, I<label>, I<standalone> are integers (or empty), and I<text>
+is the query (to which the unrolled result is appended when applicable).  If
+$update is set, then the procedure checks pending requests and modifies the
+history file entries accordingly, but does not saves it.
 
 The $result is a hash with three fields: {pending}, {hist}, and {edit}. 
-Both {pending} and {hist} are array references (the array can be empty); and
-{edit} is a single string contenaining the last content of the editing
-field.  {Pending} is the array of labels of pending requests; entries in
-{hist} are four-element arrays of the form [ type, label, standalone, text
-].  When $update is not defined, the history list is truncated to the size
-specified in wDefaults.
+
+    pending  =>  array of labels of pending requests
+    hist     =>  array of history entries (from oldest to newest)
+    edit     =>  last query input
+
+Elements of the array I<hist> are arrays with four elements as indicated
+above, adjusted and cleaned.  When $update is not defined, the history list
+is truncated to the size specified in wDefaults.
 
 =item wMainPage::Parse($session)
 
@@ -435,7 +444,7 @@ sub Parse {
         next if($labels{$line->[1]});
         push @newhist, $line;
     }
-    if($session->getpar('expr_input')){
+    if($session->getpar('expr_input') ne ""){
         push @newhist, [99,0,2,$session->getpar('expr_input')];
     }
     wUtils::replace_expr_history($session,\@newhist);

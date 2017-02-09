@@ -21,31 +21,34 @@ use strict;
 ########################################################
 =pod
 
-=head1 wZip.pm
+=head1 wITIP perl modules
 
-Create save files, and parse the loaded files
+=head2 wZip.pm
+
+Create save file; and parse the loaded file
 
 =over 2
 
-=item File format
+=item wITIP save file format
 
-The itip file is an ASCII file containing all relevant data.
+The itip save file is an ASCII file containing all relevant data.
 The first lines is
 
-    SSID=<SSID>
+SSID=I<SSID>
 
 followed by data for config, macro, macro history, constraints,
 constraints history, id table, checking history. Each part starts
 with a line specifying the data and the number of lines, e.g.,
 
-    config=<lineno>
+config=I<lineno>
 
-This line is followed by <lineno> many lines - the content of the 
-corresponding data. The last of the witip line is
+This line is followed by I<lineno> many lines - the content of the 
+corresponding data. I<linenl> can be zero when this part is
+empty. The last line of the witip file is
 
-    MAC=<authentication code>
+MAC=I<authentication code>
 
-which is computed by computing the digest of all lines saved in the file
+which is computed by computing the MD5 digest of all lines in the file
 together with the secret value returned by $session->get_secret()
 
 =back
@@ -58,13 +61,15 @@ together with the secret value returned by $session->get_secret()
 
 Creates the file which will be zipped. Returns the file name,
 or empty string in case of error (the file cannot be created).
+The filename has the form I<SSID>.I<random>.txt to denote that
+it is a text file.
 
 =item $result=wZip::reload($session,$filename,$filetype)
 
-Reloads the configuration from the uploaded file; it should be a zipfile if
-$filetype==0, or an ascii file if $filetype==1.  Returns the empty string
-when successful, otherwise an error message.  Resets the configuration, and
-clears the {modified} field which indicates that something has changed.
+Reloads the configuration from the uploaded file which should be either
+zipfile ($filetype==0) or an ascii file ($filetype==1).  Returns the empty
+string on success, otherwise the error message.  Resets the configuration,
+and clears the {modified} field which indicates that something has changed.
 
 =back
 

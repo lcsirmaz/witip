@@ -104,5 +104,26 @@ __END__
 
 =pod
 
+=head1 wITIP dynamic html page
+
+=head2 main.html
+
+The main hub of wITIP, dispatches the work to different subpages.
+Used arguments:
+
+     SSID:        the session ID, if incorrect redirect to the login page
+     action:      "goingto"
+     comingfrom:  the page coming from
+     actionvalue: the page going to
+
+The pages are named "wITIP", "config", "macros", "constraints", "check",
+"session", "login". The I<comingfrom> value tells on which page we were
+coming from; the corresponding ::Parse($session) function is called to
+perform the desired action. The I<actionvalue> tells the page on which
+we continue; that's page ::Page method is called to generate the html form.
+
+When I<action> is not defined (this happens when coming from the login
+page), we proceed to the "check" page.
+
 =cut
 

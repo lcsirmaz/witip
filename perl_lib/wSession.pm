@@ -25,10 +25,11 @@ use strict;
 ############################################################
 =pod
 
-=head1 wSession.pm
+=head1 wITIP perl modules
+
+=head2 wSession.pm
 
 Initialize the session by getting all arguments (parameters) and default values.
-
 
 =head2 Procedures
 
@@ -36,40 +37,42 @@ Initialize the session by getting all arguments (parameters) and default values.
 
 =item $session = new wSession
 
-Populats $session with arguments, default values, and with the session ID. 
-Abort when $session is not defined.
+Populates $session with the page parameters, default values, 
+processes the session ID when defined.
 
 =item $argument = $session->getpar("argname")
 
-Retrieve the value of "argname" or the empty string if it was not defined.
+Returns the web page parameters value I<argname> or the empty string 
+if it was not defined.
 
 =item $confvalue = $session->getconf("confname")
 
-Retrieve the configuration value as defined globally in wDefault.pm, or as associated
-with the session ID.
+Retrieve the configuration value as defined globally in wDefault.pm, 
+or as associated with the session ID.
 
 =item $session->setconf("confname",$value)
 
-Replace the value of a configure tag.
+Replace the value of a configure tag with the given value.
 
 =item $session->replace_configure($newconf)
 
-Replaces the configure hash with the one given as the argument.
+Replaces the whole configure hash with the one given as the argument.
 
-=item $error = $session->add_SSID($SSID)
+=item $errno = $session->add_SSID($SSID)
 
 Add (replace) the session ID with the given one. Returns 1 on error, and
-zero otherwise.
+zero otherwise on success.
 
 =item $tempfile=$session->mktemp($extension)
 
-Creates a temporary file with the given session name space. If $extension
-is specified, it will end with that extension.  Returns the file name.
+Creates a temporary file in the given session name space. If I<$extension>
+is specified, it will end with that extension, otherwise create a temporary
+file.  Returns the unique temporary file name.
 
 =item $secret=$session->get_secret()
 
-Returns a secret 32 hexadecimal string. Creates the value when not found.
-
+Returns the secret string to be used when saving and loading session content. 
+Creates the secret randomly when not found.
 
 =back
 
@@ -84,8 +87,7 @@ Retrieves the action and the associated value when the web page has a parameter
 
 =item $SSID = $session->{SSID}
 
-The session ID as supplied by the page. When wUtils::check_SSID($SSID) returns non-empty
-error message, new session ID should be requested.
+The session ID as supplied by the page or added by $session->add_SSID(). 
 
 =back
 

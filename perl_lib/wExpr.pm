@@ -22,9 +22,11 @@ use strict;
 #######################################################
 =pod
 
-=head1 wExpr.pm
+=head1 wITIP perl modules
 
-Parse and execute queries.
+=head2 wExpr.pm
+
+Parse and execute queries received as ajax requests.
 
 =head2 Data structure
 
@@ -34,10 +36,10 @@ Parse and execute queries.
 
 The return value is a hash with the following fields:
 
-    res     => number, indicating the result type
+    res     => number, indicating the result type (see below)
     label   => integer, request number when result >= 3
     err     => the error text
-    pos     => the position where the error found
+    pos     => the position where the error was found
     aux     => auxiliary error text
 
 The res field is one of the following:
@@ -55,25 +57,26 @@ The res field is one of the following:
 =item History
 
 Requests (with results) are stored in the expression history file.  Each
-item takes a line organized as follows:
+history item takes a line organized as follows:
 
-    <type>,<label>,<standalone>,<text>
+I<type>,I<label>,I<standalone>,I<text>
 
-Here <type> is a digit as in the "res" field above except for 1 which cannot
-occur.  <label> is an iteger identifying the request uniquely; <standalone>
-is 0 or 1.  Finally, <text> is the request; unrolled form added after '+++'
-for type 2.  When a pending request is finished, additional line is added to
-the history where <standalone> is 2.  The history stores the content of the
-editing field with <type> equal to 99.
+Here I<type> is a digit as in the "res" field above except for 1 which cannot
+occur. I<label> is an integer identifying the request uniquely; I<standalone>
+is 0 or 1 showing whether the request was evaluated without (0) or with (1)
+constraints.  Finally, I<text> is the request; unrolled form added after
+'+++' for type 2.  When a pending request is completed, additional line is
+added to the history file where I<standalone> is 2.  The history stores the
+content of the editing field with I<type> equal to 99.
 
 =item Pending requests
 
 Syntactically correct requests are passed to the wMakeLP::parse_relation()
-which generates the LP instance; then the LP solver is launched.  After
-reading the problem the solver returns, leaving behind a background process. 
-That process will then write the answer into a result file. Each request is 
-assigned a unique label (integer) which is returned, and can be used to
-enquire about pending jobs.
+which generates an LP instance and the LP solver is launched.  After setting
+up the problem the solver returns, leaving behind a background process. 
+That background process writes the answer (solution) to a result file.  Each
+request is assigned a unique label (integer) which is returned, and can be
+used to enquire about pending jobs.
 
 =back
 
@@ -83,24 +86,25 @@ enquire about pending jobs.
 
 =item $result = wExpr::check_expr($session,$string,$standalone)
 
-Parse the $string as a relation to be checked.  When $standalone is set, the
-relation is to be checked without constraints (the id table is not loaded). 
-Returns a hash as explained above.  The res field shows the result, other
-fields are filled only when contain relevant information.
+Parse the $string as a query.  When $standalone is set, the relation is to
+be checked without constraints (the id table is not loaded).  Returns a hash
+as explained above.  The res field shows the result, other fields are filled
+only when contain relevant information.
 
-When successful, the request string with the result code is added to the
+When successful, the query string $string with the result code is added to the
 history.
 
 =item ($code,$history) = wExpr::check_result($session,$label)
 
-Checks if the job identified by $label has finished.  If yes, removes
-(unlinks) both the problem and the result files.  The returned code is the
-one as indicated in the return structure.  $history is the string to be put
-into the expression history file, or empty if the job did not finish yet.
+Check if the job identified by $label has finished.  If yes, remove (unlink)
+both the problem and the result files.  The returned code is the one as
+indicated in the return structure.  $history is the string to be put into
+the expression history file, or empty if the job did not finish yet.
 
-In some cases calls to check_result() may overlap resulting in loss of information
-about some jobs. If for a pending request the LP problem file is not found, then
-we assume that this is the case, and return a failure indication.
+In some cases calls to check_result() may overlap resulting in loss of
+information about some jobs.  If for a pending request the LP problem file
+is not found, then we assume that this is the case, and return a failure
+indication, even if the history file contains the right answer.
 
 =back
 
