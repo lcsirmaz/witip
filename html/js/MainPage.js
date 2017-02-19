@@ -39,7 +39,7 @@ function wi_resetDel(){
     witipAllDisabled &= ~1;
     var item;
     for(var i=1,item=document.getElementById('resdel_1'); item;
-      i++,item=document.getElementById('resdel_'+i)){
+        i++,item=document.getElementById('resdel_'+i)) {
       item.checked=false;
     }
     return false;
@@ -50,9 +50,9 @@ function wi_deleteMarkedLines(){
 }
 // button "deleteall" was hit
 function wi_deleteAll(){
-  var item;
-  for(var i=1,item=document.getElementById('resdel_1'); item;
-    i++,item=document.getElementById('resdel_'+i)){
+    var item;
+    for(var i=1,item=document.getElementById('resdel_1'); item;
+      i++,item=document.getElementById('resdel_'+i)){
         item.checked=true;
     }
     if(!confirm('You are going to delete all result lines. They will be irrecoverably lost.\nProceed?'))

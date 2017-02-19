@@ -20,7 +20,7 @@
 .banner .ssvalue { font-weight: bold; font-size: 110%; color: #444; }
 .banner .jobtitle {padding-left: 3px; color: #522; }
 .ad { font-size: 10pt; color: #989898; text-align: center;}
-.ad A {color: #175b6d; text-decoration: none; }
-.ad A:hover {text-decoration: underline;}
+.ad a {color: #175b6d; text-decoration: none; }
+.ad a:hover {text-decoration: underline;}
 
            
