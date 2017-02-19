@@ -50,10 +50,10 @@ sub get_installdir {
     my $dir="";
     while($dir eq "" || $dir !~ m#^/# || !-d $dir){
       $dir=user_input("\\/[\\w\\/:\\+\\-,%]+",
-        "Please specify the full path where wITIP was unpacked",$suggest);
+        "Please specify the full path where wITIP has been unpacked to",$suggest);
       $dir =~ s#/$##g;
       if(! -e "$dir/prog/glpksolve.c"){
-         print "The directory \"$dir\" seems not to be the correct one.\n";
+         print "The directory \"$dir\" seems not to be correct.\n";
          $dir="";
       }
     }
@@ -68,7 +68,7 @@ sub change_ddir_permission {
     return 1  if(!-d $ddir);
     chmod 0777, $ddir;
     if(((stat $ddir)[2] & 0777) != 0777){
-       print "Cannot change permissions of the directory $ddir.\n";
+       print "Cannot change the permissions of the directory $ddir.\n";
        return 1;
     }
     # check permissions along the whole path ...
@@ -76,7 +76,7 @@ sub change_ddir_permission {
         $ddir =~ s#/[^/]*$##;
         last if($ddir eq "");
         if(((stat $ddir)[2]& 0555) != 0555){
-           print "The parent directory $ddir is not seekable by the apache process.\n";
+           print "The parent directory $ddir is not accessible by the apache process.\n";
            return 1;
         }
     }
@@ -89,14 +89,14 @@ sub get_datadir_aux {
     my $ddir="$idir/data";
     print "The full path of the directory where web user data will be stored. 
 Its permissions will be changed so that anyone can write and create files
-here. Later you can change permissions for the web server only. The whole
-path is checked for reachability.\n";
+here. Later you can change the permissions to restrict it to the web server only.
+The whole path is checked for accessibility.\n";
     my $udir=user_input("\\/[\\w\\/:\\+\\-,%]+",
-        "Web user's data directory (full path)",$ddir);
+        "Web user data directory (full path)",$ddir);
     $udir =~ s#/$##g;
     if(! -d $udir){
         my $yes=user_input("(yes|no)",
-        "The directory $udir does not exist. Create it (yes/no)","yes");
+        "The directory $udir does not exist. Create it (yes/no)?","yes");
         if($yes eq "yes"){
             use File::Path qw(make_path);
             make_path($udir);
@@ -115,7 +115,7 @@ sub get_datadir {
     while($udir eq ""){
        $udir=get_datadir_aux($idir);
     }
-    print "Using $udir as data directory.\n\n";
+    print "Using $udir as the data directory.\n\n";
     return $udir;
 }
 
@@ -124,19 +124,19 @@ sub compile {
     my ($instdir,$edir)=@_;
     if(-x "$edir/glpksolve"){
         print "The executable `glpksolve' was found in the $edir directory.\n";
-        my $ok=user_input("(yes|no)","Is it OK to use (yes/no)","yes");
+        my $ok=user_input("(yes|no)","Is it OK to use (yes/no)?","yes");
         return if($ok eq "yes");
     }
     if(! -e "$instdir/prog/glpksolve.c"){
         die "
 Cannot find the source file in $instdir/prog. Please make sure that
-all wITIP files are extracted correctly.\n";
+all wITIP files have been extracted correctly.\n";
     }
     if(! -e "/usr/include/glpk.h"){
         die "
-wITIP uses the glpk binaries, and did not found the glpk header
-file in the standard place. Please install glpk before continuing
-from the libglpk-dev package.\n";
+wITIP uses the glpk binaries, and did not find the glpk header
+file in the standard place. Please install glpk from the 
+libglpk-dev package before continuing.\n";
     }
     my $gcc=`which gcc`; chomp $gcc;
     if(!$gcc){
@@ -146,10 +146,10 @@ from the libglpk-dev package.\n";
     unlink "$edir/glpksolve"; # if it was there
     system("$gcc -O3 -o $edir/glpksolve $instdir/prog/glpksolve.c -lglpk 2>/dev/null");
     if($?<0 || ($?>>8)!=0 || !-e "$edir/glpksolve"){
-        print STDERR "Cannot compile glpksolve. Please try to do it by hand, and retry.\n";
-        die "To compile it use this syntax:
+        print STDERR "Cannot compile glpksolve. Please try to do it manually, and retry.\n";
+        die "To compile it, use:
   gcc -O3 -o glpksolve -I<includedir> prog/blpksolve.c -l<glpklibrary>
-Here <includedir> contains the glpk.h header, and <glpklibrary> is the
+where <includedir> contains the glpk.h header, and <glpklibrary> is the
 glpk library file without the .so extension.\n";
     }
 }
@@ -162,7 +162,7 @@ sub get_exedir_aux {
     $edir =~ s#/$##g;
     if(! -d $edir){
         my $yes=user_input("(yes|no)",
-        "The directory $edir does not exist. Should I create it (yes/no)","yes");
+        "The directory $edir does not exist. Should I create it (yes/no)?","yes");
         if($yes eq "yes"){
             use File::Path qw(make_path);
             make_path($edir);
@@ -197,7 +197,7 @@ sub redefine_helpers {
     foreach my $prog (qw( mktemp zip unzip file )){
        $P{$prog}=which_program($prog);
        if(!$P{$prog}){
-           print "Program `$prog' was not found. Please specify it with full path\n";
+           print "Program `$prog' was not found. Please specify it using the full path\n";
            $P{$prog}=user_input("\\/[\\w\\/:\\+\\-,%]+",
              "Program `$prog' with full path");
        } else {
@@ -224,12 +224,12 @@ sub apache_port {
 sub get_site_name {
     my($port)=@_;
     my $ex= $port eq "80" ? "" : ":$port";
-    print "Congifure the URL to wITIP. If your site is dedicated solely
-to wITIP, then this should be \"/\". Otherwise this is the full prefix
+    print "Congifure the URL path of wITIP. If your site is dedicated solely
+to wITIP, then this should be \"/\". Otherwise this is the path
 (starting with a slash) which leads to wITIP's opening page. Probably it
 is just \"/witip\".\n";
     return user_input("^\\/[\\w\\/:\\.\\-]*",
-      "wITIP URL which comes after http://YOUR-SITE$ex","/witip");
+      "wITIP URL path (that comes after http://YOUR-SITE$ex)","/witip");
 }
 # replace a line with the configured values
 sub replace_config {
@@ -270,7 +270,7 @@ $CONFIG->{HOST}       = virtual_host();
 $CONFIG->{PORT}       = apache_port();
 $CONFIG->{BASEHTML}   = get_site_name($CONFIG->{PORT});
 print "Using virtual host $CONFIG->{HOST}, port $CONFIG->{PORT}",
-      " and URL prefix $CONFIG->{BASEHTML}.\n\n";
+      " and URL path $CONFIG->{BASEHTML}.\n\n";
 
 ##################################################
 # print out all configuration parameters, 
@@ -286,7 +286,7 @@ them carefully.\n\n",
 "                         $CONFIG->{FILETYPE}\n",
 "virtual host:            $CONFIG->{HOST}\n",
 "port:                    $CONFIG->{PORT}\n",
-"URL prefix:              $CONFIG->{BASEHTML}\n";
+"URL path:                $CONFIG->{BASEHTML}\n";
 print "\n";
 "yes" eq user_input("(yes|no)",
    "Proceed with generating configuration-dependent files (yes/no)","yes") || 

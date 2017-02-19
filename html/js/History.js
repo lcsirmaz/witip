@@ -18,17 +18,18 @@ function wi_requestHistory (what,ssid){
       parameters: {
           SSID:    ssid,
           what:    what,
-          randomv: new Date().getTime() },
+          randomv: new Date().getTime()
+      },
       onSuccess: function(x){
           var old0=witipHistory[0];
           witipHistory=x.responseText.split('\n');
           witipHistory.pop(); // get rid of the last empty line 
           witipHistory[0]=old0;
           witipHistoryLoaded=1;
-          },
+      },
       onFailure: function(x){ // do nothing
-// alert('failed...url='+witipBaseURL);
-          }
+          // alert('failed...url='+witipBaseURL);
+      }
    });
 }
 var witipHistoryPointer=0;

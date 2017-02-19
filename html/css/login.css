@@ -1,9 +1,11 @@
 /* witip login */
+
 html {font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
       font-size: 11pt;
       color: #272727; }
 body { margin: 0; }
 .main {clear: both; margin: 5px 20px 5px 30px; padding: 10px; }
+
 .subtitle { font-size: 17pt; color: #175b6d; font-weight: bold; }
 .smallsize {font-size: 10pt; }
 .logincontainer {

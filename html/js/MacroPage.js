@@ -139,7 +139,7 @@ function wi_addMacro(item){
             witipAllDisabled &= ~2;
         },
         onFailure: function(x){
-// alert("ajax failed...");
+            // alert("ajax failed...");
             witipAllDisabled &= ~2;
         }
     });
