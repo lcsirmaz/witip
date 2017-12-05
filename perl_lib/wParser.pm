@@ -60,14 +60,14 @@ A macro is a hash of the following fields
 
 A constraint is a hash with the following fields:
 
-     rel     => "=", ">=", "markov"
+     rel     => "=", ">=", "markov", "common"
      text    => entropy expression or an array of expressions
      skip    => 0/1 (1 when the constraint is disabled)
      raw     => the original textual form
      label   => a unique number identifying the macro
 
-when I<rel> is "markov" I<text> is an array of expressions, all =0; 
-otherwise I<text> is the entropy expression. 
+when I<rel> is "markov" or "common", I<text> is an array of expressions,
+all =0; otherwise I<text> is the entropy expression. 
 
 =item Identifier table
 
@@ -113,15 +113,15 @@ Call $parser->errmsg() to find whether there was any error.
 Parses the given $string as a constraint. On success the following 
 fields of the hash $result are filled:
 
-    $result->{rel}  = one of "markov", "=", ">=",
+    $result->{rel}  = one of "markov", "common", "=", ">="
     $result->{text} = the unrolled constraint depending on "rel"
     $result->{raw}  = the original string
 
 When I<rel> is "=" (check for ==0) or ">=" (check for >=0) then I<text>
-is an expression.  When I<rel> is "markov", then I<text> is an array of
-expressions, all of which must be ==0. To recover the new id table, use
-$parser->get_id_table(); to find out whether there was an error call
-$parser->errmsg().
+is an expression.  When I<rel> is "markov" or "common", then I<text> is
+an array of expressions, all of which must be ==0. To recover the new 
+id table, use $parser->get_id_table(); to find out whether there was 
+an error call $parser->errmsg().
 
 =item $parser->parse_macro_definition($macro,$string)
 
@@ -321,7 +321,9 @@ use constant { ## the error messages
   e_INDEP_FUNC     => "the variable set \"",
   e_INDEP_FUNCEND  =>    "\" is a function of others - cannot be independent",
   e_MARKOV         => "a Markov chain must contain at least three tags",
-  e_NOMARKOV       => "this sequence always forms a Markov chain",
+  e_NOMARKOV       => "no need to add as a constraint: this sequence always forms a Markov chain",
+  e_COMMONBIG      => "common information can be stipulated for at most 12 variable sets",
+  e_NOCOMMON       => "no need to add as a constraint: the first set is the common information of the others",
   e_MDEF_NAME      => "macro definition starts with the macro name - an upper case letter - followed by a '('",
   e_MDEF_NOPAR     => "missing macro argument: a single variable is expected here",
   e_MDEF_SAMEPAR   => "all macro arguments must be different",
@@ -958,14 +960,16 @@ sub parse_relation {
 ## Constraint
 ##
 #   it can be a RELATION or one of the following:
-#    a : b       funcional dependence
+#    a : b       or
+#    a << b      functional dependence
 #    a . b . c   or
 #    a || b || c totally independent
 #    a / b / c   or
 #    a -> b-> c  Markov chain
+#    a << b / c  common information
 #    $result->{text}-- expression for "=" and ">="; 
-#                      array of expressions for "markov"
-#    $result->{rel} -- one of "=", ">=", "markov"
+#                      array of expressions for "markov" or "common"
+#    $result->{rel} -- one of "=", ">=", "markov", "common"
 sub _funcdep {
     my($self,$result,$v1,$v2)=@_;
     $v1 |= $v2;
@@ -1048,7 +1052,7 @@ sub _Markov {
          && $self->R('/') && $self->is_varlist($v2) ){
            push @e,$v2; $cnt++;
        }
-       retore_pos($oldpos);
+       $self->retore_pos($oldpos);
     } else {
        while( ($oldpos=$self->save_pos())
          && $self->R('-') && $self->R('>')
@@ -1063,6 +1067,57 @@ sub _Markov {
     scalar @{$result->{text}}>0 || $self->softerr(e_NOMARKOV);
     $result->{rel} ="markov";
 }
+sub unfold_common { # unfold common information
+    my($v,$vars)=@_; 
+    my @allexp=(); my %hashed=(); $hashed{""}=1;
+    for my $w (@$vars){ # wv = w
+        my $wv=$w|$v; next if($wv==$w);
+        my $e={"$wv"=>1, "$w"=> -1}; 
+        my $hash="$wv,1,$w,-1";
+        next if($hashed{$hash});
+        $hashed{$hash}=1;
+        push @allexp,$e;
+    }
+    # v= a+b+c-ab-bc-ac+abc
+    my $e={ "$v" => -1 };
+    for my $A ( 1 .. -1+(1<<(scalar @$vars)) ){
+        my $s=-1; my $w=0; my $i=0;
+        while($A){
+            if($A&1){
+                $w |= $vars->[$i];
+                $s=-$s;
+            }
+            $A>>=1; $i++;
+        }
+        $e->{$w} = ($e->{$w}||0)+$s;
+    }
+    my $hash1=""; my $hash2="";
+    foreach my $k (sort {$a <=> $b} keys %$e){
+        my $v=$e->{$k};
+        if( -EPS <=$v && $v<= EPS ){
+            delete $e->{$k};
+            next;
+        }
+        $hash1 .= "$k,$v,"; $v=-$v; $hash2 .= "$k,$v,";
+    }
+    push @allexp, $e if( !$hashed{$hash1} && !$hashed{$hash2} );
+    return \@allexp;
+}
+sub _common_info {
+    my($self,$result,$v1,$v2,$v3)=@_;
+    my @e=($v2,$v3); my $oldpos=0; my $cnt=2;
+    while(($oldpos=$self->save_pos())
+       && $self->R('/') && $self->is_varlist($v3) ){
+         push @e,$v3 if($cnt<15);
+         $cnt++;
+    }
+    $self->restore_pos($oldpos);
+    $self->{Xchr} eq "\0" || $self->harderr(e_EXTRATEXT);
+    $cnt<16 || $self->softerr(e_COMMONBIG);
+    $result->{text}=unfold_common($v1,\@e);
+    scalar @{$result->{text}}>0 || $self->softerr(e_NOCOMMON);
+    $result->{rel}="common";
+}
 sub parse_constraint {
     my($self,$result,$str)=@_;
     my $v1=0; my $v2=0;
@@ -1076,6 +1131,17 @@ sub parse_constraint {
             if($self->is_varlist($v2)){
                 $self->_funcdep($result,$v1,$v2);
                 return; 
+            }
+        } elsif($self->R('<')){
+            if($self->R('<') && $self->is_varlist($v2)){
+               my $oldpos=$self->save_pos(); my $v3=0;
+               if($self->R('/') && $self->is_varlist($v3)){ 
+                   $self->_common_info($result,$v1,$v2,$v3);
+                   return;
+               }
+               $self->restore_pos($oldpos);
+               $self->_funcdep($result,$v1,$v2);
+               return;
             }
         } elsif($self->R('.')){
             if($self->is_varlist($v2)){

@@ -84,11 +84,11 @@ sub render_constrline {
     
     print "<tr class=\"conline-",($used?"":"un"),"used\" id=\"con_${n}_0\">\n";
     print "<td class=\"conno\">$n</td>\n";
-    print "<td class=\"condel\" title=\"delete\"><div class=\"coninnerdel\">",
+    print "<td class=\"condel\" title=\"delete this constraint\"><div class=\"coninnerdel\">",
       "<input type=\"checkbox\" name=\"condel_$label\" id=\"condel_$n\"",
       " onchange=\"wi_conDelete(this);\">",
       "<label for=\"condel_$n\"></label></div></td>\n";
-    print "<td class=\"conused\" title=\"use this constraint\">",
+    print "<td class=\"conused\" title=\"enable / disable constraint\">",
        "<div class=\"coninnerused\">",
        "<input type=\"checkbox\" name=\"conused_$label\" id=\"conused_$n\"",
        ($used ? " checked=\"checked\"" : ""),

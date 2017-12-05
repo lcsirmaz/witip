@@ -86,7 +86,10 @@ function wi_saveButton(){
     # replace # and / by their %2F codes
     $saveurl =~ s/([#\/])/sprintf("%%%02X",ord($1))/ge;
     $saveurl = $session->getconf("basecgi")."/get/".
-       wUtils::htmlescape(wUtils::urlescape("$saveurl")).".zip";
+       wUtils::htmlescape(wUtils::urlescape("$saveurl"));
+    # listurl
+    my $listurl = $saveurl . ".txt";
+    $saveurl .= ".zip";
     # printurl
     my $printurl = $session->getconf("basecgi")."/print.html?".
        "SSID=".wUtils::htmlescape(wUtils::urlescape($SSID)."&chk=".
@@ -98,7 +101,7 @@ function wi_saveButton(){
 ## HTML code
 ## <p class="errmsg"> .... </p>
     if($session->{errmsg}){
-        print "<p class=\"errmsg\">",$session->{errmsg},"</p>\n";
+        print "<div class=\"errmsg\">",$session->{errmsg},"</div>\n";
     }
 ## HTML code
 ## <div><table><tbody>
@@ -108,46 +111,64 @@ function wi_saveButton(){
           "<tbody>\n";
     # session ID, indicate whether modified
     my $modified="";
+    my $essid=wUtils::htmlescape($SSID);
     $modified=" <span class=\"smodified\">(modified)</span> "
         if($session->getconf("modified"));
+    # change session ID
     print "<tr class=\"subt\"><td class=\"firstcol\"> </td>\n",
-      "<th class=\"stitle secondcol\"> Session ID: ",
-      wUtils::htmlescape($SSID),
-      "$modified </th></tr>\n";
+      "<th class=\"stitle secondcol\"> Change session </th></tr>\n";
+    print "<tr><td class=\"sbutton\"> ",
+      "<input class=\"subutton\" type=\"submit\" name=\"changesession\"",
+      " value=\"change\" title=\"change your session\"> </td>\n",
+      "<td class=\"expl\"> switch session &quot;$essid&quot; to a different one;",
+      " return later to continue your work</td></tr>\n";
+    # Print, list, execute
+    print "<tr class=\"subt\"><td> </td>\n",
+      "<th class=\"stitle\"> Print content, save and execute commands </th></tr>\n";
     # print
     print "<tr><td class=\"sbutton\"> ",
        "<a class=\"abutton\" href=\"$printurl\" target=\"_blank\"",
        " title=\"print expressions, macros, constraints\"> print </a></td>\n",
-       "<td class=\"expl\"> get a printable form of the current session",
+       "<td class=\"expl\"> create a printout of the current session in a new window",
        " </td></tr>\n";
-    # save
+    # download commands
+    print "<tr><td class=\"sbutton\"> ",
+       "<a class=\"abutton\" href=\"$listurl\"",
+       " onclick=\"return wi_saveButton();\"",
+       " title=\"create commands which add macros, constraints and the last query \"> save </a></td>\n",
+       "<td class=\"expl\"> download an editable list of commands creating current macros, constraints and the last query",
+       " </td></tr>\n";
+    # execute
+    print "<tr><td class=\"sbutton\"> ",
+      "<input class=\"subutton\" type=\"submit\" name=\"execute\"";
+    if($session->getconf("modified")){ # confirm button  
+        print " onclick=\"return confirm('All macros and constraints will be deleted. Continue?')\"",
+    }
+    print " value=\" execute \" title=\"add macros, constraints, and ask a query\"> </td>\n",
+      "<td class=\"expl\"><div class=\"line1\">",
+      " execute command list from the external file ",
+      "<input class=\"browse\" type=\"file\" size=\"35\" name=\"commands\"> </div>\n";
+    print "</td></tr>\n";
+    # backup and restore
+    print "<tr class=\"subt\"><td> </td>\n",
+      "<th class=\"stitle\"> Backup and restore </th></tr>\n";
+    # export
     print "<tr><td class=\"sbutton\"> ",
        "<a class=\"abutton\" href=\"$saveurl\"",
        " onclick=\"return wi_saveButton();\"",
-       " title=\"save current session\"> save </a></td>\n",
-       "<td class=\"expl\"> save the current state of the session",
-       " on your computer </td></tr>\n";
-    # new session
-    print "<tr class=\"subt\"><td> </td>\n",
-      "<th class=\"stitle\"> New session </th></tr>\n";
-    # change session ID
+       " title=\"export the current session\"> export </a></td>\n",
+       "<td class=\"expl\"> export the current content of session &quot;$essid&quot; to a local file ",
+       "</td></tr>\n";
+    # import
     print "<tr><td class=\"sbutton\"> ",
-      "<input class=\"subutton\" type=\"submit\" name=\"changesession\"",
-      " value=\"change\" title=\"change your session\"> </td>\n",
-      "<td class=\"expl\"> change this session to a different one;",
-      " return later to continue </td></tr>\n";
-    # open from saved
-    print "<tr><td class=\"sbutton\"> ",
-      "<input class=\"subutton\" type=\"submit\" name=\"open\"",
-      " value=\" open \" title=\"open saved session\"> </td>\n",
-      "<td class=\"expl\"><div class=\"line1\">",
-      " restore session content as was saved in ",
-      "<input class=\"browse\" type=\"file\" size=\"35\" name=\"witip\"> </div>\n";
-    if($session->getconf("modified")){ # warning
-      print "<div class=\"line2\"> Warning: if you choose this option,",
-      " all changes to this session will be lost. Please consider saving
-      the session first.</div>\n";
+      "<input class=\"subutton\" type=\"submit\" name=\"open\"";
+    if($session->getconf("modified")){ # confirm button  
+        print " onclick=\"return confirm('All changes to this session will be lost. Continue?')\"",
     }
+    print " value=\" import \" title=\"import an exported session\"> </td>\n",
+      "<td class=\"expl\"><div class=\"line1\">",
+      " restore session &quot;$essid&quot; from an exported copy ",
+      "<input class=\"browse\" type=\"file\" size=\"35\" name=\"witip\"> </div>\n";
     print "</td></tr>\n";
 
     print "</tbody></table></div><!-- sesscontainer -->\n";
@@ -167,12 +188,23 @@ sub Parse {
        $session->{actionvalue}="login";
        return;
     }
+    if($session->getpar("execute")){
+      use Apache2::Upload;
+      my $upload=$session->{request}->upload("commands");
+      if(!$upload){
+         $session->{errmsg}="No command file was selected.";
+         return;
+      }
+      use wList;
+      $session->{errmsg}=wList::Execute($session,$upload->tempname(),$session->getpar("commands"));
+      return;
+    }
     if($session->getpar("open")){
       # check the witip field
       use Apache2::Upload;
       my $upload=$session->{request}->upload("witip");
       if(!$upload){
-        $session->{errmsg}="No saved witip file was selected."; 
+        $session->{errmsg}="No exported witip file was selected."; 
         return;
       }
       my $fh=$upload->tempname();
@@ -183,7 +215,7 @@ sub Parse {
       } elsif($filetype =~ /^zip/i ){
           $filetype=0;
       } else {
-         $session->{errmsg}="The file you specified ($upload) is not a witip file.";
+         $session->{errmsg}="The file you specified ($upload) is not a witip exported file.";
          return;
       }
       use wZip;
@@ -191,7 +223,7 @@ sub Parse {
       if( $result =~ m/^SSID mis/ ){ # SSID mismatch
          $session->{errmsg}=
            "The witip file you specified ($upload) belongs to a different
-              session. Only files with the same session ID can be opened.";
+              session. Only files with the same session ID can be returned.";
          return;
       }
       if($result){# other error

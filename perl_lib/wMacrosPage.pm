@@ -102,7 +102,7 @@ sub render_macroline {
     my $etext=wUtils::htmlescape($text);
     print "<tr class=\"macroline\" id=\"mac_${n}_0\">\n";
     print "<td class=\"macrono\">$n</td>\n";
-    print "<td class=\"macrodel\" title=\"delete\"><div class=\"innermdel\">",
+    print "<td class=\"macrodel\" title=\"delete this macro\"><div class=\"innermdel\">",
        "<input type=\"checkbox\" name=\"mdel_$label\" id=\"mdel_$n\"",
        " onchange=\"wi_macroDel(this);\" title=\"delete\">",
        "<label for=\"mdel_$n\"></label></div></td>\n";

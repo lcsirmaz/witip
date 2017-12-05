@@ -1,0 +1,18 @@
+Dec 5, 2017
+   some main changes and bugfixes.
+   - new batch processing: macros and constraints now can be loaded from
+     a file. Saving a command file recreating the present set of macros
+     and constraints. Done in the new module wList.pm
+   - binary saving is renamed to export / import
+   - new constraint type "common information" is added; it stipulates that
+     the first acts as a common information of the next two.
+   - improving help and explanation, eliminating the "unroll" word
+   - improving/adding hover texts (title attributes) for several items
+   bugfixes:
+   - cannot change the allocted LP time on the config page - corrected
+   - when creating printable content, constraints were not html-escaped
+     (causing messed up output when the constrain contained < or > ) -
+     corrected
+   warning: the libglpk v36.2 package reports timeout as failure. Compile
+     glpk from source to avoid this bug.
+

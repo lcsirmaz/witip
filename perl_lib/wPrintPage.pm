@@ -109,9 +109,9 @@ sub macros_table {
     my $parser=new wParser($session);
     print "<div class=\"block\">\n";
     hideit([
-       ["'mactable',1","all macros","hide/show all macros"],
-       ["'macrolin',1","original","hide/show original text"],
-       ["'macrolin',2","unrolled","hide/show unrolled form"],
+       ["'mactable',1","all macros","show/hide all macros"],
+       ["'macrolin',1","original","show/hide original text"],
+       ["'macrolin',2","expanded","show/hide expanded form"],
     ]);
     print "<div id=\"mactable_1\" data-mask=\"1\" class=\"container\">\n";
     print "<div class=\"subtitle\" contenteditable=\"true\">Macros</div>\n";
@@ -138,7 +138,7 @@ sub constr_line {
     print "<tr id=\"conline_$count\" data-mask=\"$mask\">\n";
     print "<td class=\"$orig</td>\n";
     print "<td class=\"$class</td>\n";
-    print "<td class=\"code\">",$text,"</td></tr>\n";
+    print "<td class=\"code\">",wUtils::htmlescape($text),"</td></tr>\n";
 }
 
 # render constraints
@@ -160,10 +160,10 @@ sub constr_table {
     my $parser=new wParser($session);
     print "<div class=\"block\">\n";
     hideit([
-       ["'contable',1","all constraints","hide/show all constraints"],
-       ["'conline',1" ,"disabled","hide/show not enabled constraints"],
-       ["'conline',2" ,"original","hide/show original text"],
-       ["'conline',4" ,"unrolled","hide/show unrolled form"],
+       ["'contable',1","all constraints","show/hide all constraints"],
+       ["'conline',1" ,"disabled","show/hide disabled constraints"],
+       ["'conline',2" ,"original","show/hide original text"],
+       ["'conline',4" ,"expanded","show/hide expanded form"],
     ]);
     print "<div id=\"contable_1\" data-mask=\"1\" class=\"container\">";
     print "<div class=\"subtitle\" contenteditable=\"true\">Constraints</div>\n";
@@ -183,7 +183,7 @@ sub constr_table {
        $ccount++;
        constr_line($ccount,$oline,$mask|2,$class,$ctr->{raw});
        # unrolled
-       if($ctr->{rel} eq "markov"){
+       if($ctr->{rel} eq "markov" || $ctr->{rel} eq "common"){
           foreach my $e(@{$ctr->{text}}){
              $ccount++;
              constr_line($ccount,$uline,$mask|4,$class,
@@ -225,9 +225,9 @@ sub query_table {
     my ($session) = @_;
     print "<div class=\"block\">\n";
     hideit([
-      ["'exptable',1","all queries","hide/show all queries"],
-      ["'expline',1","unroll","hide/show unroll queries"],
-      ["'expline',2","check","hide/show relations"],
+      ["'exptable',1","all queries","show/hide all queries"],
+      ["'expline',1","missing term","show/hide missing term (=?) queries"],
+      ["'expline',2","checks","show/hide relation (=, &le; &ge;) queries"],
     ]);
     print "<div id=\"exptable_1\" data-mask=\"1\" class=\"container\">\n";
     print "<div class=\"subtitle\" contenteditable=\"true\">Queries</div>\n";
@@ -298,7 +298,7 @@ function wi_hideit(box,id,mask){
     print "<div class=\"maintitle\" contenteditable=\"true\">Content of wITIP session &raquo;",
       wUtils::htmlescape($session->{SSID}),"&laquo; as of $date </div>\n";
     print "<div class=\"spacer\"> </div>\n";
-    # original / asis texts
+    # original / asis texts, html-escape if necessary
     $session->{origText}="";
     $session->{unrollText}="~";
     # macros

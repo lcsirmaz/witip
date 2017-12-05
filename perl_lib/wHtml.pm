@@ -154,7 +154,7 @@ function wi_gotoPage(page){
               constraints => "define /view constraints",
               check => "check entropy expressions",
               wITIP => "how to use wITIP",
-              session => "change session / sign out",
+              session => "quit, print, export, import",
            } -> {$title};
            if($title eq $options->{banner}){
                print "<td class=\"actual\" title=\"$help\">$title</td>\n";

@@ -41,7 +41,7 @@ body { margin: 0; }
     text-align:center;}
 
 
-.result { font-size: 80%; font-weight: bold; vertical-align: text-top; }
+.result { font-size: 80%; font-weight: bold; vertical-align: text-top; white-space: nowrap; }
 .withc { font-size: 90%; font-weight: bold; color: #141455; padding: 1px; 
          vertical-align: text-top; }
 

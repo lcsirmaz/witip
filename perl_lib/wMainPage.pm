@@ -169,7 +169,7 @@ sub _render_result_type {
         my $img=$session->getconf("basehtml")."/images/waiting.gif";
         return "<span$label><img class=\"rescodeimg\" src=\"$img\" alt=\"waiting\"></span>";
     } elsif($id eq "timeout"){
-        return "<span$label class=\"timeout\">time</span>";
+        return "<span$label class=\"timeout\">timeout</span>";
     } elsif($id eq "failed"){
         return "<span$label class=\"failed\">failed</span>";
     } elsif($id eq "true"){
@@ -185,6 +185,29 @@ sub _render_result_type {
     }
     print STDERR "wMainPage::render_result_type: unknown proto id $id";
     return "result_type: unknown id $id";
+}
+# tell whan the result means in the title
+sub _render_result_title {
+    my($id,$without)=@_;
+    $without = $without ? "" : " &ndash; checked with constraints";
+    if($id eq "waiting"){
+        return "waiting for the result";
+    } elsif($id eq "timeout"){
+        return "LP solver run out of allocated time";
+    } elsif($id eq "failed"){
+        return "LP solver failed";
+    } elsif($id eq "true"){
+        return "query holds" . $without;
+    } elsif($id eq "false"){
+        return "query does not hold" . $without;
+    } elsif($id eq "onlyge"){
+        return "only &ge; holds" . $without;
+    } elsif($id eq "onlyle"){
+        return "only &le; holds" . $without;
+    } elsif($id eq "zap"){
+        return "missing terms calculated";
+    }
+    return "$id";
 }
 # render the constraint type
 #  $id = <code> or $id = proto_<code>
@@ -247,14 +270,16 @@ sub render_resultline {
 ## </tr>
     print "<tr class=\"resultline\" id=\"res_${label}_0\">\n";
     # delete
-    print "<td class=\"resdel\"><div class=\"resinnerdel\">",
+    print "<td class=\"resdel\" title=\"delete this query\"><div class=\"resinnerdel\">",
       _render_delete_checkbox($history,$label),
       "<label for=\"resdel_$history\"></label></div></td>\n";
     # type
-    print "<td class=\"rescode\" id=\"res_${label}_1\">",
+    print "<td class=\"rescode\" id=\"res_${label}_1\" title=\"",
+        _render_result_title($type,$standalone),"\">",
         _render_result_type($session,$type),"</td>\n";
     # constraints
-    print "<td class=\"constraint\">",
+    print "<td class=\"constraint\" title=\"",
+        $standalone ? "" : "checked with constraints" ,"\">",
         _render_result_constr($standalone ? "noconstr" : "constr"),"</td>\n";
     # code
     my $aux=""; if($query =~ s/\+\+\+(.*)$//){ $aux=$1; }

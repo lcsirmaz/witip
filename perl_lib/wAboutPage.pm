@@ -70,9 +70,6 @@ by &lt; and &ge;
 
 package wAboutPage;
 
-# TODO Use <p>..</p> instead of <br> in the text
-# TODO Sections could be enclosed in <div class="section">..</div> to apply space instead of <p></p>
-
 use wHtml;
 use strict;
 
@@ -157,12 +154,13 @@ function wi_showHelp(topic){
 <div class="ltitle">Query</div>
 <ul>
 <li>$seeas2<a href="#wcheck">checking</a></li>
-<li>$seeas2<a href="#wunroll">unrolling</a></li>
+<li>$seeas2<a href="#wunroll">expand</a></li>
 </ul>
 <div class="ltitle">Session</div>
 <ul>
 <li>$seeas2<a href="#wconfigure">configure</a></li>
-<li>$seeas2<a href="#wsave">print, save</a></li>
+<li>$seeas2<a href="#wprint">print, save</a></li>
+<li>$seeas2<a href="#wquit">quit</a></li>
 </ul>
 <div class="ltitle">Other</div>
 <ul>
@@ -185,11 +183,12 @@ whether the inequality is a consequence of the basic Shannon
 inequalities and the specified constraints.
 <br>
 wITIP uses extended syntax for expressions, a user-friendly 
-syntax checker, macros, and &quot;unrolling&quot;,
-where complex entropy expressions are unrolled into a linear combination
+syntax checker, macros, and &quot;expanding&quot;,
+where complex entropy expressions can be seen as a linear combination
 of simple entropies.
 <br>
-<b>L%check%Checking%</b> &ndash; to check an L%expr%entropy expression% for L%method%validity%, enter it to the box
+<b>L%check%Checking%</b> &ndash; to check an L%expr%entropy expression% for L%method%validity%, 
+enter such an expression to the box
 at the bottom of the &quot;check&quot; page:
 
 <div class="indent">
@@ -209,9 +208,9 @@ below defines the conditional L%ingleton%Ingleton% expression:
 </div>
 After it has been defined, the macro can be used in any expression.
 <br>
-<b>L%unroll%Unrolling%</b> &ndash;
-computes the difference of two L%expr%entropy expressions% as a linear 
-combination of entropies:
+<b>L%unroll%Missing terms%</b> &ndash;
+calculates the difference of two L%expr%entropy expressions% as a linear 
+combination of simple entropies:
 <div class="indent">
 S%D(A1,X;A2,Y;C;D|Z1,Z2) =? [A1,X,Z1,Z2;A2,Y,Z1,Z2;C,Z1;D,Z1]#D(ax,by,c,d|vw) =? [axvw,byvw,cv,dv]%
 <br>
@@ -322,7 +321,7 @@ simplified. A variable sequence stands for its own entropy; conditional
 entropy and mutual information can be written without the leading letters
 S%H% and S%I%.
 <ul><li>S%ab% &ndash; the entropy of the variable pair S%a% and S%b%,</li>
-<li>S%(ab|cd)% &ndash; conditional entropy &ndash; in tranditional style 
+<li>S%(ab|cd)% &ndash; conditional entropy &ndash; in traditional style 
 this should be written as S%H(a,b|c,d)%.
 <li>S%(ab,cd)#(ab,cd)% mutual information, same as S%I(ab,cd)#I(ab,cd)%,</li>
 <li>S%(ab,cd|xy)#(ab,cd|xy)% conditional mutual information, same as
@@ -373,7 +372,7 @@ an L%expr%expression% can also contain <i>macro invocations</i>.
 Actually, a macro is a shorthand for a linear combination of other
 L%expr%entropy terms%. Macros can be defined under the &quot;macros&quot; tab.
 The macro definition starts with a capital letter from S%A% to S%Z% followed by the
-argument list enclosed in parenteses. Arguments are separated by 
+argument list enclosed in parentheses. Arguments are separated by 
 either S%;#,% or S%|% (the list separator character or the <i>pipe</i> symbol).
 The same macro name can
 identify several different macros depending on the number of arguments and
@@ -395,7 +394,7 @@ S%3*T(A,C;A,D|B,C;B,D) - 4T(X1,Z2|X2,Z2|Y1;Y2,Z2)#3*T(ac,ad|bc,bd) - 4T(xu|yu|t,
 expands the first and second definition, respectively.
 <br>
 Internally, macros are stored
-in &quot;unrolled&quot; form using only entropies; this form is displayed when
+in expanded form using only entropies; this form is displayed when
 clicking on a macro in the listing.
 <br>To delete a macro, click on the trash bin icon next to the macro. 
 After a trash bin icon has been selected no other action is possible (apart from
@@ -412,41 +411,48 @@ relative to a set of selected <i>constraints</i>. Constraints can be added,
 deleted, enabled or disabled under the &quot;constraints&quot; tab.
 To add a constraint simply enter it into the input line at the bottom, and
 click on the &quot;add constraint&quot; button. A constraint can be
-<ul><li>a relation, that is two L%expr%entropy expressions% compared
+<ul><li>relation, that is two L%expr%entropy expressions% compared
 by one of S%=%, S%<=% or S%>=%. Example:
 <div class="indent">
   S%H(A,B,X) = H(A,B)+H(X)#abx = ab+x%
 </div></li>
-<li>a functional dependency: the first L%sequences%sequence% is
+<li>functional dependency: the first L%sequences%sequence% is
 determined by the second one. There should be exactly two lists in
-this constraint Example:
+this constraint. Example:
 <div class="indent">
-    S%A : X,Y#a : xy%
+    S%A : X,Y#a : xy% <br>
+    or <br>
+    S%A &lt;&lt; X,Y#a &lt;&lt; xy%
 </div></li>
-<li>an independence: the sequences are totally independent. There
+<li>independence: the sequences are totally independent. There
 must be at least two sequences.
 <div class="indent">
    S%A . B1,B2 . X,Y . &middot;&middot;&middot;#a . bc . xy . &middot;&middot;&middot;% <br>
    or<br>
    S%A || B1,B2 || X,Y || &middot;&middot;&middot;#a || bc || xy || &middot;&middot;&middot;%
 </div></li>
-<li>a Markov chain: the lists form a Markov chain. There must be at least
+<li>Markov chain: the lists form a Markov chain. There must be at least
 three terms here, and they should not form a trivial Markov chain.
 <div class="indent">
   S%A / B1,B2 / X,Y / &middot;&middot;&middot;#a / bc / uv / &middot;&middot;&middot;% <br>
   or<br>
   S%A -> B1,B2 -> X,Y -> &middot;&middot;&middot;#a -> bc -> uv -> &middot;&middot;&middot;%
 </div></li>
+<li>common information: the first list acts as the common information of
+the other two: it is determined by all of them, and has the maximal entropy.
+<div class="indent">
+  S%A,B &lt;&lt; B1,B2 / X,Y #ab &lt;&lt; bc / uv %
+</div></li>
 </ul>
-Constraints that are enabled have their checkbox ticked. Use the checkboxes to
+Enabled constraints have their checkbox ticked. Use the checkboxes to
 enable or disable constraints.
 
 <br>
 
 To delete any or all constraints, click on the trash bin icon next to them. 
 When changing which constraints are enabled, or when deleting them, no further
-action is possible until one of the buttons above the
-constraints is clicked.
+action is possible until one of the buttons above the constraint list is 
+clicked.
 
 <p></p>
 CONSTR
@@ -460,7 +466,7 @@ S%=% (equality), S%>=% (greater than or equal to), or S%<=%
 <div class="indent">
 S%[A;B;C;D]+I(A;B|Z)+I(B;Z|A)+I(Z;A|B) >= -3*I(C,D;Z|A,B)#[a,b,c,d]+(a,b|z)+(b,z|a)+(z,a|b) >= -3*(cd,z|ab)%
 </div>
-If the query is parsed succesfully, it is added to the list above the
+If the query is parsed successfully, it is added to the list above the
 query box, and passed to the L%method%LP solver% for checking.  Depending on
 the response time of the LP solver, either the result is shown immediately,
 or it appears later, when the solver finishes its work.  The result of the
@@ -502,20 +508,22 @@ that the checking was performed with constraints.
 CHECKING
 #####################################################################
 # CHECKING
-    render_block($session,"unroll","Unrolling",<<UNROLL);
-Unrolling computes the difference of two L%expr%entropy expressions% as
-a linear combination of entropies. The two sides are connected by S%=?%,
+    render_block($session,"unroll","Missing terms",<<UNROLL);
+Two L%expr%entropy expressions% are expanded as linear combination of
+plain entropies, and their difference is calculated. The two expressions are 
+connected by S%=?%, 
 and the result is printed below the query as in the following example:
 <div class="indent">
   S%[A;B;C;D] =? I(A;B|C)+I(A;B|D)+I(A;B)#[a,b,c,d] =? (a,b|c)+(a,b|d)+(c,d)%
   <br>
   S%-H(A)-H(B)+H(A,B)#-a-b+ab%
 </div>
-When the two sides are equal, the result is S%0%. The mnemonic can be:
-what are the missing terms on the right hand side which make the two
-expressions equal?
+When the two sides expand to the the same expression, the result is S%0%. 
+The mnemonic for &quot;=?&quot;
+can be: what are the missing terms on the right hand side which make the two
+expressions the same?
 <br>
-As unrolling does not involve any further computation, the result is
+This operation does not involve any further computation, thus the result is
 printed immediately.
 <p></p>
 UNROLL
@@ -524,7 +532,7 @@ UNROLL
     render_block($session,"configure","Configuring wITIP",<<CONFIGURE);
 You can configure many features of wITIP under the &quot;config&quot; tab.
 <p></p>
-<strong>Appearence</strong><br>
+<strong>Appearance</strong><br>
 Set the font family and the font size for macros, constraints, and
 queries. This choice does not affect the font used in printing.
 <br>
@@ -532,15 +540,15 @@ queries. This choice does not affect the font used in printing.
 constraint and query tables. 
 <p></p>
 <strong>Macro definition</strong><br>
-By default, all macro arguments must be used in the final (unrolled)
+By default, all macro arguments must be used in the final (fully expanded)
 macro text. Uncheck this option if you want to use macro definitions
-like this one, in which the first argument S%U#u% cancels out:
+like the next one, in which the first argument S%U#u% cancels out:
 <div class="indent">
 S%A(U,V,W)=I(U;V|W)+H(V|U,W)#A(u,v,w)=(u,v|w)+(v|uw)%
 </div>
 <strong>Syntax</strong><br>
 Determine how wITIP processes the entered text; whether to use traditional
-or simplified L%style%syle%; can parentheses S%()% or braces S%{}% be used to 
+or simplified L%style%style%; can parentheses S%()% or braces S%{}% be used to 
 enclose subexpressions; and finally whether variables can or cannot
 end in a sequence of primes.
 <p></p>
@@ -578,51 +586,72 @@ LP response time.
 <p></p>
 CONFIGURE
 #####################################################################
-# PRINTING, SAVING
-    render_block($session,"save","Printing and saving your work",<<PRINTING);
-You can print out, save, or reload a previously saved session under the
-&quot;session&quot; tab.  The wITIP session ID identifies your session. 
-When you return later, the session will be restored to the state you've
-left it in.  Next to the session ID at the top of the page an <b>*</b> indicates
-that the session content has changed since it was saved (or opened).
-
-<br>
-
-Click on the &quot;change&quot; button to change the session you are
-working on; you can return to continue your work any time.
+# PRINT, EXPORT / IMPORT
+    render_block($session,"print","Print, export and import",<<PRINTING);
+There is no need to save the session: when opening a wITIP session it
+automatically restores the latest content. To create a backup or a snapshot,
+export the session. The exported content can be restored by importing it.
+Rather than entering contraints and macros one by one, they can be added
+in bulk from an external command file. An editable command file &ndash; 
+recreating the present set of macros, constraints, and the last query 
+&ndash; is available for download. Use the &quot;session&quot; tab for
+these options.
 
 <p></p>
+
 <strong>Printing</strong><br>
-
-Clicking on &quot;print&quot; opens a new page showing all of your macros,
-constraints, and recent queries.  You can edit the main title (showing the
-session ID and the current date / time), and the section titles as well. 
-The buttons hide a whole section, or some part of it, which is useful if
-you do not need, for example, the unrolled (internal) form of the
-constraints. Entropy expressions are printed using the default 
-font (and not the one configured). The unrolled forms use the syntax style
-set in the L%configure%configuration%.
-
-<br>
-
-Clicking on the &quot;Print&quot; button prints the visible part of the page
-using the browser's printing method.
+Click on &quot;print&quot; to print out the actual list of macros, 
+constraints and queries.
+A new page is opened showing these items. You can edit the main title 
+(by default the session ID and the current date / time), and the
+section titles as well. Buttons on the right hand side
+hide a whole section, or some part of it, which 
+can be useful if, for example, you do not need the expanded (internal)
+form of the constraints. Entropy expressions are printed using the default 
+font (and not the one configured). Expanded forms use the current syntax
+style set in the L%configure%configuration%.
+Clicking on &quot;Print&quot; at the top of the page prints the
+composed page using the browser's printing method.
 
 <p></p>
-<strong>Saving and opening</strong><br>
 
-The current state of the session can be saved on your computer by clicking
-on the &quot;save&quot; button.  The saved wITIP file can be
-&quot;open&quot;ed later, which means that the saved session is restored. 
-The wITIP files are bound to both the session and the web server: you cannot
-open a saved file using different session ID, or a different wITIP web
-server.
+<strong>Export and import</strong><br>
+When clicking on &quot;export&quot; the current content of the session
+(including settings, macros, constraints, queries, and history) is
+packed into a wITIP file, which can be saved for future use.
+To restore the saved content, click on &quot;import&quot; and specify the
+saved wITIP file. The created wITIP file is bound to both the session 
+ID and the hosting web server: you cannot open an exported content using
+different ID or different wITIP web server.
 <b>Warning:</b>
-When opening a saved session, all changes to the current session are lost. 
-Please consider saving it first.
+After a successful import the previous content is 
+irrecoverably lost. Please consider exporting the session first.
+
+<p></p>
+<strong>Save and execute: bulk input</strong><br>
+To download an (editable) command file re-creating all macros, constraints,
+and the last query, click on &quot;save&quot;. To execute commands in such
+a file, click on &quot;execute&quot;. The command file has strict syntax,
+size limits (both for line length and number of lines), and execution
+stops at the first error. For syntax consult the command file created when
+clicking on &quot;save&quot;.
 
 <p></p>
 PRINTING
+#####################################################################
+# EXPORT / IMPORT
+    render_block($session,"quit","Quit wITIP",<<QUITTING);
+Simply close the browser's window when you finished working on wITIP.
+To switch to another session click on the &quot;change&quot; button 
+under the &quot;session&quot; tab. It redirects to the wITIP login page
+where you specify the new session ID you wish to work with.
+
+<br>
+There is no need to save your work. When you open a wITIP session,
+the latest content is automatically restored.
+
+<p></p>
+QUITTING
 #####################################################################
 # METHOD
     render_block($session,"method","Under the hood: how wITIP works?",<<METHOD);
@@ -634,7 +663,7 @@ into a satisfiability question of an LP problem.
 First, the query is transformed into the following question: is a certain
 linear combination of entropies equal to, or &ge; than zero?  When the
 question asks for equality, it is further split into whether it is &ge; 0,
-and whether its negation is also &ge; 0.  Thus the enquiry is transformed to the
+and whether its negation is also &le; 0.  Thus the enquiry is transformed to the
 question (or to two questions) of the form
 
 <div class="indent">
@@ -646,13 +675,14 @@ where <b>e</b> is a linear combination of entropies.
 
 In the next step all L%var%random variables% occurring in <b>e</b> are
 collected; denote this collection by S%V%.  Then the set of all <i>basic
-Shannon inequalities</i> is generated.  This set has all inequalities which
+Shannon inequalities</i> for all subsets of variables from S%V% is
+generated.  This set implies all inequalities which
 state that the entropy increases and is submodular:
 
 <div class="indent">
   S%H(B)-H(A) &ge; 0% <br>
   &nbsp; &nbsp; where S%A% is a subset of S%B% which is a subset of
-                 S%V%; <br>
+                 S%V%; moreover <br>
   S%H(A,C)+H(B,C)-H(C)-H(A,B,C) &ge; 0% <br>
   &nbsp; &nbsp; where S%A%, S%B% and S%C% are different subsets of S%V%. 
 </div>
@@ -660,7 +690,7 @@ state that the entropy increases and is submodular:
 Then the LP solver is presented with the following solvability problem:
 
 <div class="textindent" style="line-height: normal">
-<i>Is there any non-negative linear combination of the basic Shannon
+<i>Is there any non-negative linear combination of the provided basic Shannon
 inequalities which gives</i> <b>e</b> &ge; 0 <i>?</i>
 </div>
 When there are enabled L%constr%constraints%, the basic Shannon

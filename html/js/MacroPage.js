@@ -83,7 +83,7 @@ function wi_copyLineToEdit(item){
     wi_setCaret(target,txt.length);
     wi_autoResize(target);
     document.getElementById('macro_errmsg').innerHTML=
-        'unrolled (internal) form of this macro:';
+        'expanded (internal) form of this macro:';
     document.getElementById('macro_auxmsg').innerHTML=
         wi_htmlize(item.getAttribute('data-unrolled'));
 }

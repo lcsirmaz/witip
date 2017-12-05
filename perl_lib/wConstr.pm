@@ -34,14 +34,14 @@ Parse, add, and delete constraints
 
 A constraint is a hash with the following fields:
 
-     rel   => "=", ">=", "markov"
-     text  => entropy expression or an array of expressions for markov
+     rel   => "=", ">=", "markov", "common"
+     text  => entropy expression or an array of expressions for markov/common
      skip  => 0/1, 1 when the constraint is disabled
      raw   => the original textual form
      label => unique integer to identify the constraint
 
-When rel is "markov", the text field is an array of expressions, all =0; 
-otherwise it is the entropy expression which must be =0 or >=0,
+When rel is "markov" or "common", the text field is an array of expressions,
+all =0; otherwise it is the entropy expression which must be =0 or >=0,
 
 =item Errors
 
@@ -58,11 +58,13 @@ following fields:
 
 =over 2
 
-=item wConstr::add_constraint($session,$text)
+=item wConstr::add_constraint($session,$text,$skip)
 
 Parse the constraint given in $text. If there were no errors,
 insert it as the last constraint; add the raw text to the constraint
-history. Returns an error structure as detailed above.
+history. If $skip is defined and not zero, make the skip attribute 1.
+Returns an error structure as detailed above. Save constraints and
+id_table to $session if $skip is defined.
 
 =item $id_table = wConstr::adjust_id_table($id_table,$constraints)
 
@@ -84,7 +86,7 @@ sub adjust_id_table {
     my($id_table,$constr)=@_;
     my $v=0;
     foreach my $c(@$constr){
-        if($c->{rel} eq "markov"){
+        if($c->{rel} eq "markov" || $c->{rel} eq "common"){
            foreach my $e(@{$c->{text}}){
                foreach my $k (keys %$e){
                   $v |= $k;
@@ -106,7 +108,7 @@ sub adjust_id_table {
 }
 
 sub add_constraint {
-    my($session,$string)=@_;
+    my($session,$string,$skip)=@_;
     my $constr=wUtils::read_user_constraints($session);
     # check if the same constraint is there verbatim
     # after parsing one can check whether the constraint is 
@@ -129,12 +131,16 @@ sub add_constraint {
     # add to the constraint history and save
     wUtils::write_user_history($session,"cons",$string);
     $c->{label} = wUtils::get_label($session);
-    $c->{skip} = 0;
+    $c->{skip} = ($skip ? 1 : 0);
     push @$constr, $c;
     wUtils::write_user_constraints($session,$constr);
     my $id_table=adjust_id_table($parser->get_id_table(),$constr);
     wUtils::write_user_id_table($session,$id_table);
     wUtils::set_modified($session);
+    if(defined $skip){ ## replace cached versions
+       $session->{user_id_table}=$id_table;
+       $session->{user_constraints}=$constr;
+    }
     return { err=>""};
 }
 

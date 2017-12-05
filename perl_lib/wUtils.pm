@@ -449,7 +449,7 @@ sub read_user_constraints {
         my $raw=$1; $raw="" if(!defined $raw);
         my @v=split(/;/); my $text;
         next if(scalar @v < 4);
-        if($v[0] eq "markov"){
+        if($v[0] eq "markov" || $v[0] eq "common"){
             my @all=();
             for my $i(3..scalar @v-1){
                 push @all,_string_to_expr($v[$i]);
@@ -481,7 +481,7 @@ sub write_user_constraints {
     }
     foreach my $c (@$constr){
         print $fh "$c->{rel};$c->{skip};$c->{label}";
-        if($c->{rel} eq "markov"){
+        if($c->{rel} eq "markov" || $c->{rel} eq "common"){
             foreach my $e (@{$c->{text}}){
               print $fh ";";
               _print_expression($fh,$e);

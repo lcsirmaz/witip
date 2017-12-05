@@ -52,7 +52,13 @@ sub get_installdir {
       $dir=user_input("\\/[\\w\\/:\\+\\-,%]+",
         "Please specify the full path where wITIP has been unpacked to",$suggest);
       $dir =~ s#/$##g;
-      if(! -e "$dir/prog/glpksolve.c"){
+      foreach my $subdir (qw( bin config html html/css html/js html/images perl_lib prog template w )){
+          if($dir && ! -d "$dir/$subdir"){
+             print "The directory \"$dir\" seem not to be correct ($dir/$subdir is missing).\n";
+             $dir="";
+          }
+      }
+      if($dir && ! -e "$dir/prog/glpksolve.c"){
          print "The directory \"$dir\" seems not to be correct.\n";
          $dir="";
       }
@@ -262,7 +268,7 @@ print "Directories:\n";
 $CONFIG->{INSTALLDIR} = get_installdir();
 $CONFIG->{BASEDIR}    = get_datadir($CONFIG->{INSTALLDIR});
 $CONFIG->{LPSOLVER}   = get_lpsolver($CONFIG->{INSTALLDIR});
-print "Helper programs: zip, unzip, and mktemp\n";
+print "Helper programs: mktemp, zip, unzip, and file\n";
 ($CONFIG->{MKTEMP},$CONFIG->{ZIP},$CONFIG->{UNZIP},$CONFIG->{FILETYPE})
                       = redefine_helpers();
 print "Web server configuration\n";
@@ -316,7 +322,8 @@ link "$CONFIG->{INSTALLDIR}/html/index.html", "$CONFIG->{INSTALLDIR}/html/index.
 
 print "\nYou have configured wITIP. To go online add the line
    Include $CONFIG->{INSTALLDIR}/config/apache.conf
-to apache config and restart apache.\n";
+to apache config and restart apache. Make sure that apache is
+configured with the perl module enabled\n";
 
 exit 0;
 

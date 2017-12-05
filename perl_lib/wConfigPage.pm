@@ -248,7 +248,8 @@ SELECTFONT
     # LP response time
     print "<tr class=\"subt\"><td></td><th>LP response time</th></tr>\n";
     print "<tr><td class=\"inp\">";
-    _select(_timeout(),$session->getconf("timeout"),"timeout");
+    _select(_timeout(),$session->getconf("timeout"),"timeout",
+        "onchange=\"wi_showButtons()\"");
     print "</td><td>Time limit for solving an LP instance </td></tr>\n";
     print <<TRAILER;
     </tbody></table></div> <!-- config -->

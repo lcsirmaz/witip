@@ -31,10 +31,10 @@ Create the LP problem from the set of constraints and expression
 
 Constraints and the inequality to be checked are stored as a two-element
 hash { rel=> I<relation>, text=> I<expression> }.  Here I<relation> is either
-"=" (equal to zero), ">=" (greater or equal to zero) or "markov" (for a
-Markov chain constraint); I<expression> is a hash of { I<varset> => I<value> }
-with both fields are positive integers in case of "=" and ">=", and
-I<value> is an array of such expressions in case of "markov".
+"=" (equal to zero), ">=" (greater or equal to zero) or "markov", "common" 
+(for a Markov chain constraint); I<expression> is a hash of { I<varset> =>
+I<value> } with both fields are positive integers in case of "=" and ">=",
+and I<value> is an array of such expressions in case of "markov" and "common".
 
 =head2 How the LP is generated
 
@@ -318,7 +318,7 @@ sub generate_LP {
         } elsif($c->{rel} eq ">="){
             push @const, $c->{text};
             push @type, 0;
-        } elsif($c->{rel} eq "markov"){
+        } elsif($c->{rel} eq "markov" || $c->{rel} eq "common"){
             foreach my $e(@{$c->{text}}){
                 push @const, $e;
                 push @type, 1;
