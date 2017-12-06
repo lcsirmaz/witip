@@ -1052,7 +1052,7 @@ sub _Markov {
          && $self->R('/') && $self->is_varlist($v2) ){
            push @e,$v2; $cnt++;
        }
-       $self->retore_pos($oldpos);
+       $self->restore_pos($oldpos);
     } else {
        while( ($oldpos=$self->save_pos())
          && $self->R('-') && $self->R('>')
