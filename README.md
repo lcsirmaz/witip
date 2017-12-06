@@ -2,7 +2,7 @@
 
 This is a port of [minitip](https://github.com/lcsirmaz/minitip) as a web 
 based utility. You can experiment with it at
-[http://www.personal.ceu.edu/minitip](http://www.personal.ceu.edu/minitip).
+[http://www.personal.ceu.edu/witip](http://www.personal.ceu.edu/witip).
 The server-side routines are written in [perl](https://www.perl.org)
 with the exception of the LP solver engine which is  C frontend to glpk,
 the [Gnu Linear Programming Kit](https:///www.gnu.org/software/glpk).
