@@ -8,6 +8,7 @@ Dec 5, 2017
      the first acts as a common information of the next two.
    - improving help and explanation, eliminating the "unroll" word
    - improving/adding hover texts (title attributes) for several items
+   - adding <IfModule mod_perl.c> to the Apache config file
    bugfixes:
    - cannot change the allocted LP time on the config page - corrected
    - when creating printable content, constraints were not html-escaped
