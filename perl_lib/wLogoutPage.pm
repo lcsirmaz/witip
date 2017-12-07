@@ -74,6 +74,26 @@ function wi_saveButton(){
     },1000);
     return true;
 }
+function wi_commandButton(){
+    var fname=document.getElementById('commandfile').value;
+    if(! fname){
+        alert('No command file is specified'); return false;
+    }
+    if(! fname.match(/[.]txt\$/i)){
+        alert(fname +' is not a wITIP command file'); return false;
+    }
+    return confirm('All macros and constraints will be deleted. Continue?');
+}
+function wi_importButton(){
+    var fname=document.getElementById('importfile').value;
+    if(! fname){
+        alert('No file was specified '); return false;
+    }
+    if(! fname.match(/[.]zip\$/i)){
+        alert(fname +' is not a wITIP export file'); return false;
+    }
+    return confirm('All changes to this session will be lost. Continue?');
+}
 ",
     });
     ## values used later
@@ -142,12 +162,12 @@ function wi_saveButton(){
     print "<tr><td class=\"sbutton\"> ",
       "<input class=\"subutton\" type=\"submit\" name=\"execute\"";
     if($session->getconf("modified")){ # confirm button  
-        print " onclick=\"return confirm('All macros and constraints will be deleted. Continue?')\"",
+        print " onclick=\"return wi_commandButton(); \"",
     }
     print " value=\" execute \" title=\"add macros, constraints, and ask a query\"> </td>\n",
       "<td class=\"expl\"><div class=\"line1\">",
       " execute command list from the external file ",
-      "<input class=\"browse\" type=\"file\" size=\"35\" name=\"commands\"> </div>\n";
+      "<input class=\"browse\" id=\"commandfile\" type=\"file\" size=\"35\" name=\"commands\"> </div>\n";
     print "</td></tr>\n";
     # backup and restore
     print "<tr class=\"subt\"><td> </td>\n",
@@ -163,12 +183,12 @@ function wi_saveButton(){
     print "<tr><td class=\"sbutton\"> ",
       "<input class=\"subutton\" type=\"submit\" name=\"open\"";
     if($session->getconf("modified")){ # confirm button  
-        print " onclick=\"return confirm('All changes to this session will be lost. Continue?')\"",
+        print " onclick=\"return wi_importButton();\"",
     }
     print " value=\" import \" title=\"import an exported session\"> </td>\n",
       "<td class=\"expl\"><div class=\"line1\">",
-      " restore session &quot;$essid&quot; from an exported copy ",
-      "<input class=\"browse\" type=\"file\" size=\"35\" name=\"witip\"> </div>\n";
+      " restore session &quot;$essid&quot; content from an exported copy ",
+      "<input class=\"browse\" id=\"importfile\" type=\"file\" size=\"35\" name=\"witip\"> </div>\n";
     print "</td></tr>\n";
 
     print "</tbody></table></div><!-- sesscontainer -->\n";
