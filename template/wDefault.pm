@@ -140,8 +140,8 @@ sub config { return {
 sub macros {return [
     #H(a) = 1
     {std=>1, argno=>1, septype=>0, name=>"H", raw=>"", label=>-1, text=>{1=>1} },
-    # H(a|b) = ab - a
-    {std=>1, argno=>2, septype=>1, name=>"H", raw=>"", label=>-2, text=>{1=>-1,3=>1} },
+    # H(a|b) = ab - b
+    {std=>1, argno=>2, septype=>1, name=>"H", raw=>"", label=>-2, text=>{2=>-1,3=>1} },
     # I(a,b)=a+b-ab
     {std=>1, argno=>2, septype=>0, name=>"I", raw=>"", label=>-3, text=>{1=>1, 2=>1, 3=>-1} },
     # I(a,b|c)=ac+bc-abc-c
