@@ -334,6 +334,15 @@ use constant { ## the error messages
   e_MDEF_UNUSED    => "this argument is not used in the final macro text, which is:",
   e_NEWID_IN_MACRO => "only macro arguments can be used as random variables",
 };
+
+sub _extrachar {
+    my($chr)=@_;
+    return e_EXTRATEXT if(ord($chr)>0x20);
+    return e_EXTRATEXT." (newline)" if($chr eq "\r" || $chr eq "\n");
+    return e_EXTRATEXT." (tab)" if($chr eq "\t");
+    return e_EXTRATEXT." (control char \x".hex(ord($chr)).")";
+}
+
 #############################################################
 ## Identifiers
 ##
@@ -935,7 +944,7 @@ sub _parse_relation {  # relation or constraint
     $self->is_relation($relsym) || $self->harderr($zap ? e_NORELATION : e_RELEXPECTED);
     $zap || $relsym ne "=?" || $self->harderr(e_RELEXPECTED);
     $self->entropy_expression($e,-1.0) || $self->is_zero() || $self->harderr(e_NORHS);
-    $self->{Xchr} eq "\0" || $self->harderr(e_EXTRATEXT);
+    $self->{Xchr} eq "\0" || $self->harderr(_extrachar($self->{Xchr}));
     # convert it to =0, >=0, =?
     my ($n,$g)=collapse_expr($e, $relsym eq "<=");
     if( $relsym ne "=?"){ # = or >= or <=
@@ -974,7 +983,7 @@ sub _funcdep {
     my($self,$result,$v1,$v2)=@_;
     $v1 |= $v2;
     $v1!=$v2 || $self->harderr(e_FUNC_EQUAL);
-    $self->{Xchr} eq "\0" || $self->harderr(e_EXTRATEXT);
+    $self->{Xchr} eq "\0" || $self->harderr(_extrachar($self->{Xchr}));
     $result->{rel}  ="=";
     $result->{text} = { "$v1" => 1, "$v2" => -1 };
 }
@@ -1002,7 +1011,7 @@ sub _indep {
         }
         $self->restore_pos($oldpos);
     }
-    $self->{Xchr} eq "\0" || $self->harderr(e_EXTRATEXT);
+    $self->{Xchr} eq "\0" || $self->harderr(_extrachar($self->{Xchr}));
     # check if none of them is a function of others
     foreach my $k(keys %$e){
         $v1=0; foreach my $k2(keys %$e){
@@ -1061,7 +1070,7 @@ sub _Markov {
        }
        $self->restore_pos($oldpos);
     }
-    $self->{Xchr} eq "\0" || $self->harderr(e_EXTRATEXT);
+    $self->{Xchr} eq "\0" || $self->harderr(_extrachar($self->{Xchr}));
     $cnt >=3 || $self->harderr(e_MARKOV);
     $result->{text}=unfold_markov(\@e);
     scalar @{$result->{text}}>0 || $self->softerr(e_NOMARKOV);
@@ -1112,7 +1121,7 @@ sub _common_info {
          $cnt++;
     }
     $self->restore_pos($oldpos);
-    $self->{Xchr} eq "\0" || $self->harderr(e_EXTRATEXT);
+    $self->{Xchr} eq "\0" || $self->harderr(_extrachar($self->{Xchr}));
     $cnt<16 || $self->softerr(e_COMMONBIG);
     $result->{text}=unfold_common($v1,\@e);
     scalar @{$result->{text}}>0 || $self->softerr(e_NOCOMMON);
@@ -1202,7 +1211,7 @@ sub parse_macro_definition {
     return if( $self->errmsg() );
     $self->no_new_id(e_NEWID_IN_MACRO);
     $self->entropy_expression($e,1.0) || $self->harderr(e_MDEF_NOTEXT);
-    $self->{Xchr} eq "\0" || $self->harderr(e_EXTRATEXT);
+    $self->{Xchr} eq "\0" || $self->harderr(_extrachar($self->{Xchr}));
     my($n,$g)=collapse_expr($e,0);
     $n || $self->softerr(e_MDEF_SIMP0);
     if($self->getconf("macroarg")){ # all arguments must be used

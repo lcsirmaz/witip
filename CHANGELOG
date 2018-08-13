@@ -16,4 +16,9 @@ Dec 5, 2017
      corrected
    warning: the libglpk v36.2 package reports timeout as failure. Compile
      glpk from source to avoid this bug.
-
+Apr 24, 2018
+   bugfix: H(a|b) was defined wrongly in template/wDefault.pm
+Aug 13, 2018
+   when the input line ends with a newline character, the error message
+   "extra characters at the end" is not informative. Added explanation
+   for invisible characters in perl_lib/wParser.pm
