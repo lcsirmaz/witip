@@ -96,7 +96,6 @@ the history file complete with finished pending requests.
 #
 sub parse_expr_history {
     my($session,$update)=@_;
-    my $limit=$session->getconf("histsize");
     my $n=0; my $i=0;
     my @hist=(); my %pending=(); my $edit=""; my $last="";
     my $fh;
@@ -134,7 +133,7 @@ sub parse_expr_history {
     }
     my @pa = sort { $a <=> $b } keys %pending;
     my $excess= scalar @hist - $session->getconf("histsize");
-    if(!$update && $excess>0){ @hist = splice(@hist,0,$excess); }
+    if(!$update && $excess>0){ splice(@hist,0,$excess); }
     return {
         hist    => \@hist,
         pending => \@pa,
