@@ -113,6 +113,8 @@ sub setting {
     $session->{setting}->{exthisexpr} = ".hex"; # expression history
     $session->{setting}->{exttemp}    = ".tmp"; # temp files
     $session->{setting}->{extpam}     = ".pam"; # secret value
+    # version
+    $session->{setting}->{version}    = "2.1";
 }
 
 # default config file

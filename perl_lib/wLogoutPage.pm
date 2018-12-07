@@ -66,6 +66,10 @@ sub Page {
         lcss   => "session",
         javascript => "
 var wi_saved=0;
+function wi_showmsg(msg){
+    document.getElementById('id-errtxt').innerHTML=msg;
+    document.getElementById('id-errmsg').style.visibility='visible';
+}
 function wi_saveButton(){
     if(wi_saved) return false;
     wi_saved=1;
@@ -77,22 +81,30 @@ function wi_saveButton(){
 function wi_commandButton(){
     var fname=document.getElementById('commandfile').value;
     if(! fname){
-        alert('No command file is specified'); return false;
+        wi_showmsg('No command file is specified');
+        return false;
     }
     if(! fname.match(/[.]txt\$/i)){
-        alert(fname +' is not a wITIP command file'); return false;
+        wi_showmsg('This is not a wITIP command file');
+        return false;
     }
     return confirm('All macros and constraints will be deleted. Continue?');
 }
 function wi_importButton(){
     var fname=document.getElementById('importfile').value;
     if(! fname){
-        alert('No file was specified '); return false;
+        wi_showmsg('No exported file was specified');
+        return false;
     }
     if(! fname.match(/[.]zip\$/i)){
-        alert(fname +' is not a wITIP export file'); return false;
+         wi_showmsg('This is not a wITIP export file');
+         return false;
     }
     return confirm('All changes to this session will be lost. Continue?');
+}
+function wi_dismiss(){
+    document.getElementById('id-errmsg').style.visibility='hidden';
+    return false;
 }
 ",
     });
@@ -117,23 +129,29 @@ function wi_importButton(){
     ##
     # spacer
     print "<div style=\"height: 5px;\"> <!-- spacer --> </div>\n";
-    # error
+    # error message
 ## HTML code
-## <p class="errmsg"> .... </p>
-    if($session->{errmsg}){
-        print "<div class=\"errmsg\">",$session->{errmsg},"</div>\n";
-    }
+## <div class="errmsg" style="visibility:hidden/visible">
+##  <table><tbody><tr><td>
+##     <input class="dismissbutton" type="submit" onclick="return wi_dismiss();">
+##    </td><td> ERROR MESSAGE </td>
+##  </tr></tbody></table>
+## </div>
+    print "<div class=\"errmsg\" style=\"visibility:",
+      $session->{errmsg} ? "visible" : "hidden",
+      "\" id=\"id-errmsg\"><table><tbody><tr><td>",
+      "<input class=\"dismissbutton\" type=\"submit\"", 
+      " value=\"dismiss\" onclick=\"return wi_dismiss();\">",
+      "</td>\n<td id=\"id-errtxt\">",($session->{errmsg} || ""),
+      "</td></tr></tbody></table></div>\n";
 ## HTML code
 ## <div><table><tbody>
 ##   <tr><td> BUTTON </td> </td> explanation </td></tr>
 ## </tbody></table></div>    
     print "<div class=\"sesscontainer\"><table class=\"sesstable\">",
           "<tbody>\n";
-    # session ID, indicate whether modified
-    my $modified="";
+    # session ID
     my $essid=wUtils::htmlescape($SSID);
-    $modified=" <span class=\"smodified\">(modified)</span> "
-        if($session->getconf("modified"));
     # change session ID
     print "<tr class=\"subt\"><td class=\"firstcol\"> </td>\n",
       "<th class=\"stitle secondcol\"> Change session </th></tr>\n";
@@ -155,16 +173,14 @@ function wi_importButton(){
     print "<tr><td class=\"sbutton\"> ",
        "<a class=\"abutton\" href=\"$listurl\"",
        " onclick=\"return wi_saveButton();\"",
-       " title=\"create commands which add macros, constraints and the last query \"> save </a></td>\n",
-       "<td class=\"expl\"> download an editable list of commands creating current macros, constraints and the last query",
+       " title=\"create commands which add macros, constraints, and the last query \"> save </a></td>\n",
+       "<td class=\"expl\"> download an editable list of commands creating current macros, constraints, and the last query",
        " </td></tr>\n";
     # execute
     print "<tr><td class=\"sbutton\"> ",
-      "<input class=\"subutton\" type=\"submit\" name=\"execute\"";
-    if($session->getconf("modified")){ # confirm button  
-        print " onclick=\"return wi_commandButton(); \"",
-    }
-    print " value=\" execute \" title=\"add macros, constraints, and ask a query\"> </td>\n",
+      "<input class=\"subutton\" type=\"submit\" name=\"execute\"",
+      " onclick=\"return wi_commandButton(); \"",
+      " value=\" execute \" title=\"add macros, constraints, and ask a query\"> </td>\n",
       "<td class=\"expl\"><div class=\"line1\">",
       " execute command list from the external file ",
       "<input class=\"browse\" id=\"commandfile\" type=\"file\" size=\"35\" name=\"commands\"> </div>\n";
@@ -181,11 +197,9 @@ function wi_importButton(){
        "</td></tr>\n";
     # import
     print "<tr><td class=\"sbutton\"> ",
-      "<input class=\"subutton\" type=\"submit\" name=\"open\"";
-    if($session->getconf("modified")){ # confirm button  
-        print " onclick=\"return wi_importButton();\"",
-    }
-    print " value=\" import \" title=\"import an exported session\"> </td>\n",
+      "<input class=\"subutton\" type=\"submit\" name=\"open\"",
+      " onclick=\"return wi_importButton();\"",
+      " value=\" import \" title=\"import an exported session\"> </td>\n",
       "<td class=\"expl\"><div class=\"line1\">",
       " restore session &quot;$essid&quot; content from an exported copy ",
       "<input class=\"browse\" id=\"importfile\" type=\"file\" size=\"35\" name=\"witip\"> </div>\n";

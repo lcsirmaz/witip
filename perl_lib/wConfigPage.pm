@@ -181,12 +181,6 @@ SELECTFONT
     _select(_tablesize(),$session->getconf("tablesize"),"tablesize",
          "onchange=\"wi_showButtons()\"");
     print "</td><td>Table height</td></tr>\n";
-    # all macro args must be used
-    print "<tr class=\"subt\"><td> </td><th> Macro definition </th></tr>\n";
-    print "<tr><td class=\"inp\">";
-    _checkbox($session->getconf("macroarg"),"macroarg");
-    print "</td>\n";
-    print "<td> Complain if a macro argument is not used in the definition </td></tr>\n";
     # Syntax
     print "<tr class=\"subt\"><td> </td><th>Syntax</th></tr>\n";
     ##  style
@@ -245,8 +239,14 @@ SELECTFONT
         print "></td><td> <span class=\"tt\">",$sepchars->[$i+1],
             "</span> &nbsp; (",$sepchars->[$i],")</td></tr>\n";
     }
+    # others ...
+    # all macro args must be used
+    print "<tr class=\"subt\"><td> </td><th>Other</th></tr>\n";
+    print "<tr><td class=\"inp\">";
+    _checkbox($session->getconf("macroarg"),"macroarg");
+    print "</td>\n";
+    print "<td> Complain if a macro argument is not used in the definition </td></tr>\n";
     # LP response time
-    print "<tr class=\"subt\"><td></td><th>LP response time</th></tr>\n";
     print "<tr><td class=\"inp\">";
     _select(_timeout(),$session->getconf("timeout"),"timeout",
         "onchange=\"wi_showButtons()\"");
@@ -281,8 +281,6 @@ sub Parse {
     # tablesize
     $new=_checkamong(_tablesize(),$session->getpar("tablesize"));
     $config->{tablesize} = $new || $session->getconf("tablesize");
-    # macro args
-    $config->{macroarg} = $session->getpar("macroarg") ? 1 : 0;
     # syntax
     $config->{style}    = $session->getpar("simplesyntax") ? 1 : 0;
     $config->{parent}   = $session->getpar("parent") ? 1 : 0;
@@ -296,6 +294,8 @@ sub Parse {
     my $sepchars=_sepchars(); my $i=$session->getpar("sepchar");
     $config->{sepchar} = ($i =~ /^\d\d?$/ && ($i&1) && $sepchars->[$i]) ?
        $sepchars->[$i] : $session->getconf("sepchar");
+    # macro args
+    $config->{macroarg} = $session->getpar("macroarg") ? 1 : 0;
     # LP timeout
     $new=_checkamong(_timeout(),$session->getpar("timeout"));
     $config->{timeout} = $new || $session->getconf("timeout");

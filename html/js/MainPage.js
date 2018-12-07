@@ -9,7 +9,6 @@
 */
 
 // onload procedure
-var DefaultAction=1; // send with constraints
 var wi_HistLast=0;   // last id in resulttable
 var wi_HistPointer=0;// where the pointer is set
 function wi_initPage(){
@@ -23,19 +22,34 @@ function wi_initPage(){
        wi_HistLast=i;
        while(wi_HistLast>1 && !document.getElementById('histID_'+wi_HistLast)) wi_HistLast--;
     }
-    if(!document.getElementById('id-chkwith')) DefaultAction=0;
     wi_TimeId=setTimeout(wi_checkPending,1000);
 }
 // onchange: delete checkbox value changed
 function wi_resDelete(item){
-    if(!item.checked) return;
+    if(!item.checked){ // are there checked items
+       var ischecked=0,iit;
+       for(var i=1,iit=document.getElementById('resdel_1'); iit;
+          i++,iit=document.getElementById('resdel_'+i)) {
+           if(iit.checked){ ischecked=1;}
+       }
+       if(ischecked){ return; }
+       document.getElementById('delmarked').style.visibility='hidden';
+       document.getElementById('id-cover').style.display='none';
+       witipAltSubmit=null;
+       witipAllDisabled &= ~1;
+       return;
+    }
     if((witipAllDisabled & 1)!=0) return;
     witipAllDisabled |= 1;
+    witipAltSubmit='id-deletemarked';
     document.getElementById('delmarked').style.visibility='visible';
+    document.getElementById('id-cover').style.display='block';
 }
 // button "cancel" has been hit
 function wi_resetDel(){
     document.getElementById('delmarked').style.visibility='hidden';
+    document.getElementById('id-cover').style.display='none';
+    witipAltSubmit=null;
     witipAllDisabled &= ~1;
     var item;
     for(var i=1,item=document.getElementById('resdel_1'); item;
@@ -46,6 +60,9 @@ function wi_resetDel(){
 }
 // button "delete marked lines" was hit
 function wi_deleteMarkedLines(){
+    if(document.getElementById('goingto').value=='check') return true;
+    if(!confirm('Marked result lines will be deleted.\nProceed?'))
+        return false;
     return true;
 }
 // button "deleteall" was hit
@@ -148,25 +165,14 @@ function wi_setClass(id,cname){
     if(item) item.className=cname;
 }
 // check entered expression
-// exprtype:    0   1   2      3          4        5        6      7       8        9
-var witipCDArr=['','','zap','waiting','timeout','failed','true','false','onlyge','onlyle'];
+// exprtype:    0   1   2      3          4        5        6      7
+var witipCDArr=['','','zap','waiting','timeout','failed','true','false',
+//        8        9        10       11
+       'onlyge','onlyle','eqzero','gezero'];
 // return the focus to the input field
-function wi_checkInput(how){ // 1: with, 0: without constraints
+function wi_checkInput(){ // 1: with, 0: without constraints
     if(witipAllDisabled) return false;
-    if(how!=DefaultAction){
-        DefaultAction=how;
-        if(how==1){ // swap classes
-          wi_setClass('id-chkwith','defaultcheckbutton');
-          wi_setClass('id-chkwithout','auxcheckbutton');
-//          document.getElementById('id-chkwith').className='defaultcheckbutton';
-//          document.getElementById('id-chkwithout').className='auxcheckbutton';
-        } else {
-          wi_setClass('id-chkwith','auxcheckbutton');
-          wi_setClass('id-chkwithout','defaultcheckbutton');
-//          document.getElementById('id-chkwith').className='auxcheckbutton';
-//          document.getElementById('id-chkwithout').className='defaultcheckbutton';
-        }
-    }
+    var how=document.getElementById('id-chkwith').checked ? 1 : 0;
     witipAllDisabled |= 4;
     new Ajax.Request( witipBaseURL+'/chkexpr.txt', {
        method: 'get',
@@ -196,14 +202,14 @@ function wi_checkInput(how){ // 1: with, 0: without constraints
              document.getElementById('expr_auxmsg').innerHTML=htmlize(auxmsg);
              wi_setCaret(document.getElementById('expr_input'),errpos);
           } else { // no error, add expr:input with the result to the table
-              var label=parseInt(r.substr(2),10);
+              var label=parseInt(r.substr(code<9?2:3),10);
               var auxmsg='', constr=how;
               if(code==2){
                   auxmsg=r.substr(r.indexOf(',',2)+1);
                   constr=0;
               }
               var expr=document.getElementById('expr_input').value;
-              // waiting/failed/true/false/onlyge/onlyle/zap
+              // waiting/failed/true/false/onlyge/onlyle/zap/eqzero/gezero
               wi_addline(label,witipCDArr[code],constr,expr,auxmsg);
               // clean up all
               document.getElementById('expr_shadow').value='';
@@ -258,7 +264,7 @@ function wi_editKey(event){
         return false;
     } else if(key==13 || key=='Enter'){ // enter
         wi_killEvent(event);
-        wi_checkInput(DefaultAction); 
+        wi_checkInput();
         return false;
     }
     wi_HistPointer=0; // some other keyhit, reset history
@@ -314,7 +320,6 @@ function wi_checkPending(){
           var resa=x.responseText.split('\n');
           // <label>,<result>
           for(var i=0;i<resa.length;i++){
-
               var sp=resa[i].replace(/[\n\r]/g,'').match(/^(\d+),([a-z]*)$/);
               if(sp!=null) wi_replaceResult(sp[1],sp[2]);
           }
@@ -347,7 +352,7 @@ function wi_checkPending(){
 //
 var tmpId=5; // tmp ID for cloned nodes
 // label: integer (label)
-// result: waiting/failed/true/false/onlyge/onlyle/zap/
+// result: waiting/failed/true/false/onlyge/onlyle/zap/eqzero/gezero/
 // constr: 0: with no costraints, 1: with constraints
 // line, aux: content of line (aux)
 function wi_addline(label,result,constr,line,aux){
@@ -356,11 +361,12 @@ function wi_addline(label,result,constr,line,aux){
    newrow.id='res_'+label+'_0'; newrow.className='resultline';
    // delete column
    var col=newrow.insertCell(0); col.className='resdel';
+   col.title='delete this query';
    var idx='resdel_'+(wi_HistLast+1);
    var newdiv=document.createElement('div'); newdiv.className='resinnerdel';
    col.appendChild(newdiv);
    var colcont=document.getElementById('proto_delete').cloneNode(1);
-   colcont.id=idx; colcont.nodeName='resdel_'+label;
+   colcont.id=idx; colcont.name='resdel_'+label;
    newdiv.appendChild(colcont);
    colcont=document.createElement('label'); colcont.setAttribute('for',idx);
    newdiv.appendChild(colcont);
@@ -400,7 +406,7 @@ function wi_addline(label,result,constr,line,aux){
 }
 // replace result field
 //  label:  label
-//  result: one of [timeout|failed|true|false|onlyge|onlyle]
+//  result: one of [timeout|failed|true|false|onlyge|onlyle|eqzero|gezero]
 function wi_replaceResult(label,result){
     if(label==0) return;
     for(var i=0;i<wi_pendingLabels.length;i++){

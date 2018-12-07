@@ -935,7 +935,8 @@ sub entropy_expression { # sequence of entropy terms separated by +/-
 ## Entropy relation
 ##
 #   $result->{text} -- the expression reduced to =,>=, =?
-#   $result->{rel}  -- the relation, one of  =, >=, <=, =?
+#   $result->{rel}  -- the relation, one of  =, >=, =?
+#   $result->{n}    -- number of entries
 sub _parse_relation {  # relation or constraint
     my($self,$result,$zap)=@_;
     my $e={};          # the expression
@@ -947,13 +948,14 @@ sub _parse_relation {  # relation or constraint
     $self->{Xchr} eq "\0" || $self->harderr(_extrachar($self->{Xchr}));
     # convert it to =0, >=0, =?
     my ($n,$g)=collapse_expr($e, $relsym eq "<=");
-    if( $relsym ne "=?"){ # = or >= or <=
+    if( $relsym ne "=?" && !($zap && $n==0)){ # = or >= or <=
        $n || $self->softerr(e_SIMPLIFIESTO . "0 $relsym 0" . e_SIMPLIFIESEND);
        $g || $relsym eq "=" || $self->softerr(e_POSCOMB,$self->print_expression($e));
        !$zap || $n>1 || $self->softerr(e_SINGLETERM,$self->print_expression($e));
     }
     $result->{text}= $e;
     $result->{rel} = ($relsym eq "<=" ? ">=" : $relsym);
+    $result->{n} = $n;
 }
 sub parse_relation {
     my($self,$result,$str,$standalone)=@_;

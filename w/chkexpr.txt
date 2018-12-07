@@ -28,9 +28,9 @@ exit 0 if(!$SSID || wUtils::check_SSID($SSID) );
 #
 # return value:
 #   error:  1,errpos,errmsg+++aux\n
-#   unroll: 2,aux\n
-#   else:   3..9,label\n
-#             wait/timeout/failed/true/false/>=/<=/:  3..9
+#   unroll: 2,label,aux\n
+#   else:   3..11,label\n
+#             wait/timeout/failed/true/false/>=/<=/0=0/0>=0/  3..11
 
 
 use wExpr;
@@ -81,6 +81,8 @@ reason, followed by some relevant data:
     7,label                           # the relation is FALSE
     8,label                           # only >= is true
     9,label                           # only <= is true
+   10,label                           # simplifies to 0=0
+   11,label                           # simplifies to 0>=0
 
 =cut
 

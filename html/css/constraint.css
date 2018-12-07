@@ -61,11 +61,13 @@ body { margin: 0; }
 .noconstryet { background-color: #fefece; }
 .noconstryet td { padding: 5px 5px 5px 3em; }
 
-.edit { width: 100%; margin: 15px 0; }
+.edit { width: 100%; margin: 15px 0; position: relative; }
+.edit .cover {position:absolute; top: 0; left: 0; right: 0; bottom: 0;
+   background-color:#c0c0c0; opacity: 0.5; z-index: 2; display:none;}
 .edit table { border: 0; margin: 0; border-collapse: collapse; }
 .edit td {vertical-align: top; }
 .edit .editline {width: 100%; }
-.edit .dblinput,.errmsg,.erraux { position: relative; width: 95%; margin: auto; }
+.edit .dblinput,.errmsg,.erraux { position: relative; margin: 0 5px; }
 .edit .inputmain {position: absolute; top: 0; left: 0;
    z-index: 1; background-color:transparent; }
 .edit .inputshadow {position: absolute; top: 2px; left: 0;

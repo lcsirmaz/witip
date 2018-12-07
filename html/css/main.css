@@ -41,9 +41,12 @@ body { margin: 0; }
 .rescode { font-size: 88%; width: 3em; padding-left: 5px; text-align: left; white-space:nowrap; }
 .rescode .true { color: #106610; font-weight: bold; }
 .rescode .false{ color: #502610; font-weight: bold; }
-.rescode .onlyle{ color: #224610; font-weight: bold; }
-.rescode .onlyge{ color: #224610; font-weight: bold; }
-.onlyspacer {display: inline-block; width: 2px; }
+.rescode .onlyle{ color: #125610; font-weight: bold; }
+.rescode .onlyge{ color: #125610; font-weight: bold; }
+.rescode .zap{color: #a0a0a0; }
+.rescode .failed{color: #996666; }
+.rescode .timeout{color: #996666;}
+.onlyspacer {display: inline-block; width: 4px; }
 .constraint { width: 1em; text-align: center; font-weight: bold; color: #175b6d;}
 
 
@@ -54,21 +57,31 @@ body { margin: 0; }
         word-break: break-all; width: 100%; vertical-align: text-top;
         line-height: 1.4em; }
 
-.edit { width: 100%; margin: 15px 0; }
-.edit table {border:0; margin:0; border-collapse: collapse; }
+.edit { width: 100%; margin: 15px 0; position:relative; }
+.edit table {border:0; margin:0; border-collapse: collapse;}
+.edit .cover {position:absolute; top: 0; left: 0; right: 0; bottom: 0;
+        background-color:#c0c0c0; opacity: 0.5; z-index: 2; display:none;}
 .edit td {vertical-align: top; }
 .edit .editline {width: 100%; }
 .editsubmit { padding-right: 3px; text-align: right; }
 .editsubmit input {font-size:11pt; font-weight: normal;
       cursor:default;border:1px solid #999999; }
-.chkwidth {padding: 3px 0;}
+.chkwith {padding: 3px 0; width: 100%; white-space: nowrap; font-size: 88%;text-align:right;}
+.chkinnerwith {display:inline;border:none; margin-bottom:0;outline:0;padding:0;position:relative;}
+.chkinnerwith label {color:transparent;cursor:pointer;display:block;
+   position:relative;text-indent:100%;margin-bottom:0;width:15px;height:15px;}
+.chkinnerwith input {left: 10px; opacity: 0; padding: 0; position: absolute; top: 9px; }
+.chkinneriwth input + label { margin-left: 0; margin-right: 0; }
+.chkinnerwith label:after { content:""; display: block; position: absolute; }
+.chkinnerwith label {background-size: cover; }
+.chkinnerwith input:checked + label { background-size: cover; }
 .chkwithout {padding: 3px 0; }
 .defaultcheckbutton { background-color: #fefefe; color: #272727; }
 .defaultcheckbutton:hover { background-color: #e8e8e8; }
 .auxcheckbutton {background-color: #cccccc; color: #676767; }
 .auxcheckbutton:hover { background-color: #a0a0a0; }
  
-.edit .dblinput, .errmsg, .erraux {position:relative; width: 95%; margin: auto; }
+.edit .dblinput, .errmsg, .erraux {position:relative; margin: 0 5px; }
 .erraux { word-break: break-all; }
 .edit .inputmain {position: absolute; top: 0; left: 0;
    z-index: 1; background-color:transparent; }

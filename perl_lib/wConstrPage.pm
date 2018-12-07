@@ -35,10 +35,8 @@ Render the constraints page: banner, hidden delete buttons; the list of
 constraints; and add new button.
 
 Delete buttons: "delete marked", "cancel" "delete all" become visible when
-one of the delete icons is clicked on.  It also sets bit 1 or bit 2 in the
-javascript variable witipAllDisabled.  The same buttons with different title
-("save changes" and "cancel") are used to submit the page when the set of
-allowed (ticked) constraints changes.
+one of the delete icons is clicked on. It also sets bit 1 in the
+javascript variable witipAllDisabled.
 
 List of constraints: each constraint occupies a single line starting with
 two checkboxes: "delete" and "use" followed by the original (raw) text.  The
@@ -111,11 +109,6 @@ sub Page {
         $inpcontent=$session->getpar("constr_input");
     }
     my $conlist=wUtils::read_user_constraints($session);
-    my $ConstrUsed=""; # 0/1 sequence for used / not used
-    foreach my $c(@$conlist){
-        $ConstrUsed .= "," if($ConstrUsed ne "");
-        $ConstrUsed .= ($c->{skip}?"0": "1");
-    }
     # header
     wHtml::plain_header($session,"wITIP constraints", {
         lcss   => "constraint",
@@ -126,7 +119,6 @@ sub Page {
 .coninnerused input:checked + label {background-image: url(\"$img/kuka.png\"); background-position: -45px 0; }
 .concontainer { max-height: $tablesize; }
 ",
-        javascript => "var witipConstrUsed=[$ConstrUsed];\n",
         banner => "constraints",
         ljs    => ["ConstrPage","History","Ajax",], ## "ConstrPage"
         bodyattr => "onload=\"wi_initPage();\"",
@@ -142,7 +134,7 @@ sub Page {
 ##   <td><input submit cancel onclick="wi_resetDel()"></td>
 ##   <td><input submit delete all onclick="wi_deleteAll()"></td>
 ## </tr></tbody></table></div>
-    print "<div class=\"action\" id=\"delmarked\">",
+    print "<div class=\"action\" id=\"delmarked\" style=\"visibility:hidden\">",
        "<table><tbody><tr><td class=\"delsubmit\"><input type=\"submit\"",
        " name=\"deletemarked\" value=\"delete marked constraints\" id=\"id-deletemarked\"",
        " onclick=\"return wi_conDeleteMarked();\">",
@@ -152,7 +144,6 @@ sub Page {
        "<td class=\"delall\"><input type=\"submit\" name=\"delall\"",
        " value=\"delete all constraints\" id=\"id-deleteall\" onclick=\"return wi_deleteAll()\"></td>\n",
        "</tr></tbody></table></div>\n";
-
     # the table of all constraints; this table can be empty
 ## HTML code
 ## <div><table><tbody>
@@ -200,15 +191,15 @@ sub Page {
 ##    <div> auxiliary message </div>
 ##   </td>
 ## </tr></tbody></table></div>
+##  <div class="cover"><!-- cover the edit area --></div>
 
-    print "<div class=\"edit\">\n";
-    print "<table><tbody><tr><td class=\"editsubmit\">";
-    print "<input type=\"submit\" name=\"checkinput\" value=\"add constraint\"";
-    print " onclick=\"return wi_addConstraint();\"";
-    print " title=\"hit Enter to add the constraint\">";
-    print "</td>\n";
-    print "<td class=\"editline\">";
-    print "<div class=\"dblinput\" id=\"iddblinput\">";
+    print "<div class=\"edit\">\n",
+      "<table><tbody><tr><td class=\"editsubmit\">",
+      "<input type=\"submit\" name=\"checkinput\" value=\"add constraint\"",
+      " onclick=\"return wi_addConstraint();\"",
+      " title=\"hit Enter to add the constraint\"></td>\n",
+      "<td class=\"editline\">",
+      "<div class=\"dblinput\" id=\"iddblinput\">";
     print "<textarea class=\"inputmain\" id=\"constr_input\" name=\"constr_input\"",
       " oninput=\"wi_autoResize(this);\"",
       " style=\"font-family: ",$session->getconf("font"),
@@ -223,12 +214,12 @@ sub Page {
     print "<div class=\"errmsg\" id=\"constr_errmsg\"></div>\n";
     print "<div class=\"erraux\" id=\"constr_auxmsg\" style=\"font-family: ",$session->getconf("font"),
       "; font-size: ",$session->getconf("fontsize"),"pt;\"></div>";
-    print "</td></tr></tbody></table>";
+    print "</td></tr></tbody></table>\n";
+    print "<div class=\"cover\" id=\"id-cover\"><!-- cover edit area --></div>\n";
     print "</div><!-- edit -->\n";
         
     wHtml::html_tail();
 }
-
 
 sub Parse {
     my($session)=@_;
@@ -240,35 +231,28 @@ sub Parse {
        if($line !~ /^\s*$/ ){
            wUtils::write_user_history($session,"cons",$line);
        }
-       return;
     }    
-    # either delete OR change skipped addtribute, but not both
-    my %used=(); my %killed=(); my ($useit,$saveit)=(1,0);
+    # collect remaining constraints
+    my %used=(); my %killed=(); my $saveit=0;
     foreach my $k(keys %{$session->{pars}}){
         $used{$1}=1 if($k =~ /^conused_(\d+)$/);
         if($k =~ /^condel_(\d+)$/){
-            $killed{$1}=1; $useit=0;
+            $killed{$1}=1; $used{$1}=0;
         }
     }
     my $conlist=wUtils::read_user_constraints($session);
     my $newcon=[]; my $history=[];
-    if($useit){ # nothing to delete; refresh the skip attribute
-       foreach my $con( @$conlist){
+    foreach my $con( @$conlist){
+       if($killed{$con->{label}}){
+           push @$history,$con->{raw};
+           $saveit=1;
+       } else {
            my $newskip=$used{$con->{label}}? 0 : 1;
            if($con->{skip} != $newskip){
                $con->{skip}= $newskip;
                $saveit=1; # there was a change
            }
            push @$newcon, $con;
-       }
-    } else { # delete
-       foreach my $con( @$conlist){
-           if($killed{$con->{label}}){
-               push @$history, $con->{raw};
-               $saveit=1; # there was a change
-           } else {
-               push @$newcon, $con;
-           }
        }
     }
     if($saveit){

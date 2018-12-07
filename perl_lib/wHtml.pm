@@ -115,9 +115,16 @@ HEADTOP
         my $baseURL=$session->getconf("basecgi");
         _jsinline("
 var witipAllDisabled=0;
+var witipAltSubmit=null;
 var witipBaseURL='$baseURL';
 function wi_gotoPage(page){
-    if(witipAllDisabled) return;
+    if(witipAllDisabled){
+       if(witipAltSubmit){
+         document.getElementById('goingto').value=page;
+         document.getElementById(witipAltSubmit).click();
+       }
+       return;
+    }
     document.getElementById('goingto').value=page;
     document.getElementById('form-main').submit();
 }
@@ -151,7 +158,7 @@ function wi_gotoPage(page){
            my $help={
               config => "configure wITIP",
               macros => "define / view macros",
-              constraints => "define /view constraints",
+              constraints => "define / view constraints",
               check => "check entropy expressions",
               wITIP => "how to use wITIP",
               session => "quit, print, export, import",
@@ -173,7 +180,7 @@ function wi_gotoPage(page){
 sub html_tail {
     print <<TAIL;
 </form></div><!-- main -->
-<p class="ad">wITIP &copy; 2017, created by <a
+<p class="ad">wITIP &copy; 2017-2019, created by <a
 href="http://www.renyi.hu/~csirmaz" target="_blank">Laszlo Csirmaz</a> at CEU</p>
 </body>
 </html>

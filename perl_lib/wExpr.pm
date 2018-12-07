@@ -53,6 +53,8 @@ The res field is one of the following:
     7 => the relation is FALSE
     8 => only >= is true
     9 => only <= is true
+   10 => simplifies to 0 = 0
+   11 => simplifies to 0 >= 0
 
 =item History
 
@@ -161,6 +163,11 @@ sub check_expr {
         return { res   => 2,
                  label => $label,
                  aux   => $unr };
+    }
+    if($result->{n}==0){ # 0=0 or 0>=0
+        my $res=$result->{rel} eq "=" ? 10 : 11;
+        wUtils::write_user_history($session,"expr","$res,$label,$standalone,$string\n");
+        return { res => $res, label => $label };
     }
     # the expression to be checked is in $result->{text}
     my $lpfile=$session->{stub}.".$label.lp";

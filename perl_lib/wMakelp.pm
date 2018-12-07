@@ -395,7 +395,7 @@ sub generate_LP {
                   $self->add_shannon2($lpf,$reali);
               } else {
                   $reali -= $self->{varno};
-                  $reali < $constno || die "index wrong when doing constraint\n";
+                  $reali < $constno || die "index wrong when doing constraints\n";
                   $self->add_constraint($lpf,$type[$reali],$const[$reali]);
               }
           }

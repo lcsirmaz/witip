@@ -159,9 +159,9 @@ sub Page {
 ##   <td><input submit cancel onclick="wi_resetDel()"></td>
 ##   <td><input submit delete all onclick="wi_deleteAll()"></td>
 ## </tr></tbody></table></div>
-    print "<div class=\"action\" id=\"delmarked\">",
+    print "<div class=\"action\" id=\"delmarked\" style=\"visibility: hidden;\">",
        "<table><tbody><tr><td class=\"delsubmit\"><input type=\"submit\"",
-       " name=\"deletemarked\" value=\"delete marked macros\"",
+       " name=\"deletemarked\" value=\"delete marked macros\" id=\"id-deletemarked\"",
        " onclick=\"return wi_deleteMarkedMacros();\">",
        "</td>\n",
        "<td class=\"cancel\"><input type=\"submit\" name=\"cancel\" value=\"cancel\"",
@@ -214,7 +214,7 @@ sub Page {
     # editing 
 ## HTML code
 ## <div><table>tbody><tr>
-##   <td><input submit onclick="wi_addMacro(this)"></td>
+##   <td class="editsubmit"><input submit onclick="wi_addMacro(this)"></td>
 ##   <td>
 ##    <div><textarea macro_input oninput="wi_autoResize(this)"
 ##          onkeydown="keydown(event)">...</textarea>
@@ -223,15 +223,15 @@ sub Page {
 ##    <div> auxiliary message </div>
 ##   </td>
 ## </tr></tbody></table></div>
+## <div class="cover"><!-- cover the edit area --></div>
 
-    print "<div class=\"edit\">\n";
-    print "<table><tbody><tr><td class=\"editsubmit\">";
-    print "<input type=\"submit\" name=\"checkinput\" value=\"add a macro\"";
-    print " onclick=\"return wi_addMacro();\"";
-    print " title=\"hit Enter to add the macro\">";
-    print "</td>\n";
-    print "<td class=\"editline\">";
-    print "<div class=\"dblinput\" id=\"iddblinput\">";
+    print "<div class=\"edit\">\n",
+      "<table><tbody><tr><td class=\"editsubmit\">",
+      "<input type=\"submit\" name=\"checkinput\" value=\"add a macro\"",
+      " onclick=\"return wi_addMacro();\"",
+      " title=\"hit Enter to add the macro\"></td>\n",
+      "<td class=\"editline\">",
+      "<div class=\"dblinput\" id=\"iddblinput\">";
     print "<textarea class=\"inputmain\" id=\"macro_input\" name=\"macro_input\"",
       " oninput=\"wi_autoResize(this);\"",
       " style=\"font-family: ",$session->getconf("font"),
@@ -247,7 +247,8 @@ sub Page {
     print "<div class=\"erraux\" id=\"macro_auxmsg\" style=\"font-family: ",$session->getconf("font"),
       "; font-size: ",$session->getconf("fontsize"),"pt;\">";
     print "</div>";
-    print "</td></tr></tbody></table>";
+    print "</td></tr></tbody></table>\n";
+    print "<div class=\"cover\" id=\"id-cover\"><!-- cover edit area --></div>\n";
     print "</div><!-- edit -->\n";
         
     wHtml::html_tail();
@@ -260,7 +261,7 @@ sub Parse {
     if(!$session->getpar("delall") && !$session->getpar("deletemarked")){
        # save editing line to history
        my $line=$session->getpar("macro_input");
-       if($line !~ /^\s*$/ ){
+       if($line  && $line !~ /^\s*$/ ){
            wUtils::write_user_history($session,"macro",$line);
        }
        return;
@@ -284,7 +285,6 @@ sub Parse {
     } # clean up history in any case
     wUtils::write_user_history($session,"macro",$history);
     return;
-
 }
 
 1;

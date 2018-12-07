@@ -28,13 +28,30 @@ function wi_initPage(){
 }
 // onchange delete checkbox value changed
 function wi_macroDel(item){
-    if(!item.checked) return;
+    if(!item.checked){
+       var ischecked=0,iit;
+       for(var i=1,iit=document.getElementById('mdel_1'); iit;
+          i++,iit=document.getElementById('mdel_'+i)) {
+           if(iit.checked){ ischecked=1; }
+       }
+       if(ischecked) return;
+       document.getElementById('delmarked').style.visibility='hidden';
+       document.getElementById('id-cover').style.display='none';
+       witipAltSubmit=null;
+       witipAllDisabled &= ~1;
+       return;
+    }
+    if((witipAllDisabled & 1)!=0) return;
     witipAllDisabled |= 1;
+    witipAltSubmit='id-deletemarked';
     document.getElementById('delmarked').style.visibility='visible';
+    document.getElementById('id-cover').style.display='block';
 }
 // button "cancel delete" pushed
 function wi_resetDel(){
     document.getElementById('delmarked').style.visibility='hidden';
+    document.getElementById('id-cover').style.display='none';
+    witipAltSubmit=null;
     witipAllDisabled &= ~1;
     // set all ticks to unchecked
     var item;
@@ -46,6 +63,9 @@ function wi_resetDel(){
 }
 // button "deletemarked" pushed
 function wi_deleteMarkedMacros() {
+    if(document.getElementById('goingto').value=='macros') return true;
+    if(!confirm('Marked macro lines will be deleted.\nProceed?'))
+        return false;
     return true;
 }
 // button "deleteall" pushed

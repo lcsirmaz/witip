@@ -109,7 +109,7 @@ sub macros_table {
     my $parser=new wParser($session);
     print "<div class=\"block\">\n";
     hideit([
-       ["'mactable',1","all macros","show/hide all macros"],
+       ["'mactable',1","all","show/hide all macros"],
        ["'macrolin',1","original","show/hide original text"],
        ["'macrolin',2","expanded","show/hide expanded form"],
     ]);
@@ -160,7 +160,7 @@ sub constr_table {
     my $parser=new wParser($session);
     print "<div class=\"block\">\n";
     hideit([
-       ["'contable',1","all constraints","show/hide all constraints"],
+       ["'contable',1","all","show/hide all constraints"],
        ["'conline',1" ,"disabled","show/hide disabled constraints"],
        ["'conline',2" ,"original","show/hide original text"],
        ["'conline',4" ,"expanded","show/hide expanded form"],
@@ -202,7 +202,8 @@ sub constr_table {
 sub expr_line {
     my($cnt,$mask,$res,$const,$expr)=@_;
     print "<tr id=\"expline_$cnt\" data-mask=\"$mask\"><td class=\"result\">",
-      ("","","","","timeout","failed","TRUE","FALSE","only &ge;","only &le;")[$res],
+      ("","","unroll","","timeout","failed","TRUE","FALSE",
+       "only &ge;","only &le;","0 = 0","0 &ge; 0")[$res],
       "</td><td class=\"withc\">",
       ($const?" ":"C"),"</td>\n",
       "<td class=\"code\">$expr</td></tr>\n";
@@ -225,9 +226,9 @@ sub query_table {
     my ($session) = @_;
     print "<div class=\"block\">\n";
     hideit([
-      ["'exptable',1","all queries","show/hide all queries"],
-      ["'expline',1","missing term","show/hide missing term (=?) queries"],
-      ["'expline',2","checks","show/hide relation (=, &le; &ge;) queries"],
+      ["'exptable',1","all","show/hide all queries"],
+      ["'expline',1","unroll","show/hide unroll (=?) queries"],
+      ["'expline',2","check","show/hide relation (=, &le; &ge;) queries"],
     ]);
     print "<div id=\"exptable_1\" data-mask=\"1\" class=\"container\">\n";
     print "<div class=\"subtitle\" contenteditable=\"true\">Queries</div>\n";
@@ -241,10 +242,11 @@ sub query_table {
        my ($type,$text)=($expr->[0],$expr->[3]);
        if($type==2){ # unroll
            $text =~ s/\+\+\+(.*)$//; my $res=$1;
-           $expcnt++; expr_line($expcnt,1,0,1,$text);
+           $expcnt++; expr_line($expcnt,1,2,1,$text);
            $expcnt++; expr_line($expcnt,1,0,1,$res);
-       } elsif($type>=4 && $type<=9){ # timeout,failed,true,false,>=,<=
-           $expcnt++; expr_line($expcnt,2,$type,$expr->[2],$text);
+       } elsif($type>=4 && $type<=11){ # timeout,failed,true,false,>=,<=
+           $expcnt++;
+           expr_line($expcnt,2,$type,$type<10?$expr->[2]:1,$text);
        }
     }
     print "</tbody></table></div></div>\n";

@@ -42,10 +42,8 @@ trash bin icon to delete the query, the result, whether constraints were
 used or not, and the query.  In case of "unroll" query the result is in the
 second line.
 
-When there are enabled constraints, there are two buttons in the query
-submission part: check with or without constraints.  Clicking on one of them
-makes it the default (the other is dimmed) until the page reloads. With
-no enabled constraints only one button is visible.
+The "constraints" checkbox indicates whether allowed constraints should be used
+or not. With no enabled constraints the checkbox is disabled.
 
 The query editing field is actually two text areas on top of each other. 
 The bottom one is slided down by two pixels and is used to show the error
@@ -156,7 +154,8 @@ sub _render_delete_checkbox {
 
 # render the result type
 #  $id = <code> or $id = proto_<code> or $id= <code>_<idlabel>
-#    where <code> is one of waiting|timeout|failed|true|false|onlyge|onlyle|zap
+#    where <code> is one of waiting|timeout|failed|true|false|onlyge|
+#                           onlyle|zap|eqzero|gezero
 ## HTML code:
 ##  <span id="idlabel"> TEXT </span>
 sub _render_result_type {
@@ -166,23 +165,27 @@ sub _render_result_type {
     elsif( $id =~ s/_(.+)$//){ $label=" id=\"$1\""; }
     if($id eq "waiting"){
         my $img=$session->getconf("basehtml")."/images/waiting.gif";
-        return "<span$label><img class=\"rescodeimg\" src=\"$img\" alt=\"waiting\"></span>";
+        return "<span$label title=\"waiting for the result\"><img class=\"rescodeimg\" src=\"$img\" alt=\"waiting\"></span>";
     } elsif($id eq "timeout"){
-        return "<span$label class=\"timeout\">timeout</span>";
+        return "<span$label class=\"timeout\" title=\"LP solver run out of allocated time\">timeout</span>";
     } elsif($id eq "failed"){
-        return "<span$label class=\"failed\">failed</span>";
+        return "<span$label class=\"failed\" title=\"LP solver failed\">failed</span>";
     } elsif($id eq "true"){
-        return "<span$label class=\"true\">true</span>";
+        return "<span$label class=\"true\" title=\"query holds\">true</span>";
     } elsif($id eq "false"){
-        return "<span$label class=\"false\">false</span>";
+        return "<span$label class=\"false\" title=\"query does not hold\">false</span>";
     } elsif($id eq "onlyge"){
-        return "<span$label class=\"onlyge\">only<span class=\"onlyspacer\"></span>&ge;</span>";
+        return "<span$label class=\"onlyge\" title=\"only &ge; holds\">only<span class=\"onlyspacer\"></span>&ge;</span>";
     } elsif($id eq "onlyle"){
-        return "<span$label class=\"onlyle\">only<span class=\"onlyspacer\"></span>&le;</span>";
+        return "<span$label class=\"onlyle\" title=\"only &le; holds\">only<span class=\"onlyspacer\"></span>&le;</span>";
     } elsif($id eq "zap"){
-        return "<span$label class=\"zap\"> </span>";
+        return "<span$label class=\"zap\" title=\"missing terms calculated\">unroll</span>";
+    } elsif($id eq "eqzero"){
+        return "<span$label class=\"true\" title=\"simplifies to 0 = 0\">0<span class=\"onlyspacer\"></span>=<span class=\"onlyspacer\"></span>0</span>";
+    } elsif($id eq "gezero"){
+        return "<span$label class=\"true\" title=\"simplifies to 0 &ge; 0\">0<span class=\"onlyspacer\"></span>&ge;<span class=\"onlyspacer\"></span>0</span>";
     }
-    print STDERR "wMainPage::render_result_type: unknown proto id $id";
+    print STDERR "wMainPage::render_result_type: unknown proto id $id\n";
     return "result_type: unknown id $id";
 }
 # tell whan the result means in the title
@@ -218,7 +221,7 @@ sub _render_result_constr {
     my $label="";
     if($id =~ s/^proto_//){ $label=" id=\"proto_$id\""; }
     if($id eq "constr"){
-        return "<span$label class=\"wconstr\">C</span>";
+        return "<span$label class=\"wconstr\" title=\"checked with constraints\">C</span>";
     } elsif($id eq "noconstr"){
         return "<span$label class=\"wnoconstr\"></span>";
     }
@@ -273,12 +276,10 @@ sub render_resultline {
       _render_delete_checkbox($history,$label),
       "<label for=\"resdel_$history\"></label></div></td>\n";
     # type
-    print "<td class=\"rescode\" id=\"res_${label}_1\" title=\"",
-        _render_result_title($type,$standalone),"\">",
+    print "<td class=\"rescode\" id=\"res_${label}_1\">",
         _render_result_type($session,$type),"</td>\n";
     # constraints
-    print "<td class=\"constraint\" title=\"",
-        $standalone ? "" : "checked with constraints" ,"\">",
+    print "<td class=\"constraint\">",
         _render_result_constr($standalone ? "noconstr" : "constr"),"</td>\n";
     # code
     my $aux=""; if($query =~ s/\+\+\+(.*)$//){ $aux=$1; }
@@ -316,6 +317,8 @@ sub Page {
        style => "
 .resinnerdel label {background-image: url(\"$img/kuka.png\"); }
 .resinnerdel input:checked + label {background-image: url(\"$img/kuka.png\"); background-position: -15px 0; }
+.chkinnerwith label {background-image: url(\"$img/kuka.png\"); background-position: -30px 0; }
+.chkinnerwith input:checked + label {background-image: url(\"$img/kuka.png\"); background-position: -45px 0; }
 .rescontainer { max-height: $tablesize; }
 ",
        javascript => "var wi_pendingLabels=[".join(',',@{$hist->{pending}})."];
@@ -326,7 +329,7 @@ sub Page {
     # prototypes
     print "<div style=\"display: none\"><!-- prototype -->\n";
     print _render_delete_checkbox("proto_delete"),"\n";
-    foreach my $tag (qw(waiting timeout failed true false onlyge onlyle zap )){
+    foreach my $tag (qw(waiting timeout failed true false onlyge onlyle zap eqzero gezero)){
         print _render_result_type($session,"proto_$tag"),"\n";
     }
     print _render_result_constr("proto_constr"),"\n";
@@ -361,7 +364,7 @@ sub Page {
           "<tbody id=\"resulttable\">\n";
     my $cnt=0;
     my $types = [ "zap", "zap", "zap","waiting","timeout","failed",
-                  "true","false","onlyge","onlyle" ];
+                  "true","false","onlyge","onlyle","eqzero","gezero"];
     my $tablelines = parse_expr_history($session);
     foreach my $line(@{$hist->{hist}}){
        $cnt++;
@@ -390,9 +393,16 @@ sub Page {
     #editing
 ## HTML CODE
 ## <div><table>tbody><tr>
-##  <td>
-##     <div class=\"chkwith\"><input submit onclick="wi_checkInput(1);"></div>
-##     <div class=\"chkwithout"><input submit onclick="wi_checkInput(0);"></div>
+##  <td class="editsubmit">
+##     <table class="chkwith" title="check with or without constraints">
+##       <tbody><tr>
+##          <td>constraints: </td>
+##          <td><div><input type="checkbox"/><label for="id-chkwith"></label></div></td>
+##       </tr></tbody>
+##     </table>
+##     <div class="chkwithout">
+##        <input type="submit" value="check" onclick="return wi_checkInput();"/>
+##     </div>
 ##  </td>
 ##  <td>
 ##    <div><textarea expr_input oninput="wi_autoResize(this)"
@@ -402,27 +412,27 @@ sub Page {
 ##    <div> auxiliary message </div>
 ##  </td>
 ## </tr></tbody></table></div>
+## <div class="cover"><!-- cover the edit area --></div>
     print "<div class=\"edit\">\n";
     print "<table><tbody><tr><td class=\"editsubmit\">";
-    if(are_constraints($session) eq "yes") {
-      print "<div class=\"chkwith\"><input type=\"submit\"",
-       " name=\"checkinput-constraints\" class=\"defaultcheckbutton\"",
-       " id=\"id-chkwith\" value=\"check\" onclick=\"return wi_checkInput(1);\"",
-       " title=\"check expression with constraints\"></div>\n";
-      print "<div class=\"chkwithout\"><input type=\"submit\"",
-       " name=\"checkinput-noconstraints\" class=\"auxcheckbutton\"",
-       " id=\"id-chkwithout\" value=\"no&nbsp;constraints\" onclick=\"return wi_checkInput(0);\"",
-       " title=\"check expression without specified constraints\"></div>";
+    if(are_constraints($session) eq "yes" ){
+        print "<table class=\"chkwith\" title=\"check with constraints\">",
+         "<tbody><tr><td>constraints: </td>\n",
+         "<td><div class=\"chkinnerwith\"><input type=\"checkbox\"",
+         " name=\"wi_checkWith\" id=\"id-chkwith\" checked=\"checked\"/>",
+         "<label for=\"id-chkwith\"></label</div></td></tr></table>\n";
     } else {
-      print "<div class=\"chkwithout\"><input type=\"submit\"",
-       " name=\"checkinput-noconstraints\" class=\"defaultcheckbutton\"",
-       " id=\"id-chkwithout\" value=\"check\" onclick=\"return wi_checkInput(0);\"",
-       " title=\"check expression\"></div>";
+        print "<div style=\"visibility:hidden\"><input type=\"checkbox\"",
+          " name=\"wi_checkWith\" id=\"id-chkwith\"/></div>\n";
     }
+    print "<div class=\"chkwithout\"><input type=\"submit\"",
+       " name=\"checkinput-constraints\" class=\"defaultcheckbutton\"",
+       " id=\"id-chkwith\" value=\"check\" onclick=\"return wi_checkInput();\"",
+       " title=\"check expression\"></div>";
     print "</td>\n";
-    print "<td class=\"editline\">";
-    print "<div class=\"dblinput\" id=\"iddblinput\">";
-    print "<textarea class=\"inputmain\" id=\"expr_input\" name=\"expr_input\"",
+    print "<td class=\"editline\">",
+      "<div class=\"dblinput\" id=\"iddblinput\">",
+      "<textarea class=\"inputmain\" id=\"expr_input\" name=\"expr_input\"",
       " oninput=\"wi_autoResize(this);\"",
       " style=\"font-family: ",$session->getconf("font"),
       "; font-size: ",$session->getconf("fontsize"),"pt;\"",
@@ -439,7 +449,8 @@ sub Page {
     print "<div class=\"erraux\" id=\"expr_auxmsg\" style=\"font-family: ",$session->getconf("font"),
       "; font-size: ",$session->getconf("fontsize"),"pt;\">";
     print "</div>";
-    print "</td></tr></tbody></table>";
+    print "</td></tr></tbody></table>\n";
+    print "<div class=\"cover\" id=\"id-cover\"><!-- cover edit area --></div>\n";
     print "</div><!-- edit -->\n";
         
     wHtml::html_tail();
@@ -450,7 +461,7 @@ sub Parse {
     return if($session->getpar("comingfrom") ne "check");
     if(!$session->getpar("delall") && !$session->getpar("deletemarked")){
         my $text=$session->getpar('expr_input');
-        if($text){
+        if($text && $text !~ /^\s*$/ ){
            wUtils::write_user_history($session,"expr","99,0,2,$text");
         }
     }
@@ -472,9 +483,9 @@ sub Parse {
         push @newhist, [99,0,2,$session->getpar('expr_input')];
     }
     wUtils::replace_expr_history($session,\@newhist);
+    wUtils::set_modified($session);
     return;
 }
-
 
 1;
 

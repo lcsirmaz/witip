@@ -24,57 +24,45 @@ function wi_initPage(){
 }
 // restore "use" and "delete" checkboxes
 function wi_restoreCheckBoxes(){
-   var item,item2;
+   var item;
    for(var i=1,item=document.getElementById('condel_1'); item;
        i++,item=document.getElementById('condel_'+i)){
-      item.removeAttribute('disabled');
       item.checked=false;
-      item2=document.getElementById('conused_'+i);
-      item2.checked=witipConstrUsed[i-1]!=0;
-      item2.removeAttribute('disabled');
-      wi_setUsedClass(item2);
    }
 }
-// set item class to "conline-(un)used"
-function wi_setUsedClass(item){
+// onchange: use constr checkbox changed
+function wi_conUsedChanged(item){
     var idx=item.id.split('_')[1];
     document.getElementById('con_'+idx+'_0').className = 
        'conline-'+(item.checked?'':'un')+'used';
-}
-// onchange: use constr checkbox changed
-function wi_conUsedChanged(item2){
-    wi_setUsedClass(item2);
-    if((witipAllDisabled & 2)!=0) return;
-    witipAllDisabled |= 2;
-    // disable delete checkboxes
-    var item;
-    for( var i=1,item=document.getElementById('condel_1'); item;
-       i++,item=document.getElementById('condel_'+i)){
-       item.setAttribute('disabled',true);
-    }
-    document.getElementById('id-deleteall').style.visibility='hidden';
-    document.getElementById('id-deletemarked').value='save changes';
-    document.getElementById('delmarked').style.visibility='visible';
+    return;
 }
 // onchange: delete checkbox value changed
 function wi_conDelete(item2){
-    if(!item2.checked) return;
+    if(!item2.checked){
+       var ischecked=0,iit;
+       for(var i=1,iit=document.getElementById('condel_1');iit;
+         i++,iit=document.getElementById('condel_'+i)){
+          if(iit.checked) ischecked=1;
+       }
+       if(ischecked) return;
+       document.getElementById('delmarked').style.visibility='hidden';
+       document.getElementById('id-cover').style.display='none';
+       witipAltSubmit=null;
+       witipAllDisabled &= ~1;
+       return;
+    }
     if((witipAllDisabled & 1)!=0) return;
     witipAllDisabled |= 1;
-   // disable use checkboxes
-    var item;
-    for( var i=1,item=document.getElementById('conused_1'); item;
-       i++,item=document.getElementById('conused_'+i)){
-       item.setAttribute('disabled',true);
-    }
-    document.getElementById('id-deleteall').style.visibility='visible';
-    document.getElementById('id-deletemarked').value='delete marked constraints';
+    witipAltSubmit='id-deletemarked';
     document.getElementById('delmarked').style.visibility='visible';
+    document.getElementById('id-cover').style.display='block';
  }
 // button "cancel" has been hit
 function wi_resetDel(){
-    document.getElementById('id-deleteall').style.visibility='hidden';
     document.getElementById('delmarked').style.visibility='hidden';
+    document.getElementById('id-cover').style.display='none';
+    witipAltSubmit=null;
     witipAllDisabled &= ~3;
     wi_restoreCheckBoxes();
     return false;
@@ -82,15 +70,10 @@ function wi_resetDel(){
 //button "deletemarked" pushed
 // if delete, check if there is any marked item to be deleted.
 function wi_conDeleteMarked(){
-    if((witipAllDisabled & 1)==0) return true;
-    var item;
-    var deleted=0;
-    for( var i=1,item=document.getElementById('condel_1'); item;
-       i++,item=document.getElementById('condel_'+i)){
-          if(item.checked) deleted=1;
-       }
-    if(deleted) return true;
-    return wi_resetDel();
+    if(document.getElementById('goingto').value=='constraints') return true;
+    if(!confirm('Marked constraints will be deleted.\nProceed?'))
+        return false;
+    return true;
 }
 // button "deleteall" pushed
 function wi_deleteAll(){

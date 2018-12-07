@@ -78,7 +78,9 @@ my $seeas2="";
 
 sub render_link {
     my($to,$text)=@_;
-    return "<a href=\"$to\">$seeas$text</a>";
+    my $target="";
+    if($to =~ /^http/){ $target=" target=\"_blank\""; }
+    return "<a href=\"$to\"$target>$seeas$text</a>";
 }
 sub render_sample {
     my($session,$sample)=@_;
@@ -124,9 +126,6 @@ function wi_onresize(){
    document.getElementById('leftblock').style.height= (ht-150)+'px';
 }
 window.onresize=wi_onresize;
-function wi_showHelp(topic){
-   alert('showing '+topic);
-}
 ",
     });
     my $B="<span style=\"font-family: monospace; font-size: 1em;\">";
@@ -139,7 +138,7 @@ function wi_showHelp(topic){
 <td class="menu">
 <div class="ltitle">wITIP</div>
 <ul>
-<li>$seeas2<a href="#wabout">about</a></li></ul>
+<li>$seeas2<a href="#wabout">introduction</a></li></ul>
 <div class="ltitle">Syntax</div>
 <ul>
 <li>$seeas2<a href="#wstyle">style</a></li>
@@ -154,11 +153,16 @@ function wi_showHelp(topic){
 <div class="ltitle">Query</div>
 <ul>
 <li>$seeas2<a href="#wcheck">checking</a></li>
-<li>$seeas2<a href="#wunroll">expand</a></li>
+<li>$seeas2<a href="#wunroll">unroll</a></li>
+</ul>
+<div class="ltitle">Configure</div>
+<ul>
+<li>$seeas2<a href="#wconfigure">appearence</a></li>
+<li>$seeas2<a href="#wconfstx">syntax</a></li>
+<li>$seeas2<a href="#wconfother">other</a></li>
 </ul>
 <div class="ltitle">Session</div>
 <ul>
-<li>$seeas2<a href="#wconfigure">configure</a></li>
 <li>$seeas2<a href="#wprint">print, save</a></li>
 <li>$seeas2<a href="#wquit">quit</a></li>
 </ul>
@@ -175,7 +179,7 @@ LEGEND
       "<div class=\"left\" id=\"leftblock\">\n";
 ##################################################################
 # ABOUT
-    render_block($session,"about","About wITIP",<<BLOCK);
+    render_block($session,"about","What is wITIP?",<<BLOCK);
 wITIP is a web-based <b>I</b>nformation <b>T</b>heoretic <b>I</b>nequality 
 <b>P</b>rover.
 Linear entropy inequalities can be checked for validity, that is,
@@ -183,9 +187,9 @@ whether the inequality is a consequence of the basic Shannon
 inequalities and the specified constraints.
 <br>
 wITIP uses extended syntax for expressions, a user-friendly 
-syntax checker, macros, and &quot;expanding&quot;,
+syntax checker, macros, and &quot;unroll&quot;,
 where complex entropy expressions can be seen as a linear combination
-of simple entropies.
+of simple entropies. 
 <br>
 <b>L%check%Checking%</b> &ndash; to check an L%expr%entropy expression% for L%method%validity%, 
 enter such an expression to the box
@@ -208,7 +212,7 @@ below defines the conditional L%ingleton%Ingleton% expression:
 </div>
 After it has been defined, the macro can be used in any expression.
 <br>
-<b>L%unroll%Missing terms%</b> &ndash;
+<b>L%unroll%Unroll%</b> &ndash;
 calculates the difference of two L%expr%entropy expressions% as a linear 
 combination of simple entropies:
 <div class="indent">
@@ -217,8 +221,8 @@ S%D(A1,X;A2,Y;C;D|Z1,Z2) =? [A1,X,Z1,Z2;A2,Y,Z1,Z2;C,Z1;D,Z1]#D(ax,by,c,d|vw) =?
 S%H(C,D,Z1)-H(C,D,Z1,Z2)#cdv-cdvw%
 </div>
 <p></p>
-See also the description of the L%method%applied method%, the 
-L%history%history%, and the  L%copyright%copyright% information.
+See also the description of the L%method%applied method%, the
+L%history%history% of wITIP, and the L%copyright%copyright% information.
 <p></p>
 BLOCK
 ########################################################################
@@ -226,11 +230,11 @@ BLOCK
     render_block($session,"style","Syntax style",<<SYNTAX_STYLE);
 
 Entropy L%expr%expressions% can be entered using two different styles:
-<i>traditional</i> or <i>simplified</i>.  The traditional style follows the
-style of the L%history%original% ITIP software:
+<i>traditional</i> or <i>simplified</i>.  The traditional style follows
+that of the L%history%original% ITIP software:
 random variables are identifiers, such as S%Winter% or
 S%var_002%; variables in a list are separated by commas, and basic
-information measures are entered in textbook style:
+information measures are entered in the textbook style:
 <div class="indent">
   S%I(Winter,Spring; Fall | var_01)%
 </div>
@@ -487,6 +491,10 @@ query can be
    the query asked for equality, but only &le; holds (would get
    <span class="resfalse">false</span> when asked for S%>=%, and 
    <span class="restrue">true</span> when asked for S%<=%).</td></tr>
+<tr><th><span class="resonly">0 &ge; 0</span></th><td>
+   the query simplifies to 0 &ge; 0, thus it is <span class="restrue">true</span>.</td></tr>
+<tr><th><span class="resonly">0 = 0</span></th><td>
+   the query simplifies to 0 = 0.</td></tr>
 <tr><th><span class="resother">timeout</span></th><td>
    the LP solver failed to solve the problem in the allocated time.</td></tr>
 <tr><th><span class="resother">failed</span></th><td>
@@ -508,90 +516,101 @@ that the checking was performed with constraints.
 CHECKING
 #####################################################################
 # CHECKING
-    render_block($session,"unroll","Missing terms",<<UNROLL);
-Two L%expr%entropy expressions% are expanded as linear combination of
-plain entropies, and their difference is calculated. The two expressions are 
-connected by S%=?%, 
-and the result is printed below the query as in the following example:
-<div class="indent">
+    render_block($session,"unroll","Unroll",<<UNROLL);
+The L%expr%entropy expressions% around S%=?% are expanded as linear combination of
+plain entropies and their difference is printed below the query:
+<div class="textindent">
+<table class="sample"><tbody>
+<tr><th><span class="resother">unroll</span></th><td>
   S%[A;B;C;D] =? I(A;B|C)+I(A;B|D)+I(A;B)#[a,b,c,d] =? (a,b|c)+(a,b|d)+(c,d)%
-  <br>
+  </td></tr>
+<tr><th></th><td>
   S%-H(A)-H(B)+H(A,B)#-a-b+ab%
+  </td></tr>
+</tbody></table>
 </div>
 When the two sides expand to the the same expression, the result is S%0%. 
 The mnemonic for &quot;=?&quot;
 can be: what are the missing terms on the right hand side which make the two
 expressions the same?
 <br>
-This operation does not involve any further computation, thus the result is
-printed immediately.
+This operation does not involve any further computation, thus the result 
+appears immediately.
 <p></p>
 UNROLL
 #####################################################################
 # CONFIGURE
-    render_block($session,"configure","Configuring wITIP",<<CONFIGURE);
-You can configure many features of wITIP under the &quot;config&quot; tab.
-<p></p>
-<strong>Appearance</strong><br>
-Set the font family and the font size for macros, constraints, and
-queries. This choice does not affect the font used in printing.
+    render_block($session,"configure","Configure appearance",<<CONFIGURE);
+You can set and change many wITIP features under the &quot;config&quot; tab.
+The selected font family and font size is used to show the entered
+macros, constraints, and queries. This choice does not affect the font
+used in L%print%printing%.
 <br>
-&quot;Table height&quot; sets the maximum height of the macro,
-constraint and query tables. 
+&quot;Table height&quot; sets the maximum height of the macro, 
+constraint and query tables.
 <p></p>
-<strong>Macro definition</strong><br>
+CONFIGURE
+    render_block($session,"confstx","Choose and fine tune wITIP syntax",<<CFGSYNTAX);
+The details how wITIP processes the entered text can be set under the 
+&quot;config&quot; tab.
+<p></p>
+
+<strong>Syntax</strong><br>
+Determine whether traditional or simplified L%style%style% should be used; can
+parentheses S%()% or braces S%{}% enclose subexpressions;
+and finally whether variables can or cannot end in a sequence of primes (apostrophes).
+<p></p>
+
+<strong>Simple style details</strong><br>
+By default, simple style allows only single lower case letters (optionally
+followed by primes if configured) as variable names. You can
+extend the recognized variable names (before the primes) by allowing one
+or more of the following possibilities:
+<ul><li>a (lower case) letter and a single digit: S%a1%</li>
+<li>a letter followed by any digit sequence: S%a123%</lI>
+<li>a letter, an underscore and a single digit: S%a_2%</li>
+<li>a letter, an underscore, and a digit sequence: S%a_4321%</li>
+</ul>
+By default, none of them are enabled as it would be
+easier to enter unintended but syntactically correct queries.
+<br>
+The simple style list separator character can be chosen from a
+short list of possibilities. Use the one which fits your taste.
+<p></p>
+CFGSYNTAX
+    render_block($session,"confother","Other wITIP features",<<CONFOTHER);
+Use the &quot;config&quot; tab to set some miscellaneous wITIP features.
+<p></p>
+
+<strong>Unused arguments in a macro definition</strong><br>
 By default, all macro arguments must be used in the final (fully expanded)
 macro text. Uncheck this option if you want to use macro definitions
 like the next one, in which the first argument S%U#u% cancels out:
 <div class="indent">
 S%A(U,V,W)=I(U;V|W)+H(V|U,W)#A(u,v,w)=(u,v|w)+(v|uw)%
 </div>
-<strong>Syntax</strong><br>
-Determine how wITIP processes the entered text; whether to use traditional
-or simplified L%style%style%; can parentheses S%()% or braces S%{}% be used to 
-enclose subexpressions; and finally whether variables can or cannot
-end in a sequence of primes.
-<p></p>
-<strong>Simple style variables and list separator</strong><br>
-By default, simple style allows only single lower case letters (optionally
-followed by primes if configured) as variable names. You can
-extend the recognized variable names (before the primes) by allowing one
-or more of the following possibilities:
-<ul><li>a (lower case) letter and single digit: S%a1%</li>
-<li>a letter followed by any digit sequence: S%a123%</lI>
-<li>a letter, an underscore and a digit: S%a_2%</li>
-<li>a letter, an underscore, and a digit sequence: S%a_4321%</li>
-</ul>
-By default, none of those possibilities are enabled as it would be
-easier to enter unintended but syntactically correct queries.
-<br>
-The simple style list separator character can be chosen from a
-short list of possibilities. Use the one which fits your
-taste.
-<p></p>
 <strong>LP response time</strong><br>
 Each L%check%query% is passed to the L%method%LP solver% which answers
 the question. The default time limit is 5 seconds. You can 
 set this limit higher (up to 10 minutes), or lower (down to 1 second).
 Typically the more random variables are used in the query, the longer
-the LP solver needs to work. The increase is very steep as the problem size
-grows exponentially. Up to six or seven variables the result is almost
-immediate; over thirteen variables due to
-numerical instability the LP solver might fail to solve
-the problem or could return a wrong solution.
-<br>
-The query is marked with <span class="resother">timeout</span> if the 
-time limit was exceeded. In this case you can try to increase the 
-LP response time.
+the LP solver works. The increase in the execution time is very steep
+as the problem size grows exponentially. Up to six or seven variables 
+the result is almost immediate; over thirteen variables due to numerical
+instability the LP solver might fail to solve the problem or could return
+a wrong solution.
+The query is marked by <span class="resother ybg">timeout</span> if the 
+time limit was exceeded, and by <span class="resother ybg">failed</span>
+if the solver failed.
 <p></p>
-CONFIGURE
+CONFOTHER
 #####################################################################
 # PRINT, EXPORT / IMPORT
     render_block($session,"print","Print, export and import",<<PRINTING);
-There is no need to save the session: when opening a wITIP session it
-automatically restores the latest content. To create a backup or a snapshot,
+There is no need to save your work: when opening a wITIP session it
+automatically restores the latest content. To create a backup (or a snapshot),
 export the session. The exported content can be restored by importing it.
-Rather than entering contraints and macros one by one, they can be added
+Rather than entering constraints and macros one by one, they can be added
 in bulk from an external command file. An editable command file &ndash; 
 recreating the present set of macros, constraints, and the last query 
 &ndash; is available for download. Use the &quot;session&quot; tab for
@@ -713,21 +732,26 @@ satisfying the stipulated constraints.
 METHOD
 #####################################################################
 # HISTORY
+    my $version=$session->getconf("version");
     render_block($session,"history","History",<<HISTORY);
-wITIP is a web-based Information Theoretic Inequality Prover.  The server-side
-program was written in E%https://www.perl.org/%Perl% with the exception
-of the LP solver engine, which is a C frontend to glpk, the
-E%https://www.gnu.org/software/glpk/%Gnu Linear Programming Kit%. You can find
-the source on E%https://github.com/lcsirmaz/witip%GitHub%.
+<b>wITIP Version $version</b> is a web-based <b>I</b>nformation 
+<b>T</b>heoretic <b>I</b>nequality <b>P</b>rover. The server-side 
+program was written in  E%https://www.perl.org/%Perl% with the 
+exception of the LP solver engine, which is a C frontend to glpk, the
+E%https://www.gnu.org/software/glpk/%Gnu Linear Programming Kit%. 
+You can find the source on E%https://github.com/lcsirmaz/witip%GitHub%.
 <p></p>
-The E%http://user-www.ie.cuhk.edu.hk/~ITIP%original ITIP software% 
-was developed by <i>Raymond W. Yeung</i> and
-<i>Ying-On Yan</i>, and runs under MATLAB.
-The stand-alone version E%http://xitip.epfl.ch%Xitip% has a graphical interface
+The E%http://user-www.ie.cuhk.edu.hk/~ITIP%original ITIP software%
+was developed by <i>Raymond W. Yeung</i> and <i>Ying-On Yan</i>, 
+and runs under MATLAB. The stand-alone version 
+E%http://xitip.epfl.ch%Xitip% has a graphical interface
 and runs both in Windows and Linux.
 <br>
-This program is a port of E%https://github.com/lcsirmaz/minitip%minitip%, a 
-command-line version of ITIP.
+The command-line version
+E%https://github.com/lcsirmaz/minitip%minitip% uses the same
+LP solver engine, and is written in 
+E%https://en.wikipedia.org/wiki/C_(programming_language)%C% 
+exclusively. There are several common features in wITIP and minitip.
 <p></p>
 HISTORY
 #####################################################################
@@ -741,7 +765,7 @@ as published by the Free Software Foundation.
 <br>
 There is ABSOLUTELY NO WARRANTY, use at your own risk.
 <br>
-Copyright &copy; 2017 Laszlo Csirmaz, Central European University, Budapest
+Copyright &copy; 2017-2019 Laszlo Csirmaz, Central European University, Budapest
 <p></p>
 COPYRIGHT
     print "</div><!-- leftblock -->\n",

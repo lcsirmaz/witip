@@ -1,3 +1,16 @@
+
+Dec 7, 2018
+    version info
+    now 0=0 and 0>=0 are valid results.
+    on the main page a checkbox can be used to choose if checking with
+      constraints rather than using two submit buttons.
+    constraints pages allow checking/unchecking constraints without
+      clicking on the button. 
+    all pages allow deleting lines without blocking the navigation
+      buttons.
+    improved help text on the wITIP page
+    improved error messages on the session page
+    modified some printing options
 Nov 10, 2018
     bugfix: in perl_lib/wMainPage.pm the result of the splice call was
     used, thus returning some old lines only
@@ -25,3 +38,4 @@ Dec 5, 2017
      corrected
    warning: the libglpk v36.2 package reports timeout as failure. Compile
      glpk from source to avoid this bug.
+
