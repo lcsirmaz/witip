@@ -52,6 +52,7 @@ sub get_installdir {
       $dir=user_input("\\/[\\w\\/:\\+\\-,%]+",
         "Please specify the full path where wITIP has been unpacked to",$suggest);
       $dir =~ s#/$##g;
+      if($dir && ! -d "$dir/config"){ mkdir "$dir/config"; }
       foreach my $subdir (qw( bin config html html/css html/js html/images perl_lib prog template w )){
           if($dir && ! -d "$dir/$subdir"){
              print "The directory \"$dir\" seem not to be correct ($dir/$subdir is missing).\n";
