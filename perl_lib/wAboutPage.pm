@@ -73,7 +73,7 @@ package wAboutPage;
 use wHtml;
 use strict;
 
-my $seeas="<span class=\"seeas\">-&rsaquo;</span>"; # ->
+my $seeas=""; #"<span class=\"seeas\">-&rsaquo;</span>"; # ->
 my $seeas2="";
 
 sub render_link {
@@ -343,7 +343,9 @@ S%[A;B;X;Y]#[a,b,x,y]% is an abbreviation for the Ingleton expression<br>
 &nbsp; &nbsp; S%-I(A;B)+I(A;B|X)+I(A;B|Y)+I(X;Y)#-I(a,b)+I(a,b|x)+I(a,b|y)+I(x,y)%.
 </div>
 There must be four L%sequences%variable sequences% inside the square
-brackets.
+brackets. If &quot;reverse Ingleton notation&quot; is ticked in the 
+L%confstx%config% tab, then the same expression is abbreviated as
+S%[X;Y;A;B]#[x,y,a,b]%
 <p></p>
 INGLETON
 #####################################################################
@@ -556,8 +558,9 @@ The details how wITIP processes the entered text can be set under the
 <p></p>
 
 <strong>Syntax</strong><br>
-Determine whether traditional or simplified L%style%style% should be used; can
-parentheses S%()% or braces S%{}% enclose subexpressions;
+Determine whether traditional or simplified L%style%style% should be used;
+use reverse L%ingleton%Ingleton% expression;
+can parentheses S%()% or braces S%{}% enclose subexpressions;
 and finally whether variables can or cannot end in a sequence of primes (apostrophes).
 <p></p>
 
@@ -765,7 +768,7 @@ as published by the Free Software Foundation.
 <br>
 There is ABSOLUTELY NO WARRANTY, use at your own risk.
 <br>
-Copyright &copy; 2017-2019 Laszlo Csirmaz, Central European University, Budapest
+Copyright &copy; 2017-2022 Laszlo Csirmaz, Central European University, Budapest
 <p></p>
 COPYRIGHT
     print "</div><!-- leftblock -->\n",

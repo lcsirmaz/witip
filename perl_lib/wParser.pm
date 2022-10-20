@@ -192,6 +192,7 @@ sub new {
     ## configuration
     my $config = {
       style    => 1,  # 0/1 : 0 - full, 1 - simple
+      revIng   => 0,  # 0/1 : 1 - reverse Ingleton notation
       parent   => 1,  # 0/1 : allow () for grouping
       braces   => 1,  # 0/1 : allow {} for grouping
       varprime => 1,  # 0/1 : prime(s) at the end
@@ -790,8 +791,8 @@ sub is_relation { # one of =, <=, >=, =?
 ##
 sub is_Ingleton {
     my ($self,$e,$v)=@_;
-    my $X_sep =$self->getconf("sepchar");
     if($self->R('[')){
+        my $X_sep =$self->getconf("sepchar");
         my($a,$b,$c,$d)=(0,0,0,0);
         $self->is_varlist($a) || $self->harderr(e_INGLETONVAR);
         $self->R($X_sep) || $self->harderr(e_INGLETONSEP);
@@ -801,9 +802,15 @@ sub is_Ingleton {
         $self->R($X_sep) || $self->harderr(e_INGLETONSEP);
         $self->is_varlist($d) || $self->harderr(e_INGLETONVAR);
         $self->R(']') || $self->harderr(e_INGLETONCLOSE);
-        # [a,b,c,d] =-(a,b)+(a,b|c)+(a,b|d)+(c,d)
-        I2($e,$a,$b,-$v); I3($e,$a,$b,$c,$v);
-        I3($e,$a,$b,$d,$v); I2($e,$c,$d,$v);
+        if($self->getconf("revIng")){
+           # [a,b,c,d] =-(c,d)+(c,d|a)+(c,d|b)+(a,b)
+           I2($e,$c,$d,-$v); I3($e,$c,$d,$a,$v);
+           I3($e,$c,$d,$b,$v); I2($e,$a,$b,$v);
+        } else {
+           # [a,b,c,d] =-(a,b)+(a,b|c)+(a,b|d)+(c,d)
+           I2($e,$a,$b,-$v); I3($e,$a,$b,$c,$v);
+           I3($e,$a,$b,$d,$v); I2($e,$c,$d,$v);
+        }
         return 1;
     }
     return 0;

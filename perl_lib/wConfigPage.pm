@@ -188,6 +188,11 @@ SELECTFONT
     _checkbox($session->getconf("style"),"simplesyntax");
     print "</td>\n";
     print "<td> Use simplified sytax </td></tr>\n";
+    ## swap Ingleton
+    print "<tr><td class=\"inp\">";
+    _checkbox($session->getconf("revIng"),"revIng");
+    print "</td>\n";
+    print "<td> Use reverse Ingleton notation [x,y,a,b] </td></tr>\n";
     ##  use ()
     print "<tr><td class=\"inp\">";
     _checkbox($session->getconf("parent"),"parent");
@@ -283,6 +288,7 @@ sub Parse {
     $config->{tablesize} = $new || $session->getconf("tablesize");
     # syntax
     $config->{style}    = $session->getpar("simplesyntax") ? 1 : 0;
+    $config->{revIng}   = $session->getpar("revIng") ? 1 : 0;
     $config->{parent}   = $session->getpar("parent") ? 1 : 0;
     $config->{braces}   = $session->getpar("braces") ? 1 : 0;
     $config->{varprime} = $session->getpar("varprime") ? 1 : 0;

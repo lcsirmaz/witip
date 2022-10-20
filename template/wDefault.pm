@@ -114,7 +114,7 @@ sub setting {
     $session->{setting}->{exttemp}    = ".tmp"; # temp files
     $session->{setting}->{extpam}     = ".pam"; # secret value
     # version
-    $session->{setting}->{version}    = "2.1";
+    $session->{setting}->{version}    = "2.2";
 }
 
 # default config file
@@ -125,6 +125,7 @@ sub config { return {
     tablesize  => 400,   # table size in pixels
     # syntax
     style      => 1,     # 0/1, 0-full, 1-simple
+    revIng     => 0,     # 0/1, 0 - no, 1 - yes
     parent     => 0,     # 0/1, 1 for () grouping
     braces     => 1,     # 0/1, 1 for {} grouping
     varprime   => 1,     # 0/1, 1 for prime(s) at the end of variables

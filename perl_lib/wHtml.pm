@@ -180,8 +180,8 @@ function wi_gotoPage(page){
 sub html_tail {
     print <<TAIL;
 </form></div><!-- main -->
-<p class="ad">wITIP &copy; 2017-2019, created by <a
-href="http://www.renyi.hu/~csirmaz" target="_blank">Laszlo Csirmaz</a> at CEU</p>
+<p class="ad">wITIP &copy; 2017-2022, created by <a
+href="https://github.com/lcsirmaz/witip" target="_blank">Laszlo Csirmaz</a></p>
 </body>
 </html>
 
