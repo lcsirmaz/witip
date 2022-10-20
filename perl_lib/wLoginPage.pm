@@ -70,7 +70,7 @@ SPECIFY
     print <<LOGIN;
 <div class="logincontainer">
 <p>Your session ID</p>
-<p><input type="text" name="SSID" size="25" value="$SSID"></p>
+<p><input type="text" name="SSID" style="width:90%;" value="$SSID"></p>
 <div><!-- dummy --></div>
 <p><input class="logsubmit" type="submit" name="action_start" value="CONTINUE">
 </div>
