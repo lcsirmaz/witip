@@ -7,7 +7,7 @@
 ###########################################################################
 # This code is part of wITIP (a web based Information Theoretic Prover)
 #
-# Copyright (2017) Laszlo Csirmaz, Central European University, Budapest
+# Copyright 2017-2024 Laszlo Csirmaz, UTIA, Prague
 # This program is free, open-source software. You may redistribute it
 # and/or modify under the terms of the GNU General Public License (GPL).
 # There is ABSOLUTELY NO WARRANTY, use at your own risk.
@@ -768,7 +768,7 @@ as published by the Free Software Foundation.
 <br>
 There is ABSOLUTELY NO WARRANTY, use at your own risk.
 <br>
-Copyright &copy; 2017-2022 Laszlo Csirmaz, Central European University, Budapest
+Copyright &copy; 2017-2024 Laszlo Csirmaz, UTIA, Prague
 <p></p>
 COPYRIGHT
     print "</div><!-- leftblock -->\n",

@@ -7,7 +7,7 @@
 ###########################################################################
 # This code is part of wITIP (a web based Information Theoretic Prover)
 #
-# Copyright (2017) Laszlo Csirmaz, Central European University, Budapest
+# Copyright 2017-2024 Laszlo Csirmaz, UTIA, Prague
 # This program is free, open-source software. You may redistribute it
 # and/or modify under the terms of the GNU General Public License (GPL).
 # There is ABSOLUTELY NO WARRANTY, use at your own risk.
@@ -180,8 +180,8 @@ function wi_gotoPage(page){
 sub html_tail {
     print <<TAIL;
 </form></div><!-- main -->
-<p class="ad">wITIP &copy; 2017-2022, created by <a
-href="https://github.com/lcsirmaz/witip" target="_blank">Laszlo Csirmaz</a></p>
+<p class="ad">wITIP &copy; 2017-2024, created by <a
+href="https://github.com/lcsirmaz/witip" target="_blank">Laszlo Csirmaz, UTIA</a></p>
 </body>
 </html>
 
